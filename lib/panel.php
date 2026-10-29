@@ -38,6 +38,7 @@ final class Panel
             'emitir'       => self::issue($i18n, $user, $isPost),
             'registrar'    => self::registerExternal($i18n, $user, $isPost),
             'importar'     => self::importar($i18n, $user, $isPost, $sub),
+            'email'        => self::emailSettings($i18n, $user, $isPost),
             'certificados' => self::issuances($i18n, $user),
             'revogar'      => self::revoke($i18n, $user, $isPost),
             'certificado'  => self::certificate($i18n, $user, (string) ($sub[1] ?? '')),
@@ -448,6 +449,71 @@ final class Panel
             'resultado' => $resultado,
             'error' => $error,
         ], $user, 'import');
+    }
+
+    /**
+     * Estado do e-mail e envio de teste.
+     *
+     * Existe para que a configuração do provedor possa ser verificada sem
+     * precisar emitir um certificado de verdade para alguém.
+     */
+    private static function emailSettings(I18n $i18n, array $user, bool $isPost): void
+    {
+        $tenantId = (int) $user['tenant_id'];
+        $error = null;
+        $flash = null;
+        $transcript = [];
+
+        if ($isPost) {
+            $acao = (string) ($_POST['acao'] ?? '');
+            if ($acao === 'teste') {
+                $destino = trim((string) ($_POST['destino'] ?? ''));
+                if (!filter_var($destino, FILTER_VALIDATE_EMAIL)) {
+                    $error = $i18n->a('mail.bad_address');
+                } else {
+                    try {
+                        $peca = Mailer::render('issuance_created', $i18n->locale(), [
+                            'program'   => $i18n->a('mail.test_program'),
+                            'issuer'    => $i18n->a('mail.test_issuer'),
+                            'code'      => 'TEST-0000-0000',
+                            'issued_on' => Mailer::formatDate(date('Y-m-d'), $i18n->locale()),
+                            'validity'  => $i18n->a('mail.test_note'),
+                            'url'       => base_url() . $i18n->url(),
+                        ]);
+                        $peca['subject'] = '[teste] ' . $peca['subject'];
+                        Mailer::deliver($destino, '', $peca);
+                        $flash = $i18n->a('mail.test_sent', ['driver' => (string) Config::get('mail.driver', 'log')]);
+                        Auth::audit('mail.test', 'mail', null, ['driver' => (string) Config::get('mail.driver', 'log')]);
+                    } catch (Throwable $e) {
+                        $error = mb_substr($e->getMessage(), 0, 240);
+                    }
+                }
+            } elseif ($acao === 'liberar') {
+                $alvo = trim((string) ($_POST['email'] ?? ''));
+                if (filter_var($alvo, FILTER_VALIDATE_EMAIL)) {
+                    try {
+                        Db::run('DELETE FROM mail_suppressions WHERE email_index = ?', [Crypto::blindIndex($alvo)]);
+                        Auth::audit('mail.unsuppressed', 'mail', null, []);
+                        $flash = $i18n->a('mail.released');
+                    } catch (Throwable $e) {
+                        $error = $i18n->t('error.unavailable');
+                    }
+                } else {
+                    $error = $i18n->a('mail.bad_address');
+                }
+            }
+        }
+
+        self::shell($i18n, 'app/email', [
+            'stats' => Mailer::stats($tenantId),
+            'recent' => Mailer::recent($tenantId),
+            'driver' => (string) Config::get('mail.driver', 'log'),
+            'fromEmail' => (string) Config::get('mail.from_email', ''),
+            'smtpHost' => (string) Config::get('mail.host', ''),
+            'cronSet' => ((string) Config::get('mail.cron_key', '')) !== '',
+            'flash' => $flash,
+            'error' => $error,
+        ], $user, 'email');
     }
 
     private static function programaDoLote(array $programs, array $batch): ?array

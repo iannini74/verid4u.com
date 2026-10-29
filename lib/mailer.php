@@ -256,6 +256,53 @@ final class Mailer
 
     /* ------------------------------------------------------------- modelos */
 
+    /** Panorama da fila, para a tela de configuração. */
+    public static function stats(?int $tenantId = null): array
+    {
+        try {
+            $where = $tenantId !== null ? 'WHERE tenant_id = ?' : '';
+            $args = $tenantId !== null ? [$tenantId] : [];
+            $r = Db::one(
+                "SELECT
+                    SUM(status = 'queued') AS queued,
+                    SUM(status = 'sent') AS sent,
+                    SUM(status = 'failed') AS failed,
+                    SUM(status = 'suppressed') AS suppressed
+                 FROM mail_messages $where",
+                $args
+            ) ?? [];
+            $sup = Db::one('SELECT COUNT(*) AS n FROM mail_suppressions') ?? ['n' => 0];
+            return [
+                'queued' => (int) ($r['queued'] ?? 0),
+                'sent' => (int) ($r['sent'] ?? 0),
+                'failed' => (int) ($r['failed'] ?? 0),
+                'suppressed' => (int) ($r['suppressed'] ?? 0),
+                'suppression_list' => (int) ($sup['n'] ?? 0),
+            ];
+        } catch (Throwable) {
+            return ['queued' => 0, 'sent' => 0, 'failed' => 0, 'suppressed' => 0, 'suppression_list' => 0];
+        }
+    }
+
+    /** Últimas mensagens do tenant, com o endereço decifrado para o dono. */
+    public static function recent(int $tenantId, int $limit = 20): array
+    {
+        try {
+            $linhas = Db::all(
+                'SELECT id, template, status, attempts, last_error, created_at, sent_at, to_email_enc
+                 FROM mail_messages WHERE tenant_id = ? ORDER BY id DESC LIMIT ' . max(1, min(100, $limit)),
+                [$tenantId]
+            );
+            foreach ($linhas as &$l) {
+                $l['to_email'] = Crypto::decrypt($l['to_email_enc']) ?? '—';
+                unset($l['to_email_enc']);
+            }
+            return $linhas;
+        } catch (Throwable) {
+            return [];
+        }
+    }
+
     /**
      * Enfileira os avisos de vencimento.
      *

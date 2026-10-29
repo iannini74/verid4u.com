@@ -82,6 +82,7 @@ compartilhada da Hostinger.
 | `/{idioma}/app/emitir` | Emissão |
 | `/{idioma}/app/registrar` | Registro de certificado emitido fora |
 | `/{idioma}/app/importar` | Importação em lote, em três passos |
+| `/{idioma}/app/email` | Estado do envio, teste e lista de supressão |
 | `/{idioma}/app/certificados` | Lista, revogação e impressão |
 
 Idiomas do lado público: `pt-br`, `pt`, `es`, `en`. O painel sai em pt-BR;
@@ -171,6 +172,19 @@ Mensagens prontas, nos quatro idiomas: certificado emitido, certificado
 registrado, aviso de vencimento (90, 30 e 7 dias) e revogação. O modelo
 guarda o **nome** do template e os dados, não o texto pronto — corrigir um
 texto conserta o que ainda não saiu.
+
+### Ligar o envio
+
+1. No Resend, adicione o domínio `verid4u.com` na região **São Paulo
+   (sa-east-1)** e publique os registros que ele mostrar.
+2. Crie uma chave de API e preencha em `lib/config.local.php`:
+   `driver` = `smtp`, `host` = `smtp.resend.com`, `port` = `587`,
+   `secure` = `tls`, `user` = `resend`, `pass` = a chave.
+3. Confirme em `/pt-br/app/email` — a tela tem envio de teste.
+
+DMARC já está publicado em `p=none` (modo observação). Depois de três
+semanas sem surpresa nos relatórios, apertar para:
+`v=DMARC1; p=reject; adkim=s; aspf=s; rua=mailto:rua@dmarc.brevo.com`
 
 ### Cron a configurar na Hostinger
 
