@@ -1,0 +1,39 @@
+<?php
+return [
+    'common.footer' => 'Recebeu esta mensagem porque {issuer} registou um certificado em seu nome.',
+    'common.validity_until' => 'A habilitação é válida até {valid_until}.',
+    'common.validity_none' => 'Este certificado não tem prazo de validade.',
+    'common.preheader' => 'O seu certificado no VerID4U.',
+
+    'issuance_created.subject' => 'O seu certificado de {program}',
+    'issuance_created.preheader' => 'Código {code} — confirme a autenticidade a qualquer momento.',
+    'issuance_created.heading' => 'O seu certificado está pronto',
+    'issuance_created.p1' => '{issuer} emitiu o seu certificado de {program}, concluído em {issued_on}.',
+    'issuance_created.p2' => 'O código é {code}. Qualquer pessoa pode confirmar a autenticidade com ele, gratuitamente e sem registo.',
+    'issuance_created.p3' => '{validity}',
+    'issuance_created.cta' => 'Ver o meu certificado',
+
+    'issuance_registered.subject' => 'O seu certificado de {program} já é verificável',
+    'issuance_registered.preheader' => 'Código {code} — confirme a autenticidade a qualquer momento.',
+    'issuance_registered.heading' => 'O seu certificado já é verificável',
+    'issuance_registered.p1' => '{issuer} registou no VerID4U o seu certificado de {program}, concluído em {issued_on}.',
+    'issuance_registered.p2' => 'O documento continua a ser o que a entidade emitiu. O que mudou é que agora tem o código {code}, e qualquer pessoa pode confirmar que é autêntico e não foi alterado.',
+    'issuance_registered.p3' => '{validity}',
+    'issuance_registered.cta' => 'Ver o meu certificado',
+
+    'issuance_expiring.subject' => 'A sua habilitação em {program} caduca dentro de {days} dias',
+    'issuance_expiring.preheader' => 'Caduca a {valid_until}. É altura de marcar a reciclagem.',
+    'issuance_expiring.heading' => 'É altura de renovar',
+    'issuance_expiring.p1' => 'A sua habilitação em {program} caduca a {valid_until} — faltam {days} dias.',
+    'issuance_expiring.p2' => 'O certificado continua autêntico depois dessa data; o que caduca é a habilitação. Contacte {issuer} para marcar a reciclagem.',
+    'issuance_expiring.p3' => '',
+    'issuance_expiring.cta' => 'Ver a situação atual',
+
+    'issuance_revoked.subject' => 'O seu certificado de {program} foi anulado',
+    'issuance_revoked.preheader' => 'A entidade emissora anulou o certificado {code}.',
+    'issuance_revoked.heading' => 'Este certificado foi anulado',
+    'issuance_revoked.p1' => '{issuer} anulou o certificado {code}, de {program}.',
+    'issuance_revoked.p2' => 'Motivo indicado: {reason}',
+    'issuance_revoked.p3' => 'A partir de agora, quem consultar este código verá que foi revogado. Se acredita que houve engano, contacte a entidade.',
+    'issuance_revoked.cta' => 'Ver a situação atual',
+];

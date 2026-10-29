@@ -115,6 +115,13 @@ final class Issuer
             $pdo->commit();
 
             Auth::audit('issuance.created', 'issuance', (string) $id, ['code' => Code::full($base)]);
+
+            self::notificar('issuance_created', [
+                'id' => $id, 'tenant_id' => $tenantId, 'code' => Code::full($base),
+                'holder_name' => $input['holder_name'], 'program_title' => $program['title'],
+                'issuer_name' => $issuerRow['name'], 'issued_on' => $issuedOn, 'valid_until' => $validUntil,
+            ], (string) ($input['holder_email'] ?? ''), (string) ($input['locale'] ?? 'pt-br'));
+
             return ['id' => $id, 'base' => $base, 'code' => Code::full($base), 'valid_until' => $validUntil];
         } catch (Throwable $e) {
             if ($pdo->inTransaction()) {
@@ -187,6 +194,14 @@ final class Issuer
             $pdo->commit();
 
             Auth::audit('issuance.registered', 'issuance', (string) $id, ['code' => Code::full($base)]);
+
+            self::notificar('issuance_registered', [
+                'id' => $id, 'tenant_id' => $tenantId, 'code' => Code::full($base),
+                'holder_name' => $input['holder_name'], 'program_title' => $input['program_title'],
+                'issuer_name' => $input['issuer_name'], 'issued_on' => $input['issued_on'],
+                'valid_until' => $input['valid_until'],
+            ], (string) ($input['holder_email'] ?? ''), (string) ($input['locale'] ?? 'pt-br'));
+
             return ['id' => $id, 'base' => $base, 'code' => Code::full($base)];
         } catch (Throwable $e) {
             if ($pdo->inTransaction()) {
@@ -194,6 +209,41 @@ final class Issuer
             }
             throw $e;
         }
+    }
+
+    /**
+     * Põe o aviso ao titular na fila.
+     *
+     * Nunca envia aqui: emitir mil certificados não pode esperar mil
+     * conexões SMTP. A fila é despachada por cron.
+     */
+    private static function notificar(string $template, array $registro, string $email, string $locale, array $extra = []): void
+    {
+        if ($email === '') {
+            return;
+        }
+        $validade = $registro['valid_until'] !== null
+            ? Mailer::phrase('common.validity_until', $locale, ['valid_until' => Mailer::formatDate($registro['valid_until'], $locale)])
+            : Mailer::phrase('common.validity_none', $locale);
+
+        $codigo = Code::format($registro['code']);
+        Mailer::queue(
+            $template,
+            $email,
+            $registro['holder_name'] ?? null,
+            $locale,
+            [
+                'program'     => $registro['program_title'],
+                'issuer'      => $registro['issuer_name'],
+                'code'        => $codigo,
+                'issued_on'   => Mailer::formatDate($registro['issued_on'], $locale),
+                'valid_until' => Mailer::formatDate($registro['valid_until'], $locale),
+                'validity'    => $validade,
+                'url'         => base_url() . '/' . $locale . '/v/' . $codigo,
+            ] + $extra,
+            $registro['tenant_id'] ?? null,
+            $registro['id'] ?? null
+        );
     }
 
     public static function issuances(int $tenantId, int $limit = 100): array
@@ -218,7 +268,7 @@ final class Issuer
         );
     }
 
-    public static function revoke(int $tenantId, int $issuanceId, string $reason): bool
+    public static function revoke(int $tenantId, int $issuanceId, string $reason, string $locale = 'pt-br'): bool
     {
         $done = Db::run(
             'UPDATE issuances SET revoked_on = CURDATE(), revoke_reason = ?
@@ -227,6 +277,27 @@ final class Issuer
         )->rowCount() > 0;
         if ($done) {
             Auth::audit('issuance.revoked', 'issuance', (string) $issuanceId, ['reason' => $reason]);
+            try {
+                $r = Db::one(
+                    'SELECT i.id, i.tenant_id, i.code_base, i.holder_name, i.program_title, i.issuer_name,
+                            i.issued_on, i.valid_until, h.email_enc
+                     FROM issuances i JOIN holders h ON h.id = i.holder_id
+                     WHERE i.id = ? LIMIT 1',
+                    [$issuanceId]
+                );
+                if ($r !== null) {
+                    $email = Crypto::decrypt($r['email_enc']) ?? '';
+                    self::notificar('issuance_revoked', [
+                        'id' => (int) $r['id'], 'tenant_id' => (int) $r['tenant_id'],
+                        'code' => Code::full((string) $r['code_base']),
+                        'holder_name' => $r['holder_name'], 'program_title' => $r['program_title'],
+                        'issuer_name' => $r['issuer_name'], 'issued_on' => $r['issued_on'],
+                        'valid_until' => $r['valid_until'],
+                    ], $email, $locale, ['reason' => $reason]);
+                }
+            } catch (Throwable $e) {
+                error_log('[verid4u] aviso de revogacao: ' . $e->getMessage());
+            }
         }
         return $done;
     }

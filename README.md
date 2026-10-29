@@ -72,6 +72,8 @@ compartilhada da Hostinger.
 | `/api/v1/verify/{codigo}` | Verificação em JSON |
 | `/api/v1/lookup` | `POST sha256=…` — acha o registro pela impressão digital do arquivo |
 | `/api/v1/health` | Estado do serviço e versão do esquema. Não devolve dado nenhum |
+| `/api/v1/cron/mail?key=…` | Despacha a fila de e-mail. Protegida por segredo do config |
+| `/api/v1/cron/expiry?key=…` | Enfileira os avisos de vencimento de 90, 30 e 7 dias |
 | `/sitemap.xml` | Gerado em tempo de execução |
 | `/{idioma}/app/ativar` | Ativação do dono, só enquanto não há conta |
 | `/{idioma}/app/entrar` | Entrada |
@@ -144,9 +146,44 @@ paralelas divergiriam no primeiro ajuste.
 
 Limites por lote: 5 MB e 2.000 linhas.
 
+## E-mail
+
+O motor está pronto e desligado: `mail.driver` começa em `log`, que registra
+e não envia. Ele vira `smtp` assim que houver provedor.
+
+**Por que SMTP e não o SDK de um provedor.** Resend, Amazon SES, Postmark,
+Brevo e ZeptoMail falam SMTP. Com um cliente SMTP próprio — 136 linhas, sem
+dependência — trocar de provedor é trocar host, usuário e senha no
+`config.local.php`. O documento de estratégia pede um segundo provedor
+sempre pronto, porque e-mail é ponto único de falha do negócio; isso só é
+barato se a troca for de configuração.
+
+**Nada sai de uma requisição web.** Tudo entra em `mail_messages` e o cron
+despacha. Emitir mil certificados não pode esperar mil conexões SMTP.
+
+**A supressão é consultada duas vezes**, ao enfileirar e ao enviar, porque
+entre uma coisa e outra pode ter chegado uma recusa definitiva. Recusa
+permanente (5xx com «user unknown» e parecidos) suprime o endereço na hora;
+falha temporária volta para a fila com espera crescente de 5 min, 25 min e
+2 h, até quatro tentativas.
+
+Mensagens prontas, nos quatro idiomas: certificado emitido, certificado
+registrado, aviso de vencimento (90, 30 e 7 dias) e revogação. O modelo
+guarda o **nome** do template e os dados, não o texto pronto — corrigir um
+texto conserta o que ainda não saiu.
+
+### Cron a configurar na Hostinger
+
+```
+*/5 * * * *  curl -s "https://verid4u.com/api/v1/cron/mail?key=SEGREDO" > /dev/null
+15  6 * * *  curl -s "https://verid4u.com/api/v1/cron/expiry?key=SEGREDO" > /dev/null
+```
+
+O segredo está em `mail.cron_key`, no `lib/config.local.php`.
+
 ## Próximos passos
 
-1. Provedor de e-mail transacional: entrega do certificado ao titular,
+1. Escolher o provedor de e-mail e publicar SPF, DKIM e DMARC: entrega do certificado ao titular,
    aviso de vencimento e link mágico de entrada
 3. API autenticada com chaves e escopos, mais webhooks
 4. Níveis de verificação do emissor: comprovação de domínio e de CNPJ

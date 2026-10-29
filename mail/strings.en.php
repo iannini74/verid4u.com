@@ -1,0 +1,39 @@
+<?php
+return [
+    'common.footer' => 'You are receiving this because {issuer} registered a certificate in your name.',
+    'common.validity_until' => 'The qualification is valid until {valid_until}.',
+    'common.validity_none' => 'This certificate has no expiry date.',
+    'common.preheader' => 'Your certificate on VerID4U.',
+
+    'issuance_created.subject' => 'Your {program} certificate',
+    'issuance_created.preheader' => 'Code {code} — check it any time.',
+    'issuance_created.heading' => 'Your certificate is ready',
+    'issuance_created.p1' => '{issuer} has issued your certificate for {program}, completed on {issued_on}.',
+    'issuance_created.p2' => 'The code is {code}. Anyone can check that it is genuine with it, free and without signing up — an employer included.',
+    'issuance_created.p3' => '{validity}',
+    'issuance_created.cta' => 'View my certificate',
+
+    'issuance_registered.subject' => 'Your {program} certificate can now be verified',
+    'issuance_registered.preheader' => 'Code {code} — check it any time.',
+    'issuance_registered.heading' => 'Your certificate can now be verified',
+    'issuance_registered.p1' => '{issuer} has registered your certificate for {program} on VerID4U, completed on {issued_on}.',
+    'issuance_registered.p2' => 'The document is still the one the institution issued. What changed is that it now carries the code {code}, and anyone can confirm it is genuine and unaltered.',
+    'issuance_registered.p3' => '{validity}',
+    'issuance_registered.cta' => 'View my certificate',
+
+    'issuance_expiring.subject' => 'Your {program} qualification expires in {days} days',
+    'issuance_expiring.preheader' => 'Expires on {valid_until}. Time to book the refresher.',
+    'issuance_expiring.heading' => 'Time to renew',
+    'issuance_expiring.p1' => 'Your qualification in {program} expires on {valid_until} — {days} days from now.',
+    'issuance_expiring.p2' => 'The certificate stays genuine after that date; what lapses is the qualification. Contact {issuer} to book the refresher.',
+    'issuance_expiring.p3' => '',
+    'issuance_expiring.cta' => 'See the current status',
+
+    'issuance_revoked.subject' => 'Your {program} certificate has been cancelled',
+    'issuance_revoked.preheader' => 'The issuer cancelled certificate {code}.',
+    'issuance_revoked.heading' => 'This certificate has been cancelled',
+    'issuance_revoked.p1' => '{issuer} cancelled certificate {code}, for {program}.',
+    'issuance_revoked.p2' => 'Reason given: {reason}',
+    'issuance_revoked.p3' => 'From now on, anyone checking this code will see that it has been revoked. If you believe this is a mistake, contact the institution.',
+    'issuance_revoked.cta' => 'See the current status',
+];

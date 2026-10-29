@@ -45,7 +45,7 @@ final class Db
 
     /* ------------------------------------------------------------ migrações */
 
-    public const SCHEMA_VERSION = 7;
+    public const SCHEMA_VERSION = 8;
 
     private static function marker(): string
     {
@@ -267,6 +267,44 @@ final class Db
                arquivo parado no servidor. */
             /* A importação pergunta «esta linha já existe?» uma vez por linha.
                Sem índice isso varre a tabela inteira a cada pergunta. */
+            /* Fila de saída e lista de supressão.
+               A mensagem guarda o NOME do modelo e os dados, não o texto
+               pronto: assim corrigir um modelo conserta o que ainda não saiu,
+               e o corpo não incha o banco. O endereço vai cifrado, com índice
+               cego para a supressão poder consultar sem decifrar nada. */
+            8 => [
+                "CREATE TABLE IF NOT EXISTS mail_messages (
+                    id BIGINT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
+                    tenant_id INT UNSIGNED NULL,
+                    issuance_id BIGINT UNSIGNED NULL,
+                    stream ENUM('transactional','lifecycle') NOT NULL DEFAULT 'transactional',
+                    template VARCHAR(48) NOT NULL,
+                    locale VARCHAR(8) NOT NULL DEFAULT 'pt-br',
+                    to_email_enc TEXT NOT NULL,
+                    to_email_index CHAR(64) NOT NULL,
+                    to_name VARCHAR(190) NULL,
+                    payload_json JSON NULL,
+                    status ENUM('queued','sent','failed','suppressed','cancelled') NOT NULL DEFAULT 'queued',
+                    attempts TINYINT UNSIGNED NOT NULL DEFAULT 0,
+                    last_error VARCHAR(255) NULL,
+                    scheduled_for DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+                    sent_at DATETIME NULL,
+                    created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+                    KEY idx_mail_due (status, scheduled_for),
+                    KEY idx_mail_tenant (tenant_id, created_at),
+                    KEY idx_mail_dedup (template, issuance_id)
+                ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci",
+
+                "CREATE TABLE IF NOT EXISTS mail_suppressions (
+                    id BIGINT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
+                    email_index CHAR(64) NOT NULL,
+                    reason VARCHAR(40) NOT NULL,
+                    note VARCHAR(190) NULL,
+                    created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+                    UNIQUE KEY uq_suppression (email_index)
+                ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci",
+            ],
+
             7 => [
                 "ALTER TABLE issuances ADD INDEX idx_issuances_dedup (tenant_id, issued_on, holder_name(60))",
             ],

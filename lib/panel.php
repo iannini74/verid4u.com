@@ -251,6 +251,7 @@ final class Panel
                     if ($issuer === null) {
                         throw new RuntimeException('Nenhum emissor cadastrado para este tenant.');
                     }
+                    $old['locale'] = $i18n->locale();
                     $issued = Issuer::issue($tenantId, $program, $issuer, $old);
                     $old = [];
                 } catch (Throwable $e) {
@@ -315,6 +316,7 @@ final class Panel
                     }
                     $input = $old;
                     $input['valid_until'] = $old['valid_until'] !== '' ? $old['valid_until'] : null;
+                    $input['locale'] = $i18n->locale();
                     $registered = Issuer::register($tenantId, $issuerRow, $input);
                     $old = [];
                 } catch (Throwable $e) {
@@ -510,7 +512,7 @@ final class Panel
             ], $user, 'issuances');
             return;
         }
-        Issuer::revoke((int) $user['tenant_id'], $id, $reason);
+        Issuer::revoke((int) $user['tenant_id'], $id, $reason, $i18n->locale());
         redirect($i18n->url('/app/certificados') . '?ok=list.revoked_done');
     }
 

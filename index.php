@@ -33,6 +33,37 @@ if (($segments[0] ?? '') === 'api') {
     header('X-Robots-Tag: noindex, nofollow');
     header('Access-Control-Allow-Origin: *');
 
+    // Rotinas agendadas. Protegidas por um segredo do config, nunca
+    // alcançáveis por um visitante. Chamadas pelo cron da hospedagem.
+    if (($segments[1] ?? '') === 'v1' && ($segments[2] ?? '') === 'cron') {
+        $chave = (string) Config::get('mail.cron_key', '');
+        $enviada = (string) ($_GET['key'] ?? $_POST['key'] ?? '');
+        if ($chave === '' || !hash_equals($chave, $enviada)) {
+            http_response_code(403);
+            echo json_encode(['error' => 'forbidden'], JSON_UNESCAPED_UNICODE);
+            exit;
+        }
+        $tarefa = (string) ($segments[3] ?? '');
+        try {
+            if ($tarefa === 'mail') {
+                echo json_encode(['task' => 'mail'] + Mailer::runQueue(40), JSON_UNESCAPED_UNICODE);
+                exit;
+            }
+            if ($tarefa === 'expiry') {
+                echo json_encode(['task' => 'expiry'] + Mailer::scheduleExpiryWarnings(), JSON_UNESCAPED_UNICODE);
+                exit;
+            }
+        } catch (Throwable $e) {
+            error_log('[verid4u] cron ' . $tarefa . ': ' . $e->getMessage());
+            http_response_code(500);
+            echo json_encode(['error' => 'failed'], JSON_UNESCAPED_UNICODE);
+            exit;
+        }
+        http_response_code(404);
+        echo json_encode(['error' => 'unknown_task'], JSON_UNESCAPED_UNICODE);
+        exit;
+    }
+
     // Saúde do serviço. Não devolve nenhum dado: só diz se o banco responde
     // e em que versão de esquema a aplicação está. Serve ao monitoramento e
     // à futura página de status.

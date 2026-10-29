@@ -18,6 +18,21 @@ return [
     // php -r "echo bin2hex(random_bytes(18));"
     'setup_token' => '',
 
+    // E-mail. driver: 'log' não envia nada (só registra), 'php' usa mail(),
+    // 'smtp' usa o provedor configurado abaixo, 'off' desliga a fila.
+    'mail' => [
+        'driver'     => 'log',
+        'host'       => '',
+        'port'       => 587,
+        'secure'     => 'tls',   // tls (STARTTLS, porta 587) | ssl (porta 465) | none
+        'user'       => '',
+        'pass'       => '',
+        'from_email' => 'certificados@verid4u.com',
+        'from_name'  => 'VerID4U',
+        'reply_to'   => '',
+        'cron_key'   => '',      // segredo que autoriza as rotas de cron
+    ],
+
     // Enquanto true, os registros semeados aparecem marcados como demonstração.
     'demo' => true,
 ];
