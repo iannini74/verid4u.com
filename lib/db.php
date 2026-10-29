@@ -45,7 +45,7 @@ final class Db
 
     /* ------------------------------------------------------------ migrações */
 
-    public const SCHEMA_VERSION = 5;
+    public const SCHEMA_VERSION = 7;
 
     private static function marker(): string
     {
@@ -261,6 +261,52 @@ final class Db
                emitido, com a impressão digital de assets/demo/certificado-exemplo.pdf.
                Serve para que a distinção de origem e a conferência de arquivo
                possam ser vistas funcionando sem precisar de conta. */
+            /* Área de espera da importação. O arquivo enviado é lido uma vez,
+               vira linhas aqui e é apagado em seguida: o mapeamento, a
+               simulação e a gravação trabalham sobre o banco, nunca sobre um
+               arquivo parado no servidor. */
+            /* A importação pergunta «esta linha já existe?» uma vez por linha.
+               Sem índice isso varre a tabela inteira a cada pergunta. */
+            7 => [
+                "ALTER TABLE issuances ADD INDEX idx_issuances_dedup (tenant_id, issued_on, holder_name(60))",
+            ],
+
+            6 => [
+                "CREATE TABLE IF NOT EXISTS import_batches (
+                    id BIGINT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
+                    tenant_id INT UNSIGNED NOT NULL,
+                    user_id INT UNSIGNED NULL,
+                    mode ENUM('issue','register') NOT NULL DEFAULT 'register',
+                    program_id INT UNSIGNED NULL,
+                    filename VARCHAR(190) NOT NULL,
+                    delimiter_used VARCHAR(4) NOT NULL DEFAULT ',',
+                    encoding_used VARCHAR(24) NOT NULL DEFAULT 'UTF-8',
+                    total_rows INT UNSIGNED NOT NULL DEFAULT 0,
+                    header_json JSON NULL,
+                    mapping_json JSON NULL,
+                    status ENUM('parsed','committed','discarded') NOT NULL DEFAULT 'parsed',
+                    created_rows INT UNSIGNED NOT NULL DEFAULT 0,
+                    skipped_rows INT UNSIGNED NOT NULL DEFAULT 0,
+                    failed_rows INT UNSIGNED NOT NULL DEFAULT 0,
+                    created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+                    committed_at DATETIME NULL,
+                    KEY idx_batches_tenant (tenant_id, created_at),
+                    CONSTRAINT fk_batches_tenant FOREIGN KEY (tenant_id) REFERENCES tenants (id) ON DELETE CASCADE
+                ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci",
+
+                "CREATE TABLE IF NOT EXISTS import_rows (
+                    id BIGINT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
+                    batch_id BIGINT UNSIGNED NOT NULL,
+                    line_no INT UNSIGNED NOT NULL,
+                    raw_json JSON NOT NULL,
+                    outcome ENUM('pending','created','skipped','failed') NOT NULL DEFAULT 'pending',
+                    reason VARCHAR(255) NULL,
+                    issuance_id BIGINT UNSIGNED NULL,
+                    KEY idx_rows_batch (batch_id, line_no),
+                    CONSTRAINT fk_rows_batch FOREIGN KEY (batch_id) REFERENCES import_batches (id) ON DELETE CASCADE
+                ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci",
+            ],
+
             5 => [
                 "INSERT IGNORE INTO holders (tenant_id, name, display_mode)
                  SELECT id, 'Carlos Eduardo Pires', 'partial' FROM tenants WHERE slug = 'demo'",

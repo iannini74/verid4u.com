@@ -9,6 +9,7 @@ $nav = [
     'programs'   => ['cursos', 'nav.programs'],
     'issue'      => ['emitir', 'nav.issue'],
     'register'   => ['registrar', 'nav.register'],
+    'import'     => ['importar', 'nav.import'],
     'issuances'  => ['certificados', 'nav.issuances'],
 ];
 ?>

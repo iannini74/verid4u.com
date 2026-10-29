@@ -253,3 +253,17 @@
     }
   }
 })();
+
+/* Importação: o seletor de curso só interessa ao modo «emitir». */
+(function () {
+  'use strict';
+  var modos = document.querySelectorAll('[data-mode]');
+  var bloco = document.querySelector('[data-mode-issue]');
+  if (!modos.length || !bloco) return;
+  var sync = function () {
+    var emitir = document.querySelector('[data-mode][value="issue"]');
+    bloco.hidden = !(emitir && emitir.checked);
+  };
+  Array.prototype.forEach.call(modos, function (el) { el.addEventListener('change', sync); });
+  sync();
+})();

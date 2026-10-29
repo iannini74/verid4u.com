@@ -37,6 +37,7 @@ final class Panel
             'cursos'       => self::programs($i18n, $user, $isPost),
             'emitir'       => self::issue($i18n, $user, $isPost),
             'registrar'    => self::registerExternal($i18n, $user, $isPost),
+            'importar'     => self::importar($i18n, $user, $isPost, $sub),
             'certificados' => self::issuances($i18n, $user),
             'revogar'      => self::revoke($i18n, $user, $isPost),
             'certificado'  => self::certificate($i18n, $user, (string) ($sub[1] ?? '')),
@@ -328,6 +329,162 @@ final class Panel
             'registered' => $registered,
             'old' => $old,
         ], $user, 'register');
+    }
+
+    /**
+     * Importação em lote, em três passos. O passo do meio existe para que
+     * ninguém grave nada sem ver antes, linha a linha, o que vai acontecer.
+     */
+    private static function importar(I18n $i18n, array $user, bool $isPost, array $sub): void
+    {
+        $tenantId = (int) $user['tenant_id'];
+        $programs = Issuer::programs($tenantId);
+        $error = null;
+        $resultado = null;
+
+        // Relatório de erros em CSV
+        if (($sub[1] ?? '') === 'erros') {
+            self::relatorioDeErros($tenantId, (int) ($sub[2] ?? 0));
+            return;
+        }
+
+        $batchId = (int) ($_GET['lote'] ?? $_POST['lote'] ?? 0);
+        $batch = $batchId > 0 ? Importer::batch($tenantId, $batchId) : null;
+
+        if ($isPost) {
+            $acao = (string) ($_POST['acao'] ?? 'enviar');
+
+            if ($acao === 'enviar') {
+                $mode = ($_POST['mode'] ?? 'register') === 'issue' ? 'issue' : 'register';
+                $programId = (int) ($_POST['program_id'] ?? 0);
+                $file = $_FILES['arquivo'] ?? null;
+
+                if (!is_array($file) || ($file['error'] ?? UPLOAD_ERR_NO_FILE) !== UPLOAD_ERR_OK) {
+                    $error = $i18n->a('imp.no_file');
+                } elseif ((int) $file['size'] > Importer::MAX_BYTES) {
+                    $error = $i18n->a('imp.too_big');
+                } elseif ($mode === 'issue' && $programId === 0) {
+                    $error = $i18n->a('issue.bad_program');
+                } else {
+                    try {
+                        $parsed = Importer::parse((string) $file['tmp_name']);
+                        if ($parsed['rows'] === []) {
+                            $error = $i18n->a('imp.no_rows');
+                        } else {
+                            $novo = Importer::createBatch(
+                                $tenantId, (int) $user['id'], $mode,
+                                $mode === 'issue' ? $programId : null,
+                                (string) $file['name'], $parsed
+                            );
+                            Importer::saveMapping($novo, Importer::guessMapping($parsed['header'], $mode));
+                            Auth::audit('import.parsed', 'import_batch', (string) $novo, ['rows' => count($parsed['rows'])]);
+                            redirect($i18n->url('/app/importar') . '?lote=' . $novo);
+                            return;
+                        }
+                    } catch (Throwable $e) {
+                        error_log('[verid4u] importacao: ' . $e->getMessage());
+                        $error = $i18n->a('imp.unreadable');
+                    }
+                }
+            } elseif ($batch !== null && $batch['status'] === 'parsed') {
+                $mapping = [];
+                $enviado = is_array($_POST['map'] ?? null) ? $_POST['map'] : [];
+                foreach (array_keys(Importer::fields((string) $batch['mode'])) as $campo) {
+                    $valor = $enviado[$campo] ?? '';
+                    if ($valor !== '' && is_numeric($valor)) {
+                        $mapping[$campo] = (int) $valor;
+                    }
+                }
+                Importer::saveMapping((int) $batch['id'], $mapping);
+                $batch['mapping'] = $mapping;
+
+                if ($acao === 'descartar') {
+                    Importer::discard($tenantId, (int) $batch['id']);
+                    redirect($i18n->url('/app/importar'));
+                    return;
+                }
+                if ($acao === 'gravar') {
+                    $issuerRow = Issuer::defaultIssuer($tenantId);
+                    $program = self::programaDoLote($programs, $batch);
+                    if ((string) $batch['mode'] === 'issue' && $program === null) {
+                        $error = $i18n->a('imp.program_gone');
+                    } elseif ($issuerRow === null) {
+                        $error = $i18n->t('error.unavailable');
+                    } else {
+                        try {
+                            $resultado = Importer::commit($tenantId, $issuerRow, $batch, $batch['mapping'], $program);
+                            $batch = Importer::batch($tenantId, (int) $batch['id']);
+                        } catch (Throwable $e) {
+                            error_log('[verid4u] importacao commit: ' . $e->getMessage());
+                            $error = $i18n->t('error.unavailable');
+                        }
+                    }
+                }
+            }
+        }
+
+        // Um lote no modo «emitir» cujo curso foi apagado depois do envio não
+        // tem como ser avaliado: avisa em vez de quebrar.
+        if ($batch !== null && (string) $batch['mode'] === 'issue' && self::programaDoLote($programs, $batch) === null) {
+            $error = $error ?? $i18n->a('imp.program_gone');
+            $batch['mapping'] = [];
+        }
+
+        $previa = null;
+        if ($batch !== null && $batch['status'] === 'parsed' && $batch['mapping'] !== []) {
+            try {
+                $previa = Importer::evaluate($tenantId, $batch, $batch['mapping'], self::programaDoLote($programs, $batch));
+            } catch (Throwable $e) {
+                error_log('[verid4u] importacao previa: ' . $e->getMessage());
+            }
+        }
+
+        self::shell($i18n, 'app/import', [
+            'programs' => $programs,
+            'batch' => $batch,
+            'previa' => $previa,
+            'resultado' => $resultado,
+            'error' => $error,
+        ], $user, 'import');
+    }
+
+    private static function programaDoLote(array $programs, array $batch): ?array
+    {
+        if ((string) $batch['mode'] !== 'issue') {
+            return null;
+        }
+        foreach ($programs as $p) {
+            if ((int) $p['id'] === (int) $batch['program_id']) {
+                return $p;
+            }
+        }
+        return null;
+    }
+
+    /** Devolve as linhas que não entraram, como planilha corrigível. */
+    private static function relatorioDeErros(int $tenantId, int $batchId): void
+    {
+        $batch = Importer::batch($tenantId, $batchId);
+        if ($batch === null) {
+            http_response_code(404);
+            return;
+        }
+        $rows = Db::all(
+            "SELECT line_no, raw_json, outcome, reason FROM import_rows
+             WHERE batch_id = ? AND outcome <> 'created' ORDER BY line_no ASC",
+            [$batchId]
+        );
+        header('Content-Type: text/csv; charset=UTF-8');
+        header('Content-Disposition: attachment; filename="erros-importacao-' . $batchId . '.csv"');
+        $out = fopen('php://output', 'w');
+        fwrite($out, "\xEF\xBB\xBF"); // BOM, para o Excel abrir com acento certo
+        fputcsv($out, array_merge(['linha', 'situacao', 'motivo'], $batch['header']), ';');
+        foreach ($rows as $r) {
+            $cells = json_decode((string) $r['raw_json'], true) ?: [];
+            fputcsv($out, array_merge([$r['line_no'], $r['outcome'], $r['reason']], $cells), ';');
+        }
+        fclose($out);
+        exit;
     }
 
     private static function issuances(I18n $i18n, array $user): void

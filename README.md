@@ -71,6 +71,7 @@ compartilhada da Hostinger.
 | `/{idioma}/v/{codigo}` | Resultado da verificação (`noindex`) |
 | `/api/v1/verify/{codigo}` | Verificação em JSON |
 | `/api/v1/lookup` | `POST sha256=…` — acha o registro pela impressão digital do arquivo |
+| `/api/v1/health` | Estado do serviço e versão do esquema. Não devolve dado nenhum |
 | `/sitemap.xml` | Gerado em tempo de execução |
 | `/{idioma}/app/ativar` | Ativação do dono, só enquanto não há conta |
 | `/{idioma}/app/entrar` | Entrada |
@@ -78,6 +79,7 @@ compartilhada da Hostinger.
 | `/{idioma}/app/cursos` | Cadastro de cursos |
 | `/{idioma}/app/emitir` | Emissão |
 | `/{idioma}/app/registrar` | Registro de certificado emitido fora |
+| `/{idioma}/app/importar` | Importação em lote, em três passos |
 | `/{idioma}/app/certificados` | Lista, revogação e impressão |
 
 Idiomas do lado público: `pt-br`, `pt`, `es`, `en`. O painel sai em pt-BR;
@@ -119,12 +121,32 @@ banco e torna inútil a força bruta de baixo volume.
   cada consulta.
 - **Estado nunca é só cor.** Todo selo traz ícone, palavra e cor.
 
+## Importação em lote
+
+Três passos, e o do meio existe para que ninguém grave nada sem ver antes:
+
+1. **Enviar** — escolha entre importar certificados já emitidos (registro) ou
+   emitir novos a partir de um curso cadastrado, e mande o CSV.
+2. **Mapear e simular** — o sistema adivinha de que coluna vem cada campo
+   pelos nomes do cabeçalho; você corrige e vê, linha a linha, o que será
+   criado, pulado ou recusado. Nada foi escrito ainda.
+3. **Gravar** — e baixar, em CSV, as linhas que não entraram, com o motivo
+   de cada uma.
+
+O que faz isto funcionar no Brasil não é ler CSV, é ler **o CSV que o Excel
+brasileiro salva**: ponto e vírgula como separador, Windows-1252, BOM, e
+datas em `dd/mm/aaaa`. Tudo isso é detectado sozinho. Modalidade também é
+interpretada («à distância», «online», «remoto» → EAD).
+
+A simulação e a gravação chamam **a mesma função de avaliação** — é o que
+garante que o que você viu na prévia é o que acontece. Duas implementações
+paralelas divergiriam no primeiro ajuste.
+
+Limites por lote: 5 MB e 2.000 linhas.
+
 ## Próximos passos
 
-1. Importação em lote (CSV/XLSX), com mapeamento de colunas, simulação antes
-   de gravar e relatório de erros — é o que destrava o passivo histórico de
-   quem tem anos de certificados em planilha
-2. Provedor de e-mail transacional: entrega do certificado ao titular,
+1. Provedor de e-mail transacional: entrega do certificado ao titular,
    aviso de vencimento e link mágico de entrada
 3. API autenticada com chaves e escopos, mais webhooks
 4. Níveis de verificação do emissor: comprovação de domínio e de CNPJ

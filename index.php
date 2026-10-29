@@ -33,6 +33,28 @@ if (($segments[0] ?? '') === 'api') {
     header('X-Robots-Tag: noindex, nofollow');
     header('Access-Control-Allow-Origin: *');
 
+    // Saúde do serviço. Não devolve nenhum dado: só diz se o banco responde
+    // e em que versão de esquema a aplicação está. Serve ao monitoramento e
+    // à futura página de status.
+    if (($segments[1] ?? '') === 'v1' && ($segments[2] ?? '') === 'health') {
+        $schema = null;
+        $ok = false;
+        try {
+            $row = Db::one('SELECT MAX(version) AS v FROM schema_migrations');
+            $schema = (int) ($row['v'] ?? 0);
+            $ok = $schema > 0;
+        } catch (Throwable $e) {
+            error_log('[verid4u] health: ' . $e->getMessage());
+        }
+        http_response_code($ok ? 200 : 503);
+        echo json_encode([
+            'status' => $ok ? 'ok' : 'degraded',
+            'schema' => $schema,
+            'expected' => Db::SCHEMA_VERSION,
+        ], JSON_UNESCAPED_UNICODE);
+        exit;
+    }
+
     // Busca reversa: acha o registro pela impressão digital do arquivo.
     // O arquivo nunca é enviado; o navegador manda só o SHA-256.
     if (($segments[1] ?? '') === 'v1' && ($segments[2] ?? '') === 'lookup') {
