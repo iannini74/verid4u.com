@@ -3,3 +3,4 @@
 /storage/
 /.env
 /lib/config.local.php
+/.ds/
