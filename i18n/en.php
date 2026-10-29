@@ -23,6 +23,8 @@ return [
 
     'error.empty' => 'Enter the code shown on the certificate.',
     'error.format' => 'This code does not exist. Check that every character was entered correctly.',
+    'error.throttled' => 'Too many checks in a short time. Wait a few minutes and try again.',
+    'error.unavailable' => 'The register could not be reached just now. Try again in a moment.',
     'error.notfound.title' => 'Not found',
     'error.notfound.body' => 'No certificate with this code is registered with VerID4U. That does not mean the document is fake — it means the issuer has not registered it here yet.',
 

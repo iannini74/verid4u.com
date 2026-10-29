@@ -38,7 +38,9 @@ DirectoryIndex index.php
   ExpiresByType image/svg+xml "access plus 30 days"
 </IfModule>
 
-# Nada fora do que é servido
-<FilesMatch "\.(md|sql|json|lock|yml|yaml)$">
+# Código de aplicação nunca é servido direto
+RedirectMatch 404 ^/(lib|views|i18n|storage)(/|$)
+
+<FilesMatch "\.(md|sql|json|lock|yml|yaml|example\.php|local\.php)$">
   Require all denied
 </FilesMatch>

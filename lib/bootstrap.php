@@ -8,8 +8,12 @@ const APP_TZ = 'America/Sao_Paulo';
 date_default_timezone_set(APP_TZ);
 mb_internal_encoding('UTF-8');
 
+require __DIR__ . '/config.php';
+require __DIR__ . '/crypto.php';
+require __DIR__ . '/db.php';
 require __DIR__ . '/code.php';
 require __DIR__ . '/store.php';
+require __DIR__ . '/seed.php';
 require __DIR__ . '/i18n.php';
 
 /** Escape para HTML. Usada em absolutamente toda saída. */
@@ -127,4 +131,15 @@ function render(string $view, array $data = []): void
     require __DIR__ . '/../views/' . $view . '.php';
     $content = (string) ob_get_clean();
     require __DIR__ . '/../views/layout.php';
+}
+
+/**
+ * Esquema em dia. Depois da primeira execução isto custa a leitura de um
+ * arquivo marcador — nenhuma consulta extra no caminho da verificação.
+ * Falha aqui nunca derruba a landing: só a verificação depende do banco.
+ */
+try {
+    Db::migrateIfNeeded();
+} catch (Throwable $e) {
+    error_log('[verid4u] migração: ' . $e->getMessage());
 }

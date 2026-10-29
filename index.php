@@ -51,7 +51,21 @@ if (($segments[0] ?? '') === 'api') {
         echo json_encode(['error' => 'invalid_code', 'message' => 'Malformed certificate code.'], JSON_UNESCAPED_UNICODE);
         exit;
     }
-    $record = Store::find(Code::base($normalized));
+    try {
+        $record = Store::find(Code::base($normalized));
+    } catch (Throwable $e) {
+        error_log('[verid4u] api: ' . $e->getMessage());
+        http_response_code(503);
+        echo json_encode(['error' => 'unavailable', 'message' => 'Register temporarily unreachable.'], JSON_UNESCAPED_UNICODE);
+        exit;
+    }
+    Store::recordVerification(
+        Code::base($normalized),
+        $record === null ? 'notfound' : (string) $record['state'],
+        isset($record['id']) ? (int) $record['id'] : null,
+        'api',
+        'api'
+    );
     if ($record === null) {
         http_response_code(404);
         echo json_encode([
@@ -63,7 +77,7 @@ if (($segments[0] ?? '') === 'api') {
     echo json_encode([
         'code' => Code::format($record['code']),
         'status' => $record['state'],
-        'demo' => Store::DEMO,
+        'demo' => (bool) $record['is_demo'],
         'holder' => Store::displayName($record),
         'program' => $record['program'],
         'norm' => $record['norm'],
@@ -137,11 +151,25 @@ if ($route === 'v') {
         http_response_code(429);
         $state = 'throttled';
     } else {
-        $record = Store::find(Code::base($normalized));
-        if ($record === null) {
-            http_response_code(404);
-        } else {
-            $state = $record['state'];
+        try {
+            $record = Store::find(Code::base($normalized));
+        } catch (Throwable $e) {
+            error_log('[verid4u] verificacao: ' . $e->getMessage());
+            http_response_code(503);
+            $state = 'unavailable';
+        }
+        if ($state !== 'unavailable') {
+            if ($record === null) {
+                http_response_code(404);
+            } else {
+                $state = $record['state'];
+            }
+            Store::recordVerification(
+                Code::base($normalized),
+                $state,
+                isset($record['id']) ? (int) $record['id'] : null,
+                $i18n->locale()
+            );
         }
     }
 

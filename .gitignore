@@ -2,3 +2,4 @@
 *.log
 /storage/
 /.env
+/lib/config.local.php

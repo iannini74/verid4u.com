@@ -23,6 +23,8 @@ return [
 
     'error.empty' => 'Introduza o código que consta no certificado.',
     'error.format' => 'Este código não existe. Verifique se todos os caracteres foram introduzidos corretamente.',
+    'error.throttled' => 'Demasiadas consultas em pouco tempo. Aguarde alguns minutos e tente novamente.',
+    'error.unavailable' => 'Não foi possível consultar o registo agora. Tente novamente dentro de instantes.',
     'error.notfound.title' => 'Não encontrado',
     'error.notfound.body' => 'Nenhum certificado com este código está registado no VerID4U. Isso não significa que o documento seja falso — significa que a entidade emissora ainda não o registou aqui.',
 

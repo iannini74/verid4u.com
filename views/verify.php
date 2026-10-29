@@ -15,8 +15,9 @@ $icons = [
     'notfound' => '<circle cx="12" cy="12" r="8.4" fill="none" stroke="currentColor" stroke-width="2.1"/><path d="M9.3 9.2a2.8 2.8 0 1 1 3.3 3.3v1.3" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round"/><circle cx="12.4" cy="17" r="1.2" fill="currentColor"/>',
 ];
 $icons['throttled'] = $icons['notfound'];
+$icons['unavailable'] = $icons['notfound'];
 
-$verdict = $i18n->t('status.' . ($state === 'throttled' ? 'notfound' : $state));
+$verdict = $i18n->t('status.' . (in_array($state, ['throttled', 'unavailable'], true) ? 'notfound' : $state));
 $shareUrl = base_url() . $i18n->url('/v/' . $typed);
 ?>
 
@@ -32,7 +33,9 @@ $shareUrl = base_url() . $i18n->url('/v/' . $typed);
     </h1>
 
     <?php if ($state === 'throttled'): ?>
-      <p class="verdict-explain">Muitas consultas em pouco tempo. Aguarde alguns minutos e tente de novo.</p>
+      <p class="verdict-explain"><?= e($i18n->t('error.throttled')) ?></p>
+    <?php elseif ($state === 'unavailable'): ?>
+      <p class="verdict-explain"><?= e($i18n->t('error.unavailable')) ?></p>
     <?php elseif ($record === null): ?>
       <p class="verdict-explain"><?= e($i18n->t('error.notfound.body')) ?></p>
     <?php else: ?>
@@ -45,7 +48,7 @@ $shareUrl = base_url() . $i18n->url('/v/' . $typed);
 
 <?php if ($record !== null): ?>
 
-  <?php if (Store::DEMO): ?>
+  <?php if (Store::isDemo()): ?>
     <div class="wrap narrow">
       <p class="demo-note">
         <strong>Demo</strong> <?= e($i18n->t('demo.banner')) ?>
