@@ -49,6 +49,25 @@ if (($segments[0] ?? '') === 'api') {
                 echo json_encode(['task' => 'mail'] + Mailer::runQueue(40), JSON_UNESCAPED_UNICODE);
                 exit;
             }
+            if ($tarefa === 'diag') {
+                // Forma da configuração de e-mail, sem nenhum segredo:
+                // diz se os campos estão preenchidos, nunca o que contêm.
+                $host = (string) Config::get('mail.host', '');
+                $user = (string) Config::get('mail.user', '');
+                $pass = (string) Config::get('mail.pass', '');
+                echo json_encode([
+                    'task' => 'diag',
+                    'driver' => (string) Config::get('mail.driver', 'log'),
+                    'host' => $host,
+                    'port' => (int) Config::get('mail.port', 0),
+                    'secure' => (string) Config::get('mail.secure', ''),
+                    'from_email' => (string) Config::get('mail.from_email', ''),
+                    'user_set' => $user !== '',
+                    'pass_set' => $pass !== '',
+                    'ready' => (string) Config::get('mail.driver', 'log') === 'smtp' && $host !== '' && $pass !== '',
+                ], JSON_UNESCAPED_UNICODE);
+                exit;
+            }
             if ($tarefa === 'expiry') {
                 echo json_encode(['task' => 'expiry'] + Mailer::scheduleExpiryWarnings(), JSON_UNESCAPED_UNICODE);
                 exit;

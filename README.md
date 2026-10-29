@@ -74,6 +74,7 @@ compartilhada da Hostinger.
 | `/api/v1/health` | Estado do serviço e versão do esquema. Não devolve dado nenhum |
 | `/api/v1/cron/mail?key=…` | Despacha a fila de e-mail. Protegida por segredo do config |
 | `/api/v1/cron/expiry?key=…` | Enfileira os avisos de vencimento de 90, 30 e 7 dias |
+| `/api/v1/cron/diag?key=…` | Forma da configuração de e-mail: diz se os campos estão preenchidos, nunca o que contêm |
 | `/sitemap.xml` | Gerado em tempo de execução |
 | `/{idioma}/app/ativar` | Ativação do dono, só enquanto não há conta |
 | `/{idioma}/app/entrar` | Entrada |
@@ -88,6 +89,19 @@ compartilhada da Hostinger.
 Idiomas do lado público: `pt-br`, `pt`, `es`, `en`. O painel sai em pt-BR;
 `i18n/app.<locale>.php` já é o lugar das traduções quando houver cliente
 estrangeiro.
+
+## Nunca publique o config
+
+`lib/config.local.php` **vive no servidor** e não é enviado por deploy. Ele
+guarda a senha do banco, a chave de cifragem, as credenciais de e-mail e o
+segredo das rotinas. Sobrescrevê-lo apaga tudo isso de uma vez.
+
+Para editar: hPanel → Gerenciador de arquivos →
+`domains/verid4u.com/public_html/lib/config.local.php`. O arquivo também é
+recusado pela API de leitura da Hostinger, de propósito.
+
+Para conferir o que está valendo lá sem expor segredo nenhum:
+`/api/v1/cron/diag?key=…`
 
 ## Primeira instalação
 
