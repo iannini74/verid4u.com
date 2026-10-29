@@ -85,6 +85,27 @@ return [
     'showcase.expired.desc' => 'Genuine, but the qualification has lapsed. Not fake — out of date.',
     'showcase.revoked.desc' => 'The issuer cancelled this certificate itself. It should not be accepted.',
 
+    'origin.issued' => 'Issued through VerID4U',
+    'origin.issued.desc' => 'The document was produced here, with its code, seal and QR code.',
+    'origin.registered' => 'Registered by the issuer',
+    'origin.registered.desc' => 'The document was produced by the institution in its own system and registered here. VerID4U attests to the date of registration and the integrity of the content — it did not produce the certificate.',
+    'label.registered_by' => 'Registered by',
+
+    'filecheck.title' => 'Check your file',
+    'filecheck.body' => 'Got the PDF to hand? Choose the file and we will tell you whether it is exactly the one registered.',
+    'filecheck.button' => 'Choose a file',
+    'filecheck.privacy' => 'The file is not sent anywhere: the check happens inside your browser.',
+    'filecheck.working' => 'Reading the file…',
+    'filecheck.match' => 'It matches. This file is exactly the one that was registered.',
+    'filecheck.nomatch' => 'No match. This file differs from the one registered — it may have been altered, or be another version.',
+    'filecheck.error' => 'The file could not be read in this browser.',
+
+    'lookup.title' => 'No code to hand?',
+    'lookup.body' => 'Choose the certificate file and we will look the record up from it.',
+    'lookup.button' => 'Search by file',
+    'lookup.working' => 'Searching…',
+    'lookup.notfound' => 'No record matches this file.',
+
     'status.verified' => 'Verified',
     'status.expiring' => 'Expiring soon',
     'status.expired' => 'Expired',

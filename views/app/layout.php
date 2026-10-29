@@ -8,6 +8,7 @@ $nav = [
     'dashboard'  => ['', 'nav.dashboard'],
     'programs'   => ['cursos', 'nav.programs'],
     'issue'      => ['emitir', 'nav.issue'],
+    'register'   => ['registrar', 'nav.register'],
     'issuances'  => ['certificados', 'nav.issuances'],
 ];
 ?>
@@ -22,7 +23,7 @@ $nav = [
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Source+Serif+4:opsz,wght@8..60,600&family=JetBrains+Mono:wght@500;700&display=swap">
-<link rel="stylesheet" href="/assets/style.css?v=7">
+<link rel="stylesheet" href="/assets/style.css?v=8">
 </head>
 <body class="app">
 <header class="app-bar">
@@ -50,6 +51,6 @@ $nav = [
 </header>
 
 <main class="app-main"><?= $content ?></main>
-<script src="/assets/app.js?v=7" defer></script>
+<script src="/assets/app.js?v=8" defer></script>
 </body>
 </html>

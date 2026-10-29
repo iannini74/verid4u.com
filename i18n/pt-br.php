@@ -85,6 +85,27 @@ return [
     'showcase.expired.desc' => 'Autêntico, porém a habilitação expirou. Não é falso — está vencido.',
     'showcase.revoked.desc' => 'O próprio emissor cancelou este certificado. Não deve ser aceito.',
 
+    'origin.issued' => 'Emitido pelo VerID4U',
+    'origin.issued.desc' => 'O documento foi gerado aqui, já com código, selo e QR Code.',
+    'origin.registered' => 'Registrado por quem emitiu',
+    'origin.registered.desc' => 'O documento foi produzido pela instituição no sistema dela e registrado aqui. O VerID4U atesta a data do registro e a integridade do conteúdo — não produziu o certificado.',
+    'label.registered_by' => 'Registrado por',
+
+    'filecheck.title' => 'Confira o seu arquivo',
+    'filecheck.body' => 'Tem o PDF em mãos? Escolha o arquivo e diremos se ele é exatamente o que foi registrado.',
+    'filecheck.button' => 'Escolher arquivo',
+    'filecheck.privacy' => 'O arquivo não é enviado a lugar nenhum: a conferência acontece dentro do seu navegador.',
+    'filecheck.working' => 'Lendo o arquivo…',
+    'filecheck.match' => 'Confere. Este arquivo é exatamente o que foi registrado.',
+    'filecheck.nomatch' => 'Não confere. Este arquivo é diferente do que foi registrado — pode ter sido alterado, ou ser outra versão.',
+    'filecheck.error' => 'Não foi possível ler o arquivo neste navegador.',
+
+    'lookup.title' => 'Não tem o código?',
+    'lookup.body' => 'Escolha o arquivo do certificado e procuramos o registro por ele.',
+    'lookup.button' => 'Procurar pelo arquivo',
+    'lookup.working' => 'Procurando…',
+    'lookup.notfound' => 'Nenhum registro corresponde a este arquivo.',
+
     'status.verified' => 'Verificado',
     'status.expiring' => 'Vence em breve',
     'status.expired' => 'Vencido',

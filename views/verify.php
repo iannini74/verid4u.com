@@ -22,7 +22,7 @@ $shareUrl = base_url() . $i18n->url('/v/' . $typed);
 ?>
 
 <section class="verdict verdict-<?= e($state) ?>">
-  <div class="wrap narrow">
+  <div class="wrap-narrow">
     <p class="verdict-code"><?= e($i18n->t('label.code')) ?> <code><?= e($typed) ?></code></p>
 
     <h1 class="verdict-headline">
@@ -46,15 +46,15 @@ $shareUrl = base_url() . $i18n->url('/v/' . $typed);
 
 <?php if ($record !== null): ?>
 
-  <?php if (Store::isDemo()): ?>
-    <div class="wrap narrow">
+  <?php if (!empty($record['is_demo'])): ?>
+    <div class="wrap-narrow">
       <p class="demo-note">
         <strong>Demo</strong> <?= e($i18n->t('demo.banner')) ?>
       </p>
     </div>
   <?php endif; ?>
 
-  <section class="wrap narrow panel">
+  <section class="wrap-narrow panel">
     <dl class="facts">
       <div><dt><?= e($i18n->t('label.holder')) ?></dt><dd><?= e(Store::displayName($record)) ?></dd></div>
       <div><dt><?= e($i18n->t('label.program')) ?></dt><dd><?= e($record['program']) ?></dd></div>
@@ -73,17 +73,49 @@ $shareUrl = base_url() . $i18n->url('/v/' . $typed);
     </dl>
   </section>
 
-  <section class="wrap narrow panel issuer">
+  <section class="wrap-narrow panel issuer">
     <p class="panel-kicker"><?= e($i18n->t('label.issuer')) ?></p>
     <p class="issuer-name"><?= e($record['issuer_name']) ?></p>
-    <p class="issuer-cnpj">CNPJ <?= e($record['issuer_cnpj']) ?></p>
-    <p class="issuer-level level-<?= (int) $record['issuer_level'] ?>">
-      <span class="level-dot" aria-hidden="true"></span>
-      <span><strong><?= e($i18n->t('label.level')) ?>:</strong> <?= e($i18n->t('level.' . (int) $record['issuer_level'])) ?></span>
+    <?php if (!empty($record['issuer_cnpj'])): ?>
+      <p class="issuer-cnpj">CNPJ <?= e($record['issuer_cnpj']) ?></p>
+    <?php endif; ?>
+
+    <p class="origin origin-<?= e($record['origin']) ?>">
+      <span class="origin-tag"><?= e($i18n->t('origin.' . $record['origin'])) ?></span>
+      <span class="origin-desc"><?= e($i18n->t('origin.' . $record['origin'] . '.desc')) ?></span>
     </p>
+
+    <?php if ($record['origin'] === 'registered' && !empty($record['registered_by'])): ?>
+      <p class="issuer-level level-<?= (int) $record['issuer_level'] ?>">
+        <span class="level-dot" aria-hidden="true"></span>
+        <span><strong><?= e($i18n->t('label.registered_by')) ?>:</strong> <?= e($record['registered_by']) ?> — <?= e($i18n->t('level.' . (int) $record['issuer_level'])) ?></span>
+      </p>
+    <?php else: ?>
+      <p class="issuer-level level-<?= (int) $record['issuer_level'] ?>">
+        <span class="level-dot" aria-hidden="true"></span>
+        <span><strong><?= e($i18n->t('label.level')) ?>:</strong> <?= e($i18n->t('level.' . (int) $record['issuer_level'])) ?></span>
+      </p>
+    <?php endif; ?>
   </section>
 
-  <section class="wrap narrow panel share">
+  <?php if (!empty($record['source_sha256'])): ?>
+    <section class="wrap-narrow panel filecheck" data-filecheck data-expect="<?= e($record['source_sha256']) ?>">
+      <p class="panel-kicker"><?= e($i18n->t('filecheck.title')) ?></p>
+      <p class="filecheck-body"><?= e($i18n->t('filecheck.body')) ?></p>
+      <label class="btn btn-ghost btn-sm filecheck-pick">
+        <?= e($i18n->t('filecheck.button')) ?>
+        <input type="file" accept=".pdf,.png,.jpg,.jpeg" hidden data-filecheck-input>
+      </label>
+      <p class="filecheck-state" data-filecheck-state hidden
+         data-working="<?= e($i18n->t('filecheck.working')) ?>"
+         data-match="<?= e($i18n->t('filecheck.match')) ?>"
+         data-nomatch="<?= e($i18n->t('filecheck.nomatch')) ?>"
+         data-error="<?= e($i18n->t('filecheck.error')) ?>"></p>
+      <p class="filecheck-privacy"><?= e($i18n->t('filecheck.privacy')) ?></p>
+    </section>
+  <?php endif; ?>
+
+  <section class="wrap-narrow panel share">
     <p class="panel-kicker"><?= e($i18n->t('share.title')) ?></p>
     <div class="share-row">
       <div class="share-qr" data-qr="<?= e($shareUrl) ?>" aria-hidden="true"></div>
@@ -96,7 +128,7 @@ $shareUrl = base_url() . $i18n->url('/v/' . $typed);
     </div>
   </section>
 
-  <section class="wrap narrow">
+  <section class="wrap-narrow">
     <details class="proof">
       <summary><?= e($i18n->t('proof.title')) ?></summary>
       <dl class="facts">
@@ -118,7 +150,7 @@ $shareUrl = base_url() . $i18n->url('/v/' . $typed);
 
 <?php endif; ?>
 
-<section class="wrap narrow again">
+<section class="wrap-narrow again">
   <form method="post" action="<?= e($i18n->url()) ?>" class="verifier compact">
     <label class="verifier-label" for="codigo2"><?= e($i18n->t('verify.another')) ?></label>
     <div class="verifier-row">

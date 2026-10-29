@@ -45,7 +45,7 @@ final class Db
 
     /* ------------------------------------------------------------ migrações */
 
-    public const SCHEMA_VERSION = 3;
+    public const SCHEMA_VERSION = 5;
 
     private static function marker(): string
     {
@@ -251,6 +251,50 @@ final class Db
                     created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
                     KEY idx_audit_tenant (tenant_id, created_at)
                 ) $engine",
+            ],
+
+            /* Origem do registro e impressão digital do arquivo original.
+               O hash permite duas coisas que nenhum concorrente faz: conferir
+               se o PDF em mãos é exatamente o registrado, e achar o registro
+               a partir do próprio arquivo, sem código nenhum. */
+            /* Um sexto registro de demonstração, desta vez REGISTRADO em vez de
+               emitido, com a impressão digital de assets/demo/certificado-exemplo.pdf.
+               Serve para que a distinção de origem e a conferência de arquivo
+               possam ser vistas funcionando sem precisar de conta. */
+            5 => [
+                "INSERT IGNORE INTO holders (tenant_id, name, display_mode)
+                 SELECT id, 'Carlos Eduardo Pires', 'partial' FROM tenants WHERE slug = 'demo'",
+
+                "INSERT IGNORE INTO issuances (
+                    tenant_id, issuer_id, program_id, holder_id, code_base, origin,
+                    program_title, program_norm, hours, modality, assessed,
+                    issuer_name, issuer_legal_id, issuer_level, registered_by,
+                    holder_name, holder_display,
+                    issued_on, valid_from, valid_until,
+                    content_hash, source_sha256, source_filename, anchored_on, is_demo
+                 )
+                 SELECT t.id, i.id, NULL, h.id, 'T3R9M2XK8PV', 'registered',
+                        'NR-12 — Segurança no Trabalho em Máquinas e Equipamentos', 'NR-12', 16, 'presencial', 1,
+                        'SENAI — Unidade de demonstração', NULL, i.level, i.name,
+                        'Carlos Eduardo Pires', 'partial',
+                        '2026-02-19', '2026-02-19', '2028-02-19',
+                        SHA2(CONCAT_WS('|','T3R9M2XK8PV','Carlos Eduardo Pires','NR-12 — Segurança no Trabalho em Máquinas e Equipamentos','16','presencial','SENAI — Unidade de demonstração','2026-02-19','2028-02-19'), 256),
+                        '4793a1130ac3a6fde30c6c3285ed32a48b03dd30546cc8c09e2aab59cda68eae',
+                        'certificado-exemplo.pdf', '2026-02-19', 1
+                 FROM tenants t
+                 JOIN issuers i ON i.tenant_id = t.id AND i.name = 'Escola Técnica Horizonte'
+                 JOIN holders h ON h.tenant_id = t.id AND h.name = 'Carlos Eduardo Pires'
+                 WHERE t.slug = 'demo'
+                   AND NOT EXISTS (SELECT 1 FROM issuances x WHERE x.code_base = 'T3R9M2XK8PV')
+                 LIMIT 1",
+            ],
+
+            4 => [
+                "ALTER TABLE issuances ADD COLUMN origin ENUM('issued','registered') NOT NULL DEFAULT 'issued' AFTER code_base",
+                "ALTER TABLE issuances ADD COLUMN source_sha256 CHAR(64) NULL AFTER content_hash",
+                "ALTER TABLE issuances ADD COLUMN source_filename VARCHAR(190) NULL AFTER source_sha256",
+                "ALTER TABLE issuances ADD COLUMN registered_by VARCHAR(190) NULL AFTER issuer_level",
+                "ALTER TABLE issuances ADD INDEX idx_issuances_source (source_sha256)",
             ],
 
             3 => [

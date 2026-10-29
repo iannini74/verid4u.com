@@ -85,6 +85,27 @@ return [
     'showcase.expired.desc' => 'Auténtico, pero la habilitación caducó. No es falso: está fuera de plazo.',
     'showcase.revoked.desc' => 'La propia entidad emisora lo anuló. No debe aceptarse.',
 
+    'origin.issued' => 'Emitido por VerID4U',
+    'origin.issued.desc' => 'El documento se generó aquí, con código, sello y código QR.',
+    'origin.registered' => 'Registrado por quien lo emitió',
+    'origin.registered.desc' => 'El documento lo produjo la entidad en su propio sistema y se registró aquí. VerID4U acredita la fecha del registro y la integridad del contenido: no produjo el certificado.',
+    'label.registered_by' => 'Registrado por',
+
+    'filecheck.title' => 'Comprueba tu archivo',
+    'filecheck.body' => '¿Tienes el PDF a mano? Elige el archivo y te decimos si es exactamente el registrado.',
+    'filecheck.button' => 'Elegir archivo',
+    'filecheck.privacy' => 'El archivo no se envía a ninguna parte: la comprobación ocurre dentro de tu navegador.',
+    'filecheck.working' => 'Leyendo el archivo…',
+    'filecheck.match' => 'Coincide. Este archivo es exactamente el que se registró.',
+    'filecheck.nomatch' => 'No coincide. Este archivo es distinto del registrado: puede haberse alterado, o ser otra versión.',
+    'filecheck.error' => 'No se ha podido leer el archivo en este navegador.',
+
+    'lookup.title' => '¿No tienes el código?',
+    'lookup.body' => 'Elige el archivo del certificado y buscamos el registro a partir de él.',
+    'lookup.button' => 'Buscar por el archivo',
+    'lookup.working' => 'Buscando…',
+    'lookup.notfound' => 'Ningún registro corresponde a este archivo.',
+
     'status.verified' => 'Verificado',
     'status.expiring' => 'Caduca pronto',
     'status.expired' => 'Caducado',

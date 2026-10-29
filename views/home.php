@@ -51,6 +51,21 @@ $states = [
             </ul>
           </div>
         <?php endif; ?>
+
+        <div class="lookup" data-lookup
+             data-url="<?= e($i18n->url('/v/')) ?>"
+             data-working="<?= e($i18n->t('lookup.working')) ?>"
+             data-notfound="<?= e($i18n->t('lookup.notfound')) ?>"
+             data-error="<?= e($i18n->t('filecheck.error')) ?>">
+          <p class="lookup-title"><?= e($i18n->t('lookup.title')) ?></p>
+          <p class="lookup-body"><?= e($i18n->t('lookup.body')) ?></p>
+          <label class="lookup-pick">
+            <span><?= e($i18n->t('lookup.button')) ?></span>
+            <input type="file" accept=".pdf,.png,.jpg,.jpeg" hidden data-lookup-input>
+          </label>
+          <p class="lookup-state" data-lookup-state hidden></p>
+          <p class="lookup-privacy"><?= e($i18n->t('filecheck.privacy')) ?></p>
+        </div>
       </div>
 
       <aside class="hero-card" aria-hidden="true">

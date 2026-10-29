@@ -20,11 +20,12 @@ final class Store
     public static function find(string $base): ?array
     {
         $row = Db::one(
-            'SELECT id, code_base, program_title, program_norm, hours, modality, assessed,
-                    issuer_name, issuer_legal_id, issuer_level,
+            'SELECT id, code_base, origin, program_title, program_norm, hours, modality, assessed,
+                    issuer_name, issuer_legal_id, issuer_level, registered_by,
                     holder_name, holder_display,
                     issued_on, valid_from, valid_until, revoked_on, revoke_reason,
-                    version, superseded_by, content_hash, anchored_on, is_demo
+                    version, superseded_by, content_hash, source_sha256, source_filename,
+                    anchored_on, is_demo
              FROM issuances WHERE code_base = ? LIMIT 1',
             [$base]
         );
@@ -49,6 +50,7 @@ final class Store
             'issuer_name'   => (string) $row['issuer_name'],
             'issuer_cnpj'   => $row['issuer_legal_id'],
             'issuer_level'  => (int) $row['issuer_level'],
+            'registered_by' => $row['registered_by'] ?? null,
             'holder_name'   => (string) $row['holder_name'],
             'holder_display'=> (string) $row['holder_display'],
             'issued_on'     => $row['issued_on'],
@@ -58,13 +60,30 @@ final class Store
             'revoke_reason' => $row['revoke_reason'],
             'version'       => (int) $row['version'],
             'superseded_by' => $row['superseded_by'],
+            'origin'        => (string) ($row['origin'] ?? 'issued'),
             'hash'          => (string) $row['content_hash'],
+            'source_sha256' => $row['source_sha256'] ?? null,
+            'source_filename' => $row['source_filename'] ?? null,
             'anchored_on'   => $row['anchored_on'],
             'is_demo'       => (bool) $row['is_demo'],
         ];
         $record['state'] = self::state($record);
         $record['days_left'] = self::daysLeft($record);
         return $record;
+    }
+
+    /**
+     * Acha o registro pela impressão digital do arquivo.
+     * É a verificação reversa: quem tem o PDF e não tem o código ainda
+     * consegue chegar ao registro — e o arquivo nunca sai do navegador.
+     */
+    public static function findBySourceHash(string $sha256): ?array
+    {
+        if (!preg_match('/^[a-f0-9]{64}$/', $sha256)) {
+            return null;
+        }
+        $row = Db::one('SELECT code_base FROM issuances WHERE source_sha256 = ? ORDER BY id DESC LIMIT 1', [$sha256]);
+        return $row === null ? null : self::find((string) $row['code_base']);
     }
 
     /** Bases usadas como exemplo clicável na home. */

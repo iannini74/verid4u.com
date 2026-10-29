@@ -33,6 +33,46 @@ if (($segments[0] ?? '') === 'api') {
     header('X-Robots-Tag: noindex, nofollow');
     header('Access-Control-Allow-Origin: *');
 
+    // Busca reversa: acha o registro pela impressão digital do arquivo.
+    // O arquivo nunca é enviado; o navegador manda só o SHA-256.
+    if (($segments[1] ?? '') === 'v1' && ($segments[2] ?? '') === 'lookup') {
+        if (($_SERVER['REQUEST_METHOD'] ?? 'GET') !== 'POST') {
+            http_response_code(405);
+            echo json_encode(['error' => 'method_not_allowed'], JSON_UNESCAPED_UNICODE);
+            exit;
+        }
+        if (rate_limit_exceeded('lookup', 40, 600)) {
+            http_response_code(429);
+            echo json_encode(['error' => 'rate_limited'], JSON_UNESCAPED_UNICODE);
+            exit;
+        }
+        $sha = strtolower(trim((string) ($_POST['sha256'] ?? '')));
+        if (preg_match('/^[a-f0-9]{64}$/', $sha) !== 1) {
+            http_response_code(400);
+            echo json_encode(['error' => 'invalid_hash'], JSON_UNESCAPED_UNICODE);
+            exit;
+        }
+        try {
+            $found = Store::findBySourceHash($sha);
+        } catch (Throwable $e) {
+            error_log('[verid4u] lookup: ' . $e->getMessage());
+            http_response_code(503);
+            echo json_encode(['error' => 'unavailable'], JSON_UNESCAPED_UNICODE);
+            exit;
+        }
+        if ($found === null) {
+            http_response_code(404);
+            echo json_encode(['status' => 'not_found'], JSON_UNESCAPED_UNICODE);
+            exit;
+        }
+        Store::recordVerification($found['base'], (string) $found['state'], (int) $found['id'], 'api', 'file');
+        echo json_encode([
+            'status' => 'found',
+            'code' => Code::format($found['code']),
+        ], JSON_UNESCAPED_UNICODE);
+        exit;
+    }
+
     $isVerifyRoute = ($segments[1] ?? '') === 'v1' && ($segments[2] ?? '') === 'verify';
     if (!$isVerifyRoute) {
         http_response_code(404);
@@ -84,10 +124,13 @@ if (($segments[0] ?? '') === 'api') {
         'hours' => $record['hours'],
         'modality' => $record['modality'],
         'assessed' => $record['assessed'],
+        'origin' => $record['origin'],
         'issuer' => [
             'name' => $record['issuer_name'],
             'verification_level' => $record['issuer_level'],
+            'registered_by' => $record['registered_by'],
         ],
+        'source_sha256' => $record['source_sha256'],
         'issued_on' => $record['issued_on'],
         'valid_until' => $record['valid_until'],
         'revoked_on' => $record['revoked_on'],

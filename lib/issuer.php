@@ -124,10 +124,82 @@ final class Issuer
         }
     }
 
+    /**
+     * Registra um certificado emitido FORA da plataforma.
+     *
+     * A diferença para issue() é de honestidade, não de tecnologia: aqui o
+     * VerID4U não produziu o documento. O que ele atesta é que este conteúdo
+     * foi registrado nesta data por este cliente — e, quando há impressão
+     * digital do arquivo, que o arquivo em mãos é bit a bit o registrado.
+     * A página de verificação precisa dizer isso com todas as letras.
+     */
+    public static function register(int $tenantId, array $issuerRow, array $input): array
+    {
+        $pdo = Db::pdo();
+        $pdo->beginTransaction();
+        try {
+            $email = trim((string) ($input['holder_email'] ?? ''));
+            Db::run(
+                'INSERT INTO holders (tenant_id, name, email_enc, email_index, display_mode)
+                 VALUES (?, ?, ?, ?, ?)',
+                [
+                    $tenantId,
+                    $input['holder_name'],
+                    $email !== '' ? Crypto::encrypt($email) : null,
+                    $email !== '' ? Crypto::blindIndex($email) : null,
+                    $input['holder_display'],
+                ]
+            );
+            $holderId = (int) $pdo->lastInsertId();
+
+            $base = self::freshCodeBase();
+            $hash = Store::contentHash($base, [
+                'holder_name' => $input['holder_name'],
+                'program_title' => $input['program_title'],
+                'hours' => $input['hours'],
+                'modality' => $input['modality'],
+                'issuer_name' => $input['issuer_name'],
+                'issued_on' => $input['issued_on'],
+                'valid_until' => $input['valid_until'],
+            ]);
+
+            Db::run(
+                'INSERT INTO issuances (
+                    tenant_id, issuer_id, program_id, holder_id, code_base, origin,
+                    program_title, program_norm, hours, modality, assessed,
+                    issuer_name, issuer_legal_id, issuer_level, registered_by,
+                    holder_name, holder_display,
+                    issued_on, valid_from, valid_until,
+                    content_hash, source_sha256, source_filename, anchored_on, is_demo
+                 ) VALUES (?, ?, NULL, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, CURDATE(), 0)',
+                [
+                    $tenantId, (int) $issuerRow['id'], $holderId, $base, 'registered',
+                    $input['program_title'], $input['program_norm'] !== '' ? $input['program_norm'] : null,
+                    (int) $input['hours'], $input['modality'], $input['assessed'] ? 1 : 0,
+                    $input['issuer_name'], null, (int) $issuerRow['level'], $issuerRow['name'],
+                    $input['holder_name'], $input['holder_display'],
+                    $input['issued_on'], $input['issued_on'], $input['valid_until'],
+                    $hash, $input['source_sha256'] !== '' ? $input['source_sha256'] : null,
+                    $input['source_filename'] !== '' ? $input['source_filename'] : null,
+                ]
+            );
+            $id = (int) $pdo->lastInsertId();
+            $pdo->commit();
+
+            Auth::audit('issuance.registered', 'issuance', (string) $id, ['code' => Code::full($base)]);
+            return ['id' => $id, 'base' => $base, 'code' => Code::full($base)];
+        } catch (Throwable $e) {
+            if ($pdo->inTransaction()) {
+                $pdo->rollBack();
+            }
+            throw $e;
+        }
+    }
+
     public static function issuances(int $tenantId, int $limit = 100): array
     {
         return Db::all(
-            'SELECT id, code_base, program_title, holder_name, holder_display, issued_on,
+            'SELECT id, code_base, origin, program_title, holder_name, holder_display, issued_on,
                     valid_until, revoked_on, is_demo
              FROM issuances WHERE tenant_id = ? ORDER BY id DESC LIMIT ' . max(1, min(500, $limit)),
             [$tenantId]

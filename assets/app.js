@@ -146,3 +146,110 @@
   script.onload = draw;
   document.head.appendChild(script);
 })();
+
+/* ==========================================================================
+   Impressão digital de arquivo.
+   Tudo acontece no navegador: o arquivo nunca é enviado, só o SHA-256 dele.
+   Isso dá três coisas que nenhum concorrente oferece — registrar sem subir
+   o documento, conferir se o PDF em mãos é o registrado, e achar o registro
+   a partir do próprio arquivo, sem código nenhum.
+   ========================================================================== */
+(function () {
+  'use strict';
+
+  var LIMITE = 25 * 1024 * 1024;
+
+  function disponivel() {
+    return window.crypto && window.crypto.subtle && typeof window.crypto.subtle.digest === 'function';
+  }
+
+  function sha256(file) {
+    return file.arrayBuffer().then(function (buf) {
+      return window.crypto.subtle.digest('SHA-256', buf);
+    }).then(function (digest) {
+      var bytes = new Uint8Array(digest), out = '';
+      for (var i = 0; i < bytes.length; i++) out += bytes[i].toString(16).padStart(2, '0');
+      return out;
+    });
+  }
+
+  function mostrar(el, texto, tipo) {
+    if (!el) return;
+    el.textContent = texto;
+    el.hidden = false;
+    el.setAttribute('data-tone', tipo || 'neutral');
+  }
+
+  /* Formulário de registro: calcula o hash e preenche os campos ocultos. */
+  var entrada = document.querySelector('[data-hash-input]');
+  if (entrada) {
+    var alvoHash = document.querySelector('[data-hash-value]');
+    var alvoNome = document.querySelector('[data-hash-name]');
+    var estado = document.querySelector('[data-hash-state]');
+    entrada.addEventListener('change', function () {
+      var file = entrada.files && entrada.files[0];
+      if (!file) { if (alvoHash) alvoHash.value = ''; if (alvoNome) alvoNome.value = ''; if (estado) estado.hidden = true; return; }
+      if (!disponivel() || file.size > LIMITE) { mostrar(estado, entrada.getAttribute('data-error') || 'Não foi possível ler o arquivo.', 'bad'); return; }
+      mostrar(estado, 'Lendo o arquivo…', 'neutral');
+      sha256(file).then(function (hex) {
+        if (alvoHash) alvoHash.value = hex;
+        if (alvoNome) alvoNome.value = file.name.slice(0, 190);
+        mostrar(estado, 'Impressão digital calculada. O arquivo permanece no seu computador.', 'ok');
+      }).catch(function () {
+        mostrar(estado, 'Não foi possível ler o arquivo. Você pode registrar sem ele.', 'bad');
+      });
+    });
+  }
+
+  /* Página de verificação: o arquivo em mãos é o registrado? */
+  var conferencia = document.querySelector('[data-filecheck]');
+  if (conferencia) {
+    var esperado = (conferencia.getAttribute('data-expect') || '').toLowerCase();
+    var campo = conferencia.querySelector('[data-filecheck-input]');
+    var saida = conferencia.querySelector('[data-filecheck-state]');
+    if (campo && saida) {
+      campo.addEventListener('change', function () {
+        var file = campo.files && campo.files[0];
+        if (!file) return;
+        if (!disponivel() || file.size > LIMITE) { mostrar(saida, saida.getAttribute('data-error'), 'bad'); return; }
+        mostrar(saida, saida.getAttribute('data-working'), 'neutral');
+        sha256(file).then(function (hex) {
+          var bate = hex === esperado;
+          mostrar(saida, saida.getAttribute(bate ? 'data-match' : 'data-nomatch'), bate ? 'ok' : 'bad');
+        }).catch(function () {
+          mostrar(saida, saida.getAttribute('data-error'), 'bad');
+        });
+      });
+    }
+  }
+
+  /* Home: achar o registro pelo próprio arquivo. */
+  var busca = document.querySelector('[data-lookup]');
+  if (busca) {
+    var campoBusca = busca.querySelector('[data-lookup-input]');
+    var saidaBusca = busca.querySelector('[data-lookup-state]');
+    if (!disponivel()) { busca.hidden = true; return; }
+    if (campoBusca && saidaBusca) {
+      campoBusca.addEventListener('change', function () {
+        var file = campoBusca.files && campoBusca.files[0];
+        if (!file) return;
+        if (file.size > LIMITE) { mostrar(saidaBusca, busca.getAttribute('data-error'), 'bad'); return; }
+        mostrar(saidaBusca, busca.getAttribute('data-working'), 'neutral');
+        sha256(file).then(function (hex) {
+          var body = new URLSearchParams(); body.append('sha256', hex);
+          return fetch('/api/v1/lookup', { method: 'POST', body: body, credentials: 'same-origin' });
+        }).then(function (r) {
+          return r.json().then(function (j) { return { ok: r.ok, j: j }; });
+        }).then(function (res) {
+          if (res.ok && res.j && res.j.code) {
+            window.location.href = busca.getAttribute('data-url') + res.j.code;
+            return;
+          }
+          mostrar(saidaBusca, busca.getAttribute('data-notfound'), 'bad');
+        }).catch(function () {
+          mostrar(saidaBusca, busca.getAttribute('data-error'), 'bad');
+        });
+      });
+    }
+  }
+})();

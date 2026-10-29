@@ -36,6 +36,7 @@ final class Panel
             'sair'         => self::logout($i18n),
             'cursos'       => self::programs($i18n, $user, $isPost),
             'emitir'       => self::issue($i18n, $user, $isPost),
+            'registrar'    => self::registerExternal($i18n, $user, $isPost),
             'certificados' => self::issuances($i18n, $user),
             'revogar'      => self::revoke($i18n, $user, $isPost),
             'certificado'  => self::certificate($i18n, $user, (string) ($sub[1] ?? '')),
@@ -264,6 +265,69 @@ final class Panel
             'issued' => $issued,
             'old' => $old,
         ], $user, 'issue');
+    }
+
+    private static function registerExternal(I18n $i18n, array $user, bool $isPost): void
+    {
+        $tenantId = (int) $user['tenant_id'];
+        $error = null;
+        $registered = null;
+        $old = [];
+
+        if ($isPost) {
+            $old = [
+                'issuer_name' => trim((string) ($_POST['issuer_name'] ?? '')),
+                'program_title' => trim((string) ($_POST['program_title'] ?? '')),
+                'program_norm' => trim((string) ($_POST['program_norm'] ?? '')),
+                'hours' => max(0, (int) ($_POST['hours'] ?? 0)),
+                'modality' => in_array($_POST['modality'] ?? '', ['presencial', 'ead', 'hibrido'], true) ? (string) $_POST['modality'] : 'presencial',
+                'assessed' => !empty($_POST['assessed']),
+                'holder_name' => trim((string) ($_POST['holder_name'] ?? '')),
+                'holder_email' => trim((string) ($_POST['holder_email'] ?? '')),
+                'holder_display' => in_array($_POST['holder_display'] ?? '', ['partial', 'full', 'hidden'], true) ? (string) $_POST['holder_display'] : 'partial',
+                'issued_on' => (string) ($_POST['issued_on'] ?? ''),
+                'valid_until' => trim((string) ($_POST['valid_until'] ?? '')),
+                'source_sha256' => strtolower(trim((string) ($_POST['source_sha256'] ?? ''))),
+                'source_filename' => mb_substr(trim((string) ($_POST['source_filename'] ?? '')), 0, 190),
+            ];
+
+            $dateOk = DateTimeImmutable::createFromFormat('!Y-m-d', $old['issued_on']) !== false;
+            $untilOk = $old['valid_until'] === ''
+                || DateTimeImmutable::createFromFormat('!Y-m-d', $old['valid_until']) !== false;
+            $hashOk = $old['source_sha256'] === '' || preg_match('/^[a-f0-9]{64}$/', $old['source_sha256']) === 1;
+
+            if ($old['issuer_name'] === '') {
+                $error = $i18n->a('reg.bad_issuer');
+            } elseif ($old['program_title'] === '') {
+                $error = $i18n->a('prog.bad_title');
+            } elseif ($old['holder_name'] === '') {
+                $error = $i18n->a('issue.bad_holder');
+            } elseif (!$dateOk || !$untilOk) {
+                $error = $i18n->a('issue.bad_date');
+            } elseif (!$hashOk) {
+                $error = $i18n->a('reg.bad_hash');
+            } else {
+                $issuerRow = Issuer::defaultIssuer($tenantId);
+                try {
+                    if ($issuerRow === null) {
+                        throw new RuntimeException('Nenhum emissor cadastrado para este tenant.');
+                    }
+                    $input = $old;
+                    $input['valid_until'] = $old['valid_until'] !== '' ? $old['valid_until'] : null;
+                    $registered = Issuer::register($tenantId, $issuerRow, $input);
+                    $old = [];
+                } catch (Throwable $e) {
+                    error_log('[verid4u] registro: ' . $e->getMessage());
+                    $error = $i18n->t('error.unavailable');
+                }
+            }
+        }
+
+        self::shell($i18n, 'app/register', [
+            'error' => $error,
+            'registered' => $registered,
+            'old' => $old,
+        ], $user, 'register');
     }
 
     private static function issuances(I18n $i18n, array $user): void

@@ -1,4 +1,4 @@
-@import url("/assets/tokens.css?v=7");
+@import url("/assets/tokens.css?v=8");
 
 /* ==========================================================================
    VerID4U — folha de estilo
@@ -433,3 +433,42 @@ code { font-family: var(--font-mono); font-size: .92em; }
   .sheet { width: auto; margin: 0; border: 0; border-radius: 0; box-shadow: none; padding: 24mm 22mm; }
   @page { size: A4 portrait; margin: 0; }
 }
+
+/* ============================ origem do registro e conferência de arquivo */
+
+.origin { display: flex; flex-direction: column; gap: 4px; margin: var(--space-4) 0 var(--space-4); padding: var(--space-3) var(--space-4); border-radius: var(--radius-md); background: var(--surface-sunken); }
+.origin-tag { font-size: var(--text-overline); font-weight: 600; letter-spacing: var(--tracking-overline); text-transform: uppercase; }
+.origin-desc { font-size: var(--text-body-s); color: var(--ink-muted); }
+.origin-issued { background: var(--brand-tint); }
+.origin-issued .origin-tag { color: var(--brand); }
+.origin-registered .origin-tag { color: var(--ink-muted); }
+
+.filecheck-body { font-size: var(--text-body-s); color: var(--ink-muted); margin: 0 0 var(--space-4); }
+.filecheck-pick { display: inline-flex; cursor: pointer; }
+.lookup-pick span, .filecheck-pick { user-select: none; }
+.filecheck-privacy, .lookup-privacy { font-size: var(--text-caption); color: var(--ink-subtle); margin: var(--space-3) 0 0; }
+.filecheck-state, .hash-state, .lookup-state {
+  display: flex; align-items: flex-start; gap: var(--space-2);
+  font-size: var(--text-body-s); margin: var(--space-3) 0 0;
+  padding: 10px var(--space-3); border-radius: var(--radius-md);
+}
+[data-tone="neutral"] { background: var(--surface-sunken); color: var(--ink-muted); }
+[data-tone="ok"] { background: var(--ok-tint); color: var(--ok); font-weight: 500; }
+[data-tone="bad"] { background: var(--bad-tint); color: var(--bad); font-weight: 500; }
+
+.lookup { margin-top: var(--space-6); padding: var(--space-5); border: 1px dashed rgba(255,255,255,.34); border-radius: var(--radius-lg); max-width: 560px; }
+.lookup-title { font-family: var(--font-display); font-weight: 700; font-size: var(--text-heading-m); letter-spacing: -.02em; margin: 0 0 var(--space-1); color: #FFFFFF; }
+.lookup-body { font-size: var(--text-body-s); color: rgba(255,255,255,.84); margin: 0 0 var(--space-4); }
+.lookup-pick {
+  display: inline-flex; align-items: center; cursor: pointer;
+  font-weight: 600; font-size: var(--text-body-s);
+  padding: 10px var(--space-5); border-radius: var(--radius-pill);
+  border: 1.5px solid rgba(255,255,255,.45); color: #FFFFFF;
+  transition: background var(--dur) var(--ease), border-color var(--dur) var(--ease);
+}
+.lookup-pick:hover { background: rgba(255,255,255,.14); border-color: #FFFFFF; }
+.lookup .lookup-state[data-tone="neutral"] { background: rgba(255,255,255,.14); color: #FFFFFF; }
+.lookup .lookup-state[data-tone="bad"] { background: rgba(0,0,0,.24); color: #FFFFFF; }
+.lookup-privacy { color: rgba(255,255,255,.74); }
+
+.form input[type="file"] { padding: 10px var(--space-3); background: var(--surface-sunken); font-size: var(--text-body-s); }
