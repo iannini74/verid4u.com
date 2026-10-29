@@ -76,6 +76,15 @@ return [
 
     'demo.banner' => 'Demo: this is a fictional record, created to show how verification works. No real person or organisation is involved.',
 
+    'counters.certificates' => 'certificates registered',
+    'counters.verifications' => 'checks performed',
+
+    'showcase.title' => 'Four possible answers. Never a maybe.',
+    'showcase.verified.desc' => 'The document is genuine and the qualification is current. You can accept it.',
+    'showcase.expiring.desc' => 'Genuine, but expiring soon. Time to book the refresher.',
+    'showcase.expired.desc' => 'Genuine, but the qualification has lapsed. Not fake — out of date.',
+    'showcase.revoked.desc' => 'The issuer cancelled this certificate itself. It should not be accepted.',
+
     'status.verified' => 'Verified',
     'status.expiring' => 'Expiring soon',
     'status.expired' => 'Expired',

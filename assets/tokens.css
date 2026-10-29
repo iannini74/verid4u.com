@@ -1,0 +1,145 @@
+/* ==========================================================================
+   VerID4U — tokens
+   Fonte única de verdade do visual. Nenhum valor de cor, espaço, raio ou
+   tempo deve aparecer fora daqui.
+
+   Dois registros, de propósito:
+   · MARCA     — landing e comunicação. Expressiva, tipografia grande, cor cheia.
+   · DOCUMENTO — verificação e certificado. Sóbria, quieta, parece papel.
+   O que vende e o que prova não precisam ter a mesma voz.
+   ========================================================================== */
+
+:root {
+  /* ---------------------------------------------------------- superfícies */
+  --surface:          #FFFFFF;
+  --surface-sunken:   #F4F7FB;
+  --surface-raised:   #FFFFFF;
+  --surface-ink:      #0A1020;
+
+  /* ---------------------------------------------------------------- texto */
+  --ink:              #0A1020;
+  --ink-muted:        #566376;
+  --ink-subtle:       #64748B;
+  --ink-on-brand:     #FFFFFF;
+  --ink-on-ink:       #E8EDF4;
+
+  /* ----------------------------------------------------------------- umas */
+  --line:             #E2E8F0;
+  --line-strong:      #CBD5E1;
+  --line-inverse:     rgba(255, 255, 255, .22);
+
+  /* ---------------------------------------------------------------- marca */
+  --brand:            #1D5BE0;
+  --brand-strong:     #1544B8;
+  --brand-tint:       #E8F0FD;
+  --brand-soft:       #9FC0F7;
+
+  /* ------------------------------------------------- estados do documento */
+  --ok:               #0E7C5A;
+  --ok-tint:          #E4F4EE;
+  --warn:             #B5700F;
+  --warn-tint:        #FCF2E3;
+  --stale:            #5A6775;
+  --stale-tint:       #EEF1F5;
+  --bad:              #A8231E;
+  --bad-tint:         #FBEBEA;
+
+  /* ------------------------------------------------------------ tipografia */
+  --font-display: "Inter Tight", "Inter", system-ui, -apple-system, sans-serif;
+  --font-sans:    "Inter", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  --font-mono:    "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
+  --font-serif:   "Source Serif 4", Georgia, "Times New Roman", serif;
+
+  --text-display-xl: clamp(40px, 7.4vw, 84px);
+  --text-display-l:  clamp(32px, 5.2vw, 56px);
+  --text-display-m:  clamp(26px, 3.6vw, 40px);
+  --text-heading-l:  clamp(21px, 2.4vw, 28px);
+  --text-heading-m:  20px;
+  --text-body-l:     18px;
+  --text-body:       16px;
+  --text-body-s:     14.5px;
+  --text-caption:    13px;
+  --text-overline:   11.5px;
+
+  --leading-display: 1.02;
+  --leading-heading: 1.18;
+  --leading-body:    1.6;
+  --tracking-display: -.032em;
+  --tracking-heading: -.018em;
+  --tracking-overline: .09em;
+
+  /* --------------------------------------------------------------- espaço */
+  --space-1: 4px;   --space-2: 8px;   --space-3: 12px;  --space-4: 16px;
+  --space-5: 24px;  --space-6: 32px;  --space-7: 48px;  --space-8: 64px;
+  --space-9: 96px;  --space-10: 128px;
+
+  /* ----------------------------------------------------------------- raio */
+  --radius-sm:   8px;
+  --radius-md:   12px;
+  --radius-lg:   20px;
+  --radius-xl:   28px;
+  --radius-pill: 999px;
+
+  /* --------------------------------------------------------------- sombra */
+  --shadow-sm: 0 1px 2px rgba(10, 16, 32, .06);
+  --shadow-md: 0 2px 4px rgba(10, 16, 32, .05), 0 12px 28px rgba(10, 16, 32, .07);
+  --shadow-lg: 0 4px 8px rgba(10, 16, 32, .05), 0 24px 60px rgba(10, 16, 32, .12);
+
+  /* ------------------------------------------------------------ movimento */
+  --ease:        cubic-bezier(.2, .8, .2, 1);
+  --ease-out:    cubic-bezier(.16, 1, .3, 1);
+  --dur-fast:    150ms;
+  --dur:         240ms;
+  --dur-slow:    420ms;
+  --rise:        26px;   /* deslocamento da entrada ao rolar */
+
+  /* ---------------------------------------------------------------- medida */
+  --measure:     68ch;
+  --container:   1140px;
+  --container-narrow: 760px;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --surface:        #0C1119;
+    --surface-sunken: #070B11;
+    --surface-raised: #121A25;
+    --surface-ink:    #060911;
+
+    --ink:            #E8EDF4;
+    --ink-muted:      #9AA7B8;
+    --ink-subtle:     #6F7E92;
+    --ink-on-ink:     #E8EDF4;
+
+    --line:           #22303F;
+    --line-strong:    #2E3F52;
+
+    --brand:          #6E9BF5;
+    --brand-strong:   #8DB2FA;
+    --brand-tint:     #14233A;
+    --brand-soft:     #2A4472;
+
+    --ok:   #4FC395;  --ok-tint:   #0F2A21;
+    --warn: #E3A857;  --warn-tint: #2B2113;
+    --stale:#9AA7B8;  --stale-tint:#1A222D;
+    --bad:  #EF8178;  --bad-tint:  #2C1817;
+
+    --shadow-sm: 0 1px 2px rgba(0, 0, 0, .5);
+    --shadow-md: 0 2px 4px rgba(0, 0, 0, .4), 0 12px 28px rgba(0, 0, 0, .34);
+    --shadow-lg: 0 4px 8px rgba(0, 0, 0, .4), 0 24px 60px rgba(0, 0, 0, .46);
+  }
+}
+
+/* Em fundo de marca, os tokens de texto e linha viram os invertidos. */
+.on-brand {
+  --ink:        #FFFFFF;
+  --ink-muted:  rgba(255, 255, 255, .88);
+  --ink-subtle: rgba(255, 255, 255, .74);
+  --line:       rgba(255, 255, 255, .22);
+  --line-strong:rgba(255, 255, 255, .34);
+  --surface-raised: rgba(255, 255, 255, .10);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  :root { --dur-fast: 1ms; --dur: 1ms; --dur-slow: 1ms; --rise: 0px; }
+}

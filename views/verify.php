@@ -7,15 +7,15 @@ $pageNoindex = true;
 $pageTitle = $i18n->t('meta.verify.title') . ' · ' . APP_NAME;
 $pageDesc = $i18n->t('meta.home.desc');
 
-$icons = [
-    'verified' => '<path d="m6 12.4 4 4.1 8-9" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/>',
-    'expiring' => '<circle cx="12" cy="12" r="8.4" fill="none" stroke="currentColor" stroke-width="2.1"/><path d="M12 7.2V12l3.2 2" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round"/>',
-    'expired'  => '<circle cx="12" cy="12" r="8.4" fill="none" stroke="currentColor" stroke-width="2.1"/><path d="M12 7.2V12l3.2 2" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round"/><path d="M4.6 4.6 19.4 19.4" stroke="currentColor" stroke-width="2.1" stroke-linecap="round"/>',
-    'revoked'  => '<circle cx="12" cy="12" r="8.4" fill="none" stroke="currentColor" stroke-width="2.1"/><path d="M6.4 6.4 17.6 17.6" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/>',
-    'notfound' => '<circle cx="12" cy="12" r="8.4" fill="none" stroke="currentColor" stroke-width="2.1"/><path d="M9.3 9.2a2.8 2.8 0 1 1 3.3 3.3v1.3" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round"/><circle cx="12.4" cy="17" r="1.2" fill="currentColor"/>',
+$glyphs = [
+    'verified'    => 'check',
+    'expiring'    => 'clock',
+    'expired'     => 'clock',
+    'revoked'     => 'cross',
+    'notfound'    => 'question',
+    'throttled'   => 'question',
+    'unavailable' => 'question',
 ];
-$icons['throttled'] = $icons['notfound'];
-$icons['unavailable'] = $icons['notfound'];
 
 $verdict = $i18n->t('status.' . (in_array($state, ['throttled', 'unavailable'], true) ? 'notfound' : $state));
 $shareUrl = base_url() . $i18n->url('/v/' . $typed);
@@ -26,9 +26,7 @@ $shareUrl = base_url() . $i18n->url('/v/' . $typed);
     <p class="verdict-code"><?= e($i18n->t('label.code')) ?> <code><?= e($typed) ?></code></p>
 
     <h1 class="verdict-headline">
-      <span class="verdict-icon" aria-hidden="true">
-        <svg viewBox="0 0 24 24"><?= $icons[$state] ?? $icons['notfound'] ?></svg>
-      </span>
+      <?php $sealClass = 'verdict-seal'; $sealGlyph = $glyphs[$state] ?? 'question'; require __DIR__ . '/partials/seal.php'; ?>
       <span><?= e($verdict) ?></span>
     </h1>
 

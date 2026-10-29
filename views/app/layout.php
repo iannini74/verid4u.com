@@ -18,11 +18,11 @@ $nav = [
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="robots" content="noindex, nofollow">
 <title><?= e($title) ?></title>
-<link rel="icon" href="/assets/mark.svg" type="image/svg+xml">
+<link rel="icon" href="/assets/brand/mark-solid.svg" type="image/svg+xml">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Source+Serif+4:opsz,wght@8..60,600&family=JetBrains+Mono:wght@500;700&display=swap">
-<link rel="stylesheet" href="/assets/style.css?v=3">
+<link rel="stylesheet" href="/assets/style.css?v=7">
 </head>
 <body class="app">
 <header class="app-bar">
@@ -50,6 +50,6 @@ $nav = [
 </header>
 
 <main class="app-main"><?= $content ?></main>
-<script src="/assets/app.js?v=3" defer></script>
+<script src="/assets/app.js?v=7" defer></script>
 </body>
 </html>

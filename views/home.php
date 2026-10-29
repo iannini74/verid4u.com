@@ -4,104 +4,135 @@
 /** @var string $typed */
 $pageTitle = $i18n->t('meta.home.title');
 $pageDesc = $i18n->t('meta.home.desc');
-$sample = Code::format(Code::full(Store::showcase()[0]));
+$showcase = Store::showcase();
+$sample = $showcase !== [] ? Code::format(Code::full($showcase[0])) : 'K7M2-93FQ-5XB0';
+$counters = Store::counters();
+$states = [
+    'verified' => 'check',
+    'expiring' => 'clock',
+    'expired'  => 'clock',
+    'revoked'  => 'cross',
+];
 ?>
 
 <section class="hero">
   <div class="wrap hero-inner">
-    <h1 class="hero-title"><?= e($i18n->t('hero.title')) ?></h1>
-    <p class="hero-sub"><?= e($i18n->t('hero.sub')) ?></p>
+    <div class="hero-grid">
+      <div>
+        <h1 class="display-xl"><?= e($i18n->t('hero.title')) ?></h1>
+        <p class="hero-sub"><?= e($i18n->t('hero.sub')) ?></p>
 
-    <form class="verifier<?= $error !== null ? ' has-error' : '' ?>" method="post" action="<?= e($i18n->url()) ?>" novalidate>
-      <label class="verifier-label" for="codigo"><?= e($i18n->t('hero.label')) ?></label>
-      <div class="verifier-row">
-        <input
-          id="codigo"
-          name="codigo"
-          type="text"
-          inputmode="latin"
-          autocomplete="off"
-          autocapitalize="characters"
-          spellcheck="false"
-          maxlength="20"
-          placeholder="<?= e($i18n->t('hero.placeholder')) ?>"
-          value="<?= e($typed) ?>"
-          aria-describedby="codigo-hint<?= $error !== null ? ' codigo-error' : '' ?>"
-          <?= $error !== null ? 'aria-invalid="true"' : '' ?>
-          data-code-input
-          autofocus>
-        <button type="submit"><?= e($i18n->t('hero.button')) ?></button>
+        <form class="verifier<?= $error !== null ? ' has-error' : '' ?>" method="post" action="<?= e($i18n->url()) ?>" novalidate>
+          <label class="verifier-label" for="codigo"><?= e($i18n->t('hero.label')) ?></label>
+          <div class="verifier-row">
+            <input id="codigo" name="codigo" type="text" inputmode="latin" autocomplete="off"
+                   autocapitalize="characters" spellcheck="false" maxlength="20"
+                   placeholder="<?= e($i18n->t('hero.placeholder')) ?>" value="<?= e($typed) ?>"
+                   aria-describedby="codigo-hint<?= $error !== null ? ' codigo-error' : '' ?>"
+                   <?= $error !== null ? 'aria-invalid="true"' : '' ?> data-code-input>
+            <button type="submit"><?= e($i18n->t('hero.button')) ?></button>
+          </div>
+          <?php if ($error !== null): ?>
+            <p class="verifier-error" id="codigo-error" role="alert">
+              <svg class="icon" viewBox="0 0 20 20" aria-hidden="true"><circle cx="10" cy="10" r="8.2" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M10 5.6v5" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><circle cx="10" cy="14" r="1.1" fill="currentColor"/></svg>
+              <?= e($error) ?>
+            </p>
+          <?php endif; ?>
+          <p class="verifier-hint" id="codigo-hint"><?= e($i18n->t('hero.hint')) ?></p>
+        </form>
+
+        <?php if ($showcase !== []): ?>
+          <div class="samples">
+            <span><?= e($i18n->t('hero.examples')) ?></span>
+            <ul>
+              <?php foreach ($showcase as $b): $c = Code::format(Code::full($b)); ?>
+                <li><a href="<?= e($i18n->url('/v/' . $c)) ?>"><?= e($c) ?></a></li>
+              <?php endforeach; ?>
+            </ul>
+          </div>
+        <?php endif; ?>
       </div>
-      <?php if ($error !== null): ?>
-        <p class="verifier-error" id="codigo-error" role="alert">
-          <svg class="icon" viewBox="0 0 20 20" aria-hidden="true"><circle cx="10" cy="10" r="8.2" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M10 5.6v5" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><circle cx="10" cy="14" r="1.1" fill="currentColor"/></svg>
-          <?= e($error) ?>
-        </p>
-      <?php endif; ?>
-      <p class="verifier-hint" id="codigo-hint"><?= e($i18n->t('hero.hint')) ?></p>
-    </form>
 
-    <div class="samples">
-      <span><?= e($i18n->t('hero.examples')) ?></span>
-      <ul>
-        <?php foreach (Store::showcase() as $base): $code = Code::format(Code::full($base)); ?>
-          <li><a href="<?= e($i18n->url('/v/' . $code)) ?>"><?= e($code) ?></a></li>
-        <?php endforeach; ?>
-      </ul>
+      <aside class="hero-card" aria-hidden="true">
+        <div class="hero-card-top">
+          <?php $sealClass = 'hero-card-seal'; $sealGlyph = 'check'; require __DIR__ . '/partials/seal.php'; ?>
+          <div>
+            <div class="hero-card-verdict"><?= e($i18n->t('status.verified')) ?></div>
+            <div class="hero-card-code"><?= e($sample) ?></div>
+          </div>
+        </div>
+        <dl>
+          <div><dt><?= e($i18n->t('label.program')) ?></dt><dd>NR-35 — Trabalho em Altura</dd></div>
+          <div><dt><?= e($i18n->t('label.hours')) ?></dt><dd><?= e($i18n->t('value.hours', ['h' => 8])) ?></dd></div>
+          <div><dt><?= e($i18n->t('label.modality')) ?></dt><dd><?= e($i18n->t('modality.presencial')) ?></dd></div>
+          <div><dt><?= e($i18n->t('label.validity')) ?></dt><dd><?= e($i18n->date('2028-03-10')) ?></dd></div>
+        </dl>
+        <p class="hero-card-foot">verid4u.com/v/<?= e($sample) ?></p>
+      </aside>
     </div>
   </div>
 </section>
 
-<section class="band band-pitch">
-  <div class="wrap narrow">
-    <h2 class="pitch-title"><?= e($i18n->t('pitch.title')) ?></h2>
-    <p class="pitch-body"><?= e($i18n->t('pitch.body')) ?></p>
+<section class="section-tight bg-sunken">
+  <div class="wrap counters" data-reveal>
+    <div>
+      <span class="counter-n" data-count-to="<?= (int) $counters['certificates'] ?>">0</span>
+      <span class="counter-l"><?= e($i18n->t('counters.certificates')) ?></span>
+    </div>
+    <div>
+      <span class="counter-n" data-count-to="<?= (int) $counters['verifications'] ?>">0</span>
+      <span class="counter-l"><?= e($i18n->t('counters.verifications')) ?></span>
+    </div>
   </div>
 </section>
 
-<section class="band" id="como">
+<section class="section">
+  <div class="wrap-narrow">
+    <p class="overline" data-reveal><?= e($i18n->t('nav.how')) ?></p>
+    <h2 class="display-m measure" data-reveal data-reveal-delay="1"><?= e($i18n->t('pitch.title')) ?></h2>
+    <p class="lead" data-reveal data-reveal-delay="2" style="margin-top: var(--space-5); max-width: 62ch;"><?= e($i18n->t('pitch.body')) ?></p>
+  </div>
+</section>
+
+<section class="section bg-sunken" id="como">
   <div class="wrap">
-    <h2 class="section-title"><?= e($i18n->t('how.title')) ?></h2>
+    <h2 class="display-m stack-lead" data-reveal><?= e($i18n->t('how.title')) ?></h2>
     <ol class="steps">
       <?php for ($n = 1; $n <= 3; $n++): ?>
-        <li>
-          <span class="step-n"><?= $n ?></span>
+        <li data-reveal data-reveal-delay="<?= $n - 1 ?>">
+          <span class="step-n">0<?= $n ?></span>
           <h3><?= e($i18n->t("how.$n.title")) ?></h3>
           <p><?= e($i18n->t("how.$n.body")) ?></p>
         </li>
       <?php endfor; ?>
     </ol>
-
-    <figure class="cert-preview" aria-label="<?= e($i18n->t('how.2.title')) ?>">
-      <div class="cert-paper">
-        <p class="cert-kicker"><?= e($i18n->t('label.program')) ?></p>
-        <p class="cert-program">NR-35 — Trabalho em Altura</p>
-        <p class="cert-holder">Maria S. L.</p>
-        <div class="cert-strip">
-          <div class="cert-qr" data-qr="<?= e(base_url() . $i18n->url('/v/' . $sample)) ?>" aria-hidden="true"></div>
-          <div class="cert-strip-text">
-            <code><?= e($sample) ?></code>
-            <span>verid4u.com</span>
-          </div>
-          <div class="cert-seal">
-            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2 3.6 5.2v6.6c0 5.3 3.6 8.6 8.4 9.9 4.8-1.3 8.4-4.6 8.4-9.9V5.2Z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><path d="m8.2 12.1 2.8 2.9 5-5.6" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"/></svg>
-          </div>
-        </div>
-      </div>
-      <figcaption><?= e($i18n->t('how.3.body')) ?></figcaption>
-    </figure>
   </div>
 </section>
 
-<section class="band band-alt">
+<section class="section">
   <div class="wrap">
-    <h2 class="section-title"><?= e($i18n->t('paths.title')) ?></h2>
-    <div class="paths">
-      <article class="path">
+    <h2 class="display-m stack-lead" data-reveal><?= e($i18n->t('showcase.title')) ?></h2>
+    <div class="verdicts">
+      <?php $i = 0; foreach ($states as $state => $glyph): ?>
+        <article class="verdict-card vc-<?= e($state) ?>" data-reveal data-reveal-delay="<?= min(3, $i++) ?>">
+          <?php $sealClass = 'vc-seal'; $sealGlyph = $glyph; require __DIR__ . '/partials/seal.php'; ?>
+          <div class="vc-name"><?= e($i18n->t('status.' . $state)) ?></div>
+          <p class="vc-desc"><?= e($i18n->t('showcase.' . $state . '.desc')) ?></p>
+        </article>
+      <?php endforeach; ?>
+    </div>
+  </div>
+</section>
+
+<section class="section bg-sunken">
+  <div class="wrap">
+    <h2 class="display-m stack-lead" data-reveal><?= e($i18n->t('paths.title')) ?></h2>
+    <div class="cards-2">
+      <article class="card card-interactive" data-reveal>
         <h3><?= e($i18n->t('paths.register.title')) ?></h3>
         <p><?= e($i18n->t('paths.register.body')) ?></p>
       </article>
-      <article class="path">
+      <article class="card card-interactive" data-reveal data-reveal-delay="1">
         <h3><?= e($i18n->t('paths.issue.title')) ?></h3>
         <p><?= e($i18n->t('paths.issue.body')) ?></p>
       </article>
@@ -109,12 +140,12 @@ $sample = Code::format(Code::full(Store::showcase()[0]));
   </div>
 </section>
 
-<section class="band" id="para-quem">
+<section class="section" id="para-quem">
   <div class="wrap">
-    <h2 class="section-title"><?= e($i18n->t('audiences.title')) ?></h2>
+    <h2 class="display-m stack-lead" data-reveal><?= e($i18n->t('audiences.title')) ?></h2>
     <ul class="audiences">
-      <?php foreach (['sst', 'schools', 'universities', 'hr', 'creators'] as $who): ?>
-        <li>
+      <?php $i = 0; foreach (['sst', 'schools', 'universities', 'hr', 'creators'] as $who): ?>
+        <li data-reveal data-reveal-delay="<?= min(3, $i++) ?>">
           <h3><?= e($i18n->t("audiences.$who")) ?></h3>
           <p><?= e($i18n->t("audiences.$who.body")) ?></p>
         </li>
@@ -123,10 +154,10 @@ $sample = Code::format(Code::full(Store::showcase()[0]));
   </div>
 </section>
 
-<section class="band band-alt" id="duvidas">
-  <div class="wrap narrow">
-    <h2 class="section-title"><?= e($i18n->t('faq.title')) ?></h2>
-    <div class="faq">
+<section class="section bg-sunken" id="duvidas">
+  <div class="wrap-narrow">
+    <h2 class="display-m stack-lead" data-reveal><?= e($i18n->t('faq.title')) ?></h2>
+    <div class="faq" data-reveal>
       <?php for ($n = 1; $n <= 3; $n++): ?>
         <details<?= $n === 1 ? ' open' : '' ?>>
           <summary><?= e($i18n->t("faq.$n.q")) ?></summary>
@@ -137,10 +168,10 @@ $sample = Code::format(Code::full(Store::showcase()[0]));
   </div>
 </section>
 
-<section class="band band-cta">
-  <div class="wrap narrow cta">
-    <h2><?= e($i18n->t('cta.title')) ?></h2>
-    <p><?= e($i18n->t('cta.body')) ?></p>
-    <a class="button" href="#main"><?= e($i18n->t('cta.button')) ?></a>
+<section class="section bg-ink">
+  <div class="wrap-narrow cta" data-reveal>
+    <h2 class="display-l"><?= e($i18n->t('cta.title')) ?></h2>
+    <p class="lead" style="color: rgba(255,255,255,.84); max-width: 44ch; margin-inline: auto;"><?= e($i18n->t('cta.body')) ?></p>
+    <a class="btn btn-invert" href="<?= e($i18n->url('/app/entrar')) ?>"><?= e($i18n->t('cta.button')) ?></a>
   </div>
 </section>

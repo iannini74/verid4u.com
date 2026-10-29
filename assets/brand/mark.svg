@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" role="img" aria-label="VerID4U">
+  <circle cx="24" cy="24" r="22" fill="none" stroke="#1D5BE0" stroke-width="2.5"
+          stroke-dasharray="2.8 4.111" stroke-linecap="round"/>
+  <circle cx="24" cy="24" r="16" fill="#1D5BE0"/>
+  <path d="M16.5 24.3 21.6 29.4 31.5 18.8" fill="none" stroke="#FFFFFF"
+        stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>

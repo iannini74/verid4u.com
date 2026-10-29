@@ -76,6 +76,15 @@ return [
 
     'demo.banner' => 'Demostración: este es un registro ficticio, creado para mostrar cómo funciona la verificación. No hay ninguna persona ni entidad real implicada.',
 
+    'counters.certificates' => 'certificados registrados',
+    'counters.verifications' => 'verificaciones hechas',
+
+    'showcase.title' => 'Cuatro respuestas posibles. Nunca un quizá.',
+    'showcase.verified.desc' => 'El documento es auténtico y la habilitación está vigente. Puedes aceptarlo.',
+    'showcase.expiring.desc' => 'Auténtico, pero caduca pronto. Toca programar el reciclaje.',
+    'showcase.expired.desc' => 'Auténtico, pero la habilitación caducó. No es falso: está fuera de plazo.',
+    'showcase.revoked.desc' => 'La propia entidad emisora lo anuló. No debe aceptarse.',
+
     'status.verified' => 'Verificado',
     'status.expiring' => 'Caduca pronto',
     'status.expired' => 'Caducado',
