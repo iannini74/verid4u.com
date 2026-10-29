@@ -1,0 +1,11 @@
+User-agent: *
+Allow: /$
+Allow: /pt-br/
+Allow: /pt/
+Allow: /es/
+Allow: /en/
+# Páginas de verificação carregam dados pessoais: não são indexadas.
+Disallow: /v/
+Disallow: /api/
+
+Sitemap: https://verid4u.com/sitemap.xml
