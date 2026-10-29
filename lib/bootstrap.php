@@ -13,6 +13,9 @@ require __DIR__ . '/crypto.php';
 require __DIR__ . '/db.php';
 require __DIR__ . '/code.php';
 require __DIR__ . '/store.php';
+require __DIR__ . '/auth.php';
+require __DIR__ . '/issuer.php';
+require __DIR__ . '/panel.php';
 require __DIR__ . '/seed.php';
 require __DIR__ . '/i18n.php';
 
@@ -124,13 +127,13 @@ function localized_path(string $locale): string
     return '/' . $locale . '/' . implode('/', $segments);
 }
 
-function render(string $view, array $data = []): void
+function render(string $view, array $data = [], string $layout = 'layout'): void
 {
     extract($data, EXTR_SKIP);
     ob_start();
     require __DIR__ . '/../views/' . $view . '.php';
     $content = (string) ob_get_clean();
-    require __DIR__ . '/../views/layout.php';
+    require __DIR__ . '/../views/' . $layout . '.php';
 }
 
 /**

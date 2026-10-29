@@ -7,5 +7,6 @@ Allow: /en/
 # Páginas de verificação carregam dados pessoais: não são indexadas.
 Disallow: /v/
 Disallow: /api/
+Disallow: /app/
 
 Sitemap: https://verid4u.com/sitemap.xml

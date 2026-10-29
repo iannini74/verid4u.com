@@ -14,6 +14,10 @@ return [
     // Chave de 32 bytes em base64, usada para cifrar dados de contato em repouso.
     // Gere com: openssl rand -base64 32
     'app_key' => '',
+    // Token de uso único para ativar a conta do dono. Gere com:
+    // php -r "echo bin2hex(random_bytes(18));"
+    'setup_token' => '',
+
     // Enquanto true, os registros semeados aparecem marcados como demonstração.
     'demo' => true,
 ];

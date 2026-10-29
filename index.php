@@ -105,8 +105,10 @@ if (isset($segments[0]) && I18n::isLocale(strtolower($segments[0]))) {
 }
 $i18n = new I18n($localeInUrl ?? I18n::detect());
 
+$route = $segments[0] ?? '';
+
 // ------------------------------------------------------------ formulário
-if (($_SERVER['REQUEST_METHOD'] ?? 'GET') === 'POST') {
+if ($route !== 'app' && ($_SERVER['REQUEST_METHOD'] ?? 'GET') === 'POST') {
     security_headers();
     $typed = (string) ($_POST['codigo'] ?? '');
     $normalized = Code::normalize($typed);
@@ -129,7 +131,11 @@ if ($localeInUrl === null) {
     redirect('/' . $i18n->locale() . '/' . implode('/', $segments) . ($segments === [] ? '' : ''));
 }
 
-$route = $segments[0] ?? '';
+// --------------------------------------------- área do emissor
+if ($route === 'app') {
+    Panel::handle($i18n, array_slice($segments, 1));
+    exit;
+}
 
 // --------------------------------------------------------------- páginas
 if ($route === '') {

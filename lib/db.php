@@ -45,7 +45,7 @@ final class Db
 
     /* ------------------------------------------------------------ migrações */
 
-    public const SCHEMA_VERSION = 2;
+    public const SCHEMA_VERSION = 3;
 
     private static function marker(): string
     {
@@ -81,7 +81,9 @@ final class Db
                 static fn (array $r): int => (int) $r['version'],
                 self::all('SELECT version FROM schema_migrations')
             );
-            foreach (self::migrations() as $version => $statements) {
+            $pending = self::migrations();
+            ksort($pending);
+            foreach ($pending as $version => $statements) {
                 if (in_array($version, $applied, true)) {
                     continue;
                 }
@@ -249,6 +251,11 @@ final class Db
                     created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
                     KEY idx_audit_tenant (tenant_id, created_at)
                 ) $engine",
+            ],
+
+            3 => [
+                "ALTER TABLE users ADD COLUMN password_hash VARCHAR(255) NULL AFTER role",
+                "ALTER TABLE users ADD COLUMN status VARCHAR(16) NOT NULL DEFAULT 'active' AFTER password_hash",
             ],
 
             2 => [

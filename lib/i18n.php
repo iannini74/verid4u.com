@@ -103,6 +103,26 @@ final class I18n
         );
     }
 
+    /** Dicionário da área do emissor. Cai para pt-BR enquanto não houver tradução. */
+    public function a(string $key, array $params = []): string
+    {
+        static $app = null;
+        if ($app === null) {
+            $own = __DIR__ . '/../i18n/app.' . $this->locale . '.php';
+            $file = is_file($own) ? $own : __DIR__ . '/../i18n/app.pt-br.php';
+            $loaded = is_file($file) ? require $file : [];
+            $app = is_array($loaded) ? $loaded : [];
+        }
+        $value = $app[$key] ?? $key;
+        if (!is_string($value)) {
+            return $key;
+        }
+        foreach ($params as $name => $replacement) {
+            $value = str_replace('{' . $name . '}', (string) $replacement, $value);
+        }
+        return $value;
+    }
+
     public function url(string $path = ''): string
     {
         return '/' . $this->locale . ($path === '' ? '/' : $path);
