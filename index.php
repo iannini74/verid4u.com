@@ -84,6 +84,48 @@ if (($segments[0] ?? '') === 'api') {
                 exit;
             }
 
+            // Teste de ponta a ponta: enfileira e despacha.
+            // Não aceita destinatário por parâmetro — manda sempre para o
+            // e-mail do dono da conta. Assim esta rota não vira um canal de
+            // envio para terceiros caso o segredo do cron vaze.
+            if ($tarefa === 'mailtest') {
+                $dono = Db::one("SELECT name, email_enc, tenant_id FROM users WHERE role = 'owner' ORDER BY id ASC LIMIT 1");
+                if ($dono === null) {
+                    http_response_code(409);
+                    echo json_encode(['error' => 'sem_dono'], JSON_UNESCAPED_UNICODE);
+                    exit;
+                }
+                $para = Crypto::decrypt($dono['email_enc']) ?? '';
+                if ($para === '') {
+                    http_response_code(409);
+                    echo json_encode(['error' => 'endereco_ilegivel'], JSON_UNESCAPED_UNICODE);
+                    exit;
+                }
+                $id = Mailer::queue(
+                    'issuance_created',
+                    $para,
+                    (string) $dono['name'],
+                    'pt-br',
+                    [
+                        'program'   => 'Teste de configuração',
+                        'issuer'    => 'VerID4U',
+                        'code'      => 'TEST-' . strtoupper(bin2hex(random_bytes(2))) . '-0000',
+                        'issued_on' => (new I18n('pt-br'))->date(date('Y-m-d')),
+                        'validity'  => 'Mensagem de teste: nenhum certificado foi emitido.',
+                        'url'       => base_url() . '/pt-br/',
+                    ],
+                    (int) $dono['tenant_id']
+                );
+                $resultado = Mailer::runQueue(5);
+                echo json_encode([
+                    'task' => 'mailtest',
+                    'enfileirado' => $id,
+                    'destino_mascarado' => preg_replace('/(?<=.).(?=[^@]*@)/u', '*', $para),
+                    'fila' => $resultado,
+                ], JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT);
+                exit;
+            }
+
             if ($tarefa === 'diag') {
                 // Estrutura do config e saúde do banco. Só nomes de chaves e
                 // mensagens de erro — nenhum valor é devolvido.
