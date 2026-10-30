@@ -28,7 +28,12 @@ $ativo = $driver !== 'log' && $driver !== 'off';
         <dd><span class="pill pill-<?= $cronSet ? 'verified' : 'revoked' ?>"><?= e($i18n->a($cronSet ? 'mail.cron_yes' : 'mail.cron_no')) ?></span></dd>
       </div>
     </dl>
-    <?php if (!$ativo): ?>
+    <?php $forasDoLugar = Config::misplacedMailKeys(); ?>
+    <?php if ($forasDoLugar !== []): ?>
+      <p class="flash flash-bad" style="margin:var(--space-4) 0 0" role="alert">
+        <?= e($i18n->a('mail.misplaced', ['chaves' => implode(', ', $forasDoLugar)])) ?>
+      </p>
+    <?php elseif (!$ativo): ?>
       <p class="field-hint" style="margin-top:var(--space-4)"><?= e($i18n->a('mail.how_to_enable')) ?></p>
     <?php endif; ?>
   </section>

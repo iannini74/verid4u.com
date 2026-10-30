@@ -49,7 +49,57 @@ if (($segments[0] ?? '') === 'api') {
                 echo json_encode(['task' => 'mail'] + Mailer::runQueue(40), JSON_UNESCAPED_UNICODE);
                 exit;
             }
+            // Invalida o cache de opcode da configuração. Necessário porque
+            // uma edição feita direto no servidor pode continuar invisível
+            // enquanto o PHP servir a versão compilada antiga.
+            if ($tarefa === 'opcache') {
+                $arquivo = __DIR__ . '/lib/config.local.php';
+                $feito = ['invalidate' => false, 'reset' => false];
+                if (function_exists('opcache_invalidate')) {
+                    $feito['invalidate'] = (bool) @opcache_invalidate($arquivo, true);
+                }
+                if ($feito['invalidate'] === false && function_exists('opcache_reset')) {
+                    $feito['reset'] = (bool) @opcache_reset();
+                }
+                clearstatcache(true, $arquivo);
+                echo json_encode(['task' => 'opcache'] + $feito, JSON_UNESCAPED_UNICODE);
+                exit;
+            }
+
             if ($tarefa === 'diag') {
+                // Diagnóstico do arquivo de configuração. Conta ocorrências e
+                // testa presença de literais — NUNCA devolve valor nenhum, para
+                // que a rota não vire um vazamento de credencial.
+                $arquivo = __DIR__ . '/lib/config.local.php';
+                $bruto = is_file($arquivo) ? (string) @file_get_contents($arquivo) : '';
+                // Lê o MESMO caminho numa segunda vez, sem passar pelo Config,
+                // para saber se o problema é o arquivo ou a camada que o lê.
+                $fresco = is_file($arquivo) ? (require $arquivo) : [];
+                $pistas = [
+                    'caminho_diag'   => realpath($arquivo) ?: null,
+                    'caminho_config' => realpath(__DIR__ . '/lib/') . '/config.local.php',
+                    'fresco_driver'  => is_array($fresco) ? (string) ($fresco['mail']['driver'] ?? '(ausente)') : '(nao-array)',
+                    'fresco_host'    => is_array($fresco) ? (((string) ($fresco['mail']['host'] ?? '')) !== '' ? 'preenchido' : 'vazio') : '-',
+                    'fresco_chaves'  => is_array($fresco) ? implode(',', array_keys($fresco)) : '-',
+                    'config_bytes'   => strlen($bruto),
+                    'config_mtime'   => is_file($arquivo) ? date('c', (int) filemtime($arquivo)) : null,
+                    'blocos_mail'    => substr_count($bruto, "'mail'"),
+                    'ocorr_driver'   => preg_match_all('/[\'"]driver[\'"]\s*=>\s*[\'"]([a-z]+)[\'"]/i', $bruto, $mm) ? implode(',', $mm[1]) : '(nenhuma)',
+                    'tem_driver_smtp'=> str_contains($bruto, "'driver' => 'smtp'") || str_contains($bruto, "'driver'=>'smtp'"),
+                    'tem_resend'     => str_contains($bruto, 'smtp.resend.com'),
+                    'opcache'        => function_exists('opcache_get_status'),
+                    'chaves_fora_do_lugar' => Config::misplacedMailKeys(),
+                ];
+                echo json_encode(['task' => 'diag', 'arquivo' => $pistas] + [
+                    'driver'     => (string) Config::get('mail.driver', ''),
+                    'host'       => (string) Config::get('mail.host', ''),
+                    'user_set'   => ((string) Config::get('mail.user', '')) !== '',
+                    'pass_set'   => ((string) Config::get('mail.pass', '')) !== '',
+                    'from_email' => (string) Config::get('mail.from_email', ''),
+                ], JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT);
+                exit;
+            }
+            if ($tarefa === 'diag_antigo') {
                 // Forma da configuração de e-mail, sem nenhum segredo:
                 // diz se os campos estão preenchidos, nunca o que contêm.
                 $host = (string) Config::get('mail.host', '');

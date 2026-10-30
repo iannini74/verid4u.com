@@ -19,6 +19,28 @@ final class Config
         return self::$values;
     }
 
+    /**
+     * Chaves de SMTP soltas no topo do arquivo em vez de dentro de 'mail'.
+     *
+     * É o erro natural de quem cola a configuração do provedor no fim do
+     * arquivo: o PHP aceita, o bloco 'mail' continua com os valores antigos,
+     * e nada é enviado sem nenhuma mensagem de erro. Melhor gritar.
+     *
+     * @return list<string>
+     */
+    public static function misplacedMailKeys(): array
+    {
+        $values = self::load();
+        $suspeitas = ['driver', 'host', 'port', 'secure', 'user', 'pass'];
+        $achadas = [];
+        foreach ($suspeitas as $chave) {
+            if (array_key_exists($chave, $values)) {
+                $achadas[] = $chave;
+            }
+        }
+        return $achadas;
+    }
+
     public static function get(string $key, mixed $default = null): mixed
     {
         $values = self::load();

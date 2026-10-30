@@ -110,6 +110,7 @@ return [
     'mail.cron_no' => 'ausente',
     'mail.how_to_enable' => 'O modo «log» registra as mensagens e não envia nada. Para ligar de verdade, preencha o bloco «mail» em lib/config.local.php com os dados SMTP do provedor e troque o driver para «smtp».',
 
+    'mail.misplaced' => 'Configuração fora do lugar: as chaves {chaves} estão no nível de cima do config.local.php, em vez de dentro do bloco «mail». O PHP aceita o arquivo, mas o envio continua lendo os valores antigos. Mova essas linhas para dentro de «mail» e apague as que sobraram no fim.',
     'mail.queued' => 'na fila',
     'mail.sent' => 'enviadas',
     'mail.failed' => 'com falha',
