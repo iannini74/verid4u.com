@@ -4,3 +4,4 @@
 /.env
 /lib/config.local.php
 /.ds/
+/lib/mail.secret

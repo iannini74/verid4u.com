@@ -191,9 +191,15 @@ texto conserta o que ainda não saiu.
 
 1. No Resend, adicione o domínio `verid4u.com` na região **São Paulo
    (sa-east-1)** e publique os registros que ele mostrar.
-2. Crie uma chave de API e preencha em `lib/config.local.php`:
-   `driver` = `smtp`, `host` = `smtp.resend.com`, `port` = `587`,
-   `secure` = `tls`, `user` = `resend`, `pass` = a chave.
+2. Crie uma chave de API (de preferência com **Sending access** restrita ao
+   domínio) e grave-a em `lib/mail.secret` — texto puro, uma linha, só a
+   chave. O resto da configuração já está em `lib/config.local.php`.
+
+   **Por que a senha mora fora do config.** Editar um array PHP à mão num
+   gerenciador de arquivos é frágil: um colchete a menos derruba o site
+   inteiro, inclusive a verificação. Num arquivo de texto de uma linha, o
+   pior caso é a senha ficar errada e o envio falhar — o produto continua
+   de pé.
 3. Confirme em `/pt-br/app/email` — a tela tem envio de teste.
 
 DMARC já está publicado em `p=none` (modo observação). Depois de três

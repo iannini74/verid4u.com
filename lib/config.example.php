@@ -26,7 +26,11 @@ return [
         'port'       => 587,
         'secure'     => 'tls',   // tls (STARTTLS, porta 587) | ssl (porta 465) | none
         'user'       => '',
-        'pass'       => '',
+        // A senha vive em lib/mail.secret, texto puro, uma linha só.
+        // Um erro de digitação lá não consegue quebrar a sintaxe deste arquivo.
+        'pass'       => is_file(__DIR__ . '/mail.secret')
+                        ? trim((string) @file_get_contents(__DIR__ . '/mail.secret'))
+                        : '',
         'from_email' => 'certificados@verid4u.com',
         'from_name'  => 'VerID4U',
         'reply_to'   => '',

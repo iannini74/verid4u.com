@@ -36,7 +36,25 @@ if (($segments[0] ?? '') === 'api') {
     // Rotinas agendadas. Protegidas por um segredo do config, nunca
     // alcançáveis por um visitante. Chamadas pelo cron da hospedagem.
     if (($segments[1] ?? '') === 'v1' && ($segments[2] ?? '') === 'cron') {
-        $chave = (string) Config::get('mail.cron_key', '');
+        // Se o config não carrega, não há segredo para comparar — e também
+        // não há nada a vazar. Nesse caso o diagnóstico responde sem chave,
+        // devolvendo só o erro de sintaxe, que é o que destrava a correção.
+        $chave = '';
+        $configQuebrado = null;
+        try {
+            $chave = (string) Config::get('mail.cron_key', '');
+        } catch (Throwable $e) {
+            $configQuebrado = mb_substr($e->getMessage(), 0, 300);
+        }
+        if ($configQuebrado !== null) {
+            http_response_code(500);
+            echo json_encode([
+                'task' => 'diag',
+                'config_quebrado' => true,
+                'erro' => $configQuebrado,
+            ], JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT);
+            exit;
+        }
         $enviada = (string) ($_GET['key'] ?? $_POST['key'] ?? '');
         if ($chave === '' || !hash_equals($chave, $enviada)) {
             http_response_code(403);
@@ -67,6 +85,49 @@ if (($segments[0] ?? '') === 'api') {
             }
 
             if ($tarefa === 'diag') {
+                // Estrutura do config e saúde do banco. Só nomes de chaves e
+                // mensagens de erro — nenhum valor é devolvido.
+                try {
+                    $arquivo = __DIR__ . '/lib/config.local.php';
+                    $carregado = is_file($arquivo) ? @include $arquivo : null;
+                    $estrutura = [
+                        'arquivo_existe' => is_file($arquivo),
+                        'bytes'          => is_file($arquivo) ? filesize($arquivo) : 0,
+                        'mtime'          => is_file($arquivo) ? date('c', (int) filemtime($arquivo)) : null,
+                        'retorna_array'  => is_array($carregado),
+                        'chaves_topo'    => is_array($carregado) ? implode(',', array_keys($carregado)) : '-',
+                        'db_chaves'      => is_array($carregado) && isset($carregado['db']) && is_array($carregado['db'])
+                                            ? implode(',', array_keys($carregado['db'])) : '(ausente)',
+                        'mail_chaves'    => is_array($carregado) && isset($carregado['mail']) && is_array($carregado['mail'])
+                                            ? implode(',', array_keys($carregado['mail'])) : '(ausente)',
+                    ];
+                    $db = ['ok' => false, 'erro' => null];
+                    try {
+                        Db::one('SELECT 1 AS t');
+                        $db['ok'] = true;
+                    } catch (Throwable $e) {
+                        $db['erro'] = mb_substr($e->getMessage(), 0, 200);
+                    }
+                    echo json_encode([
+                        'task'      => 'diag',
+                        'estrutura' => $estrutura,
+                        'banco'     => $db,
+                        'mail'      => [
+                            'driver'   => (string) Config::get('mail.driver', ''),
+                            'host'     => (string) Config::get('mail.host', ''),
+                            'user_set' => ((string) Config::get('mail.user', '')) !== '',
+                            'pass_set' => ((string) Config::get('mail.pass', '')) !== '',
+                            'fora_do_lugar' => Config::misplacedMailKeys(),
+                        ],
+                    ], JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT);
+                } catch (Throwable $e) {
+                    http_response_code(500);
+                    echo json_encode(['task' => 'diag', 'fatal' => mb_substr($e->getMessage(), 0, 300)], JSON_UNESCAPED_UNICODE);
+                }
+                exit;
+            }
+
+            if ($tarefa === 'diag_v1') {
                 // Diagnóstico do arquivo de configuração. Conta ocorrências e
                 // testa presença de literais — NUNCA devolve valor nenhum, para
                 // que a rota não vire um vazamento de credencial.
