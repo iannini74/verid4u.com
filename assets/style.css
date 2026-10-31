@@ -1,4 +1,4 @@
-@import url("/assets/tokens.css?v=9");
+@import url("/assets/tokens.css?v=10");
 
 /* ==========================================================================
    VerID4U — folha de estilo
@@ -556,3 +556,30 @@ code { font-family: var(--font-mono); font-size: .92em; }
 .form input[type="file"] { padding: 10px var(--space-3); background: var(--surface-sunken); font-size: var(--text-body-s); }
 
 .hero-kicker { margin: 0 0 var(--space-4); color: var(--brand); }
+
+/* ------------------------------------------------- documentos legais */
+
+.legal { padding-bottom: var(--space-8); }
+.legal .display-l { margin: var(--space-3) 0 var(--space-4); }
+.legal-meta { font-size: var(--text-caption); color: var(--ink-subtle); text-transform: uppercase; letter-spacing: var(--tracking-overline); margin: var(--space-5) 0 0; }
+.legal-pending {
+  margin: var(--space-5) 0 0; padding: var(--space-4) var(--space-5);
+  background: var(--warn-tint); border: 1px solid var(--warn); border-radius: var(--radius-md);
+  font-size: var(--text-body-s); color: var(--ink);
+}
+.legal-pending strong { color: var(--warn); display: block; margin-bottom: 2px; }
+.legal-nav {
+  display: flex; flex-wrap: wrap; gap: var(--space-2) var(--space-4);
+  margin: var(--space-7) 0; padding: var(--space-5) 0;
+  border-block: 1px solid var(--line);
+}
+.legal-nav a { font-size: var(--text-body-s); color: var(--ink-muted); text-decoration: none; }
+.legal-nav a:hover { color: var(--brand); text-decoration: underline; }
+.legal-sec { margin-bottom: var(--space-7); scroll-margin-top: var(--space-8); }
+.legal-sec h2 { font-size: var(--text-heading-m); font-weight: 650; letter-spacing: -.02em; margin: 0 0 var(--space-3); }
+.legal-sec p { font-size: var(--text-body); color: var(--ink-muted); margin: 0 0 var(--space-3); max-width: var(--measure); }
+.legal-sec strong { color: var(--ink); font-weight: 600; }
+.legal-foot { display: flex; gap: var(--space-5); flex-wrap: wrap; padding-top: var(--space-6); border-top: 1px solid var(--line); font-size: var(--text-body-s); }
+.footer-links { display: flex; gap: var(--space-4); }
+.footer-links a { font-size: var(--text-body-s); color: var(--ink-muted); text-decoration: none; }
+.footer-links a:hover { color: var(--brand); }

@@ -238,6 +238,12 @@ return [
     'share.copied' => 'Link copiado',
     'share.qr' => 'Aponte a câmera para abrir esta verificação em outro aparelho.',
 
+    'legal.updated' => 'Atualizado em',
+    'legal.termos' => 'Termos de Uso',
+    'legal.privacidade' => 'Privacidade e Cookies',
+    'legal.pending.title' => 'Documento incompleto.',
+    'legal.pending.body' => 'Faltam dados da empresa: {campos}. Até serem preenchidos, este documento não deve ser considerado definitivo.',
+
     'verify.another' => 'Verificar outro certificado',
     'verify.back' => 'Voltar ao início',
 ];

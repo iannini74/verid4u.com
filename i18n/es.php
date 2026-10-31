@@ -161,6 +161,12 @@ return [
     'share.copied' => 'Enlace copiado',
     'share.qr' => 'Apunta la cámara para abrir esta verificación en otro dispositivo.',
 
+    'legal.updated' => 'Actualizado el',
+    'legal.termos' => 'Términos de Uso',
+    'legal.privacidade' => 'Privacidad y Cookies',
+    'legal.pending.title' => 'Documento incompleto.',
+    'legal.pending.body' => 'Faltan datos de la empresa: {campos}.',
+
     'verify.another' => 'Verificar otro certificado',
     'verify.back' => 'Volver al inicio',
 ];

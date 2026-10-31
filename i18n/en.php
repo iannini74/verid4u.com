@@ -161,6 +161,12 @@ return [
     'share.copied' => 'Link copied',
     'share.qr' => 'Point a camera at this to open the verification on another device.',
 
+    'legal.updated' => 'Last updated',
+    'legal.termos' => 'Terms of Use',
+    'legal.privacidade' => 'Privacy and Cookies',
+    'legal.pending.title' => 'Incomplete document.',
+    'legal.pending.body' => 'Company details still missing: {campos}.',
+
     'verify.another' => 'Verify another certificate',
     'verify.back' => 'Back to the start',
 ];

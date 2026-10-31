@@ -23,6 +23,11 @@ if (($segments[0] ?? '') === 'sitemap.xml') {
         }
         echo "    <xhtml:link rel=\"alternate\" hreflang=\"x-default\" href=\"{$base}/\"/>\n  </url>\n";
     }
+    foreach (array_keys(I18n::LOCALES) as $loc) {
+        foreach (Legal::DOCS as $doc) {
+            echo "  <url>\n    <loc>{$base}/{$loc}/{$doc}</loc>\n  </url>\n";
+        }
+    }
     echo '</urlset>';
     exit;
 }
@@ -406,6 +411,19 @@ if ($localeInUrl === null) {
 // --------------------------------------------- área do emissor
 if ($route === 'app') {
     Panel::handle($i18n, array_slice($segments, 1));
+    exit;
+}
+
+// ------------------------------------------------- documentos legais
+if (in_array($route, Legal::DOCS, true)) {
+    security_headers();
+    $doc = Legal::doc($route, $i18n->locale());
+    if ($doc === null) {
+        http_response_code(404);
+        render('home', ['i18n' => $i18n, 'error' => null, 'typed' => '']);
+        exit;
+    }
+    render('legal', ['i18n' => $i18n, 'doc' => $doc, 'slug' => $route]);
     exit;
 }
 
