@@ -238,6 +238,12 @@ return [
     'share.copied' => 'Link copiado',
     'share.qr' => 'Aponte a câmera para abrir esta verificação em outro aparelho.',
 
+    'nav.signin' => 'Entrar',
+    'nav.start' => 'Começar grátis',
+    'trust.1' => 'Verificar é sempre gratuito e não exige cadastro',
+    'trust.2' => 'Certificado registrado continua verificável para sempre',
+    'trust.3' => 'Nenhum documento ou contato aparece na página pública',
+
     'demo.kicker' => 'Veja funcionando',
     'demo.title' => 'Do certificado ao veredito em dez segundos.',
     'demo.1.label' => 'O certificado sai com código e QR',

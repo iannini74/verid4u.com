@@ -57,22 +57,9 @@ $states = [
           </div>
         <?php endif; ?>
 
-        <div class="lookup" data-lookup
-             data-url="<?= e($i18n->url('/v/')) ?>"
-             data-working="<?= e($i18n->t('lookup.working')) ?>"
-             data-notfound="<?= e($i18n->t('lookup.notfound')) ?>"
-             data-error="<?= e($i18n->t('filecheck.error')) ?>">
-          <p class="lookup-title"><?= e($i18n->t('lookup.title')) ?></p>
-          <p class="lookup-body"><?= e($i18n->t('lookup.body')) ?></p>
-          <label class="lookup-pick">
-            <span><?= e($i18n->t('lookup.button')) ?></span>
-            <input type="file" accept=".pdf,.png,.jpg,.jpeg" hidden data-lookup-input>
-          </label>
-          <p class="lookup-state" data-lookup-state hidden></p>
-          <p class="lookup-privacy"><?= e($i18n->t('filecheck.privacy')) ?></p>
-        </div>
       </div>
 
+      <div class="hero-aside">
       <aside class="hero-card" aria-hidden="true">
         <div class="hero-card-top">
           <?php $sealClass = 'hero-card-seal'; $sealGlyph = 'check'; require __DIR__ . '/partials/seal.php'; ?>
@@ -89,20 +76,52 @@ $states = [
         </dl>
         <p class="hero-card-foot">verid4u.com/v/<?= e($sample) ?></p>
       </aside>
+
+        <div class="lookup" data-lookup
+             data-url="<?= e($i18n->url('/v/')) ?>"
+             data-working="<?= e($i18n->t('lookup.working')) ?>"
+             data-notfound="<?= e($i18n->t('lookup.notfound')) ?>"
+             data-error="<?= e($i18n->t('filecheck.error')) ?>">
+          <p class="lookup-title"><?= e($i18n->t('lookup.title')) ?></p>
+          <p class="lookup-body"><?= e($i18n->t('lookup.body')) ?></p>
+          <label class="lookup-pick">
+            <span><?= e($i18n->t('lookup.button')) ?></span>
+            <input type="file" accept=".pdf,.png,.jpg,.jpeg" hidden data-lookup-input>
+          </label>
+          <p class="lookup-state" data-lookup-state hidden></p>
+          <p class="lookup-privacy"><?= e($i18n->t('filecheck.privacy')) ?></p>
+        </div>
+      </div>
     </div>
   </div>
 </section>
 
-<section class="section-tight bg-sunken">
-  <div class="wrap counters" data-reveal>
-    <div>
-      <span class="counter-n" data-count-to="<?= (int) $counters['certificates'] ?>">0</span>
-      <span class="counter-l"><?= e($i18n->t('counters.certificates')) ?></span>
+<?php $temContador = (int) $counters['certificates'] >= 250; ?>
+<section class="section-tight trust-band">
+  <div class="wrap<?= $temContador ? '' : ' sem-contador' ?>">
+    <?php /* Número pequeno é prova contra. Até o registro ter massa, a faixa
+             mostra as garantias, que valem desde o primeiro dia. */ ?>
+    <?php $mostrarContadores = (int) $counters['certificates'] >= 250; ?>
+    <?php if ($mostrarContadores): ?>
+    <div class="counters" data-reveal>
+      <div>
+        <span class="counter-n" data-count-to="<?= (int) $counters['certificates'] ?>">0</span>
+        <span class="counter-l"><?= e($i18n->t('counters.certificates')) ?></span>
+      </div>
+      <div>
+        <span class="counter-n" data-count-to="<?= (int) $counters['verifications'] ?>">0</span>
+        <span class="counter-l"><?= e($i18n->t('counters.verifications')) ?></span>
+      </div>
     </div>
-    <div>
-      <span class="counter-n" data-count-to="<?= (int) $counters['verifications'] ?>">0</span>
-      <span class="counter-l"><?= e($i18n->t('counters.verifications')) ?></span>
-    </div>
+    <?php endif; ?>
+    <ul class="trust-marks" data-reveal>
+      <?php for ($n = 1; $n <= 3; $n++): ?>
+        <li>
+          <svg viewBox="0 0 20 20" aria-hidden="true"><path d="m4.5 10.4 3.4 3.4 7.6-8.2" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          <?= e($i18n->t("trust.$n")) ?>
+        </li>
+      <?php endfor; ?>
+    </ul>
   </div>
 </section>
 
@@ -129,7 +148,7 @@ $states = [
 </section>
 
 <section class="section bg-sunken" id="proposito">
-  <div class="wrap-narrow ptm" data-reveal>
+  <div class="wrap ptm" data-reveal>
     <p class="overline"><?= e($i18n->t('ptm.kicker')) ?></p>
     <blockquote class="ptm-claim"><?= e($i18n->t('ptm.title')) ?></blockquote>
     <p class="lead"><?= e($i18n->t('ptm.body1')) ?></p>
@@ -249,8 +268,8 @@ $states = [
 </section>
 
 <section class="section bg-sunken" id="duvidas">
-  <div class="wrap-narrow">
-    <h2 class="display-m stack-lead" data-reveal><?= e($i18n->t('faq.title')) ?></h2>
+  <div class="wrap faq-grid">
+    <h2 class="display-m" data-reveal><?= e($i18n->t('faq.title')) ?></h2>
     <div class="faq" data-reveal>
       <?php for ($n = 1; $n <= 3; $n++): ?>
         <details<?= $n === 1 ? ' open' : '' ?>>

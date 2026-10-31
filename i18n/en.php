@@ -161,6 +161,12 @@ return [
     'share.copied' => 'Link copied',
     'share.qr' => 'Point a camera at this to open the verification on another device.',
 
+    'nav.signin' => 'Sign in',
+    'nav.start' => 'Start free',
+    'trust.1' => 'Checking is always free and needs no account',
+    'trust.2' => 'A registered certificate stays verifiable for ever',
+    'trust.3' => 'No ID or contact detail ever appears on the public page',
+
     'demo.kicker' => 'See it working',
     'demo.title' => 'From certificate to verdict in ten seconds.',
     'demo.1.label' => 'The certificate carries a code and a QR',

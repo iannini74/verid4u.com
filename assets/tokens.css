@@ -50,9 +50,13 @@
   --font-mono:    "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
   --font-serif:   "Source Serif 4", Georgia, "Times New Roman", serif;
 
-  --text-display-xl: clamp(40px, 7.4vw, 84px);
-  --text-display-l:  clamp(32px, 5.2vw, 56px);
-  --text-display-m:  clamp(26px, 3.6vw, 40px);
+  /* Escala limitada também pela ALTURA da janela: 7.4vw davam 95px num
+     monitor comum, e um título de seis linhas empurrava o campo de
+     verificação para fora da primeira tela. Tipo grande não é hierarquia —
+     hierarquia é o que o olho encontra primeiro, e aqui precisa ser o campo. */
+  --text-display-xl: clamp(32px, min(3.8vw, 6.4vh), 50px);
+  --text-display-l:  clamp(27px, min(3.1vw, 5.2vh), 40px);
+  --text-display-m:  clamp(23px, min(2.5vw, 4.2vh), 32px);
   --text-heading-l:  clamp(21px, 2.4vw, 28px);
   --text-heading-m:  20px;
   --text-body-l:     18px;
@@ -61,7 +65,7 @@
   --text-caption:    13px;
   --text-overline:   11.5px;
 
-  --leading-display: 1.02;
+  --leading-display: 1.08;
   --leading-heading: 1.18;
   --leading-body:    1.6;
   --tracking-display: -.032em;
