@@ -1,8 +1,20 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 96 96" role="img" aria-label="Selo de verificação VerID4U">
-  <circle cx="48" cy="48" r="45" fill="none" stroke="currentColor" stroke-width="2"
-          stroke-dasharray="3.2 5.72" stroke-linecap="round" opacity="0.55"/>
-  <circle cx="48" cy="48" r="37" fill="none" stroke="currentColor" stroke-width="1.5" opacity="0.35"/>
-  <circle cx="48" cy="48" r="30" fill="currentColor"/>
-  <path d="M34 48.6 43.4 58 62 38.4" fill="none" stroke="#FFFFFF"
-        stroke-width="5.4" stroke-linecap="round" stroke-linejoin="round"/>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" role="img"
+     aria-label="Emitido e registrado no VerID4U — verificacao ativa"
+     font-family="system-ui,-apple-system,'Segoe UI',Roboto,Helvetica,Arial,sans-serif">
+  <defs>
+    <path id="vdRingTop" d="M22 100A78 78 0 0 1 178 100" fill="none"/>
+    <path id="vdRingBot" d="M22 100A78 78 0 0 0 178 100" fill="none"/>
+  </defs>
+  <circle cx="100" cy="100" r="96" fill="none" stroke="#1D5BE0" stroke-width="3.2"/>
+  <circle cx="100" cy="100" r="88" fill="none" stroke="#1D5BE0" stroke-width="1.4"/>
+  <text font-size="13.4" font-weight="700" letter-spacing="1.1" fill="#1D5BE0">
+    <textPath href="#vdRingTop" startOffset="50%" text-anchor="middle">EMITIDO E REGISTRADO</textPath>
+  </text>
+  <text font-size="11.2" font-weight="700" letter-spacing=".9" fill="#1D5BE0">
+    <textPath href="#vdRingBot" startOffset="50%" text-anchor="middle">VERIFICA&#199;&#195;O ATIVA &#183; VERID4U.COM</textPath>
+  </text>
+  <g transform="translate(70.4 60) scale(.8)">
+    <path d="M8 16H62V24L40 50L62 76V84H8Z" fill="#1D5BE0"/>
+    <path d="M66 27L44 50L66 73Z" fill="#1D5BE0"/>
+  </g>
 </svg>

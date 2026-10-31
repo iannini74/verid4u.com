@@ -9,6 +9,112 @@ final class Issuer
         return Db::one('SELECT * FROM issuers WHERE tenant_id = ? ORDER BY id ASC LIMIT 1', [$tenantId]);
     }
 
+    /* ------------------------------------------- endereço público do emissor */
+
+    /**
+     * Slug a partir do nome. ASCII, minúsculo, sem acento e sem palavra vazia.
+     * É endereço público e vai em peça impressa, então precisa ser curto e
+     * ditável ao telefone.
+     */
+    public static function slugify(string $name): string
+    {
+        $ascii = @iconv('UTF-8', 'ASCII//TRANSLIT', $name);
+        $base = strtolower((string) ($ascii !== false ? $ascii : $name));
+        $base = preg_replace('/[^a-z0-9]+/', '-', $base) ?? '';
+        $base = trim($base, '-');
+
+        // Palavras que só alongam o endereço sem distinguir ninguém.
+        $drop = ['de', 'da', 'do', 'das', 'dos', 'e', 'em', 'ltda', 'me', 'eireli', 'sa'];
+        $parts = array_values(array_filter(
+            explode('-', $base),
+            static fn (string $w): bool => $w !== '' && !in_array($w, $drop, true)
+        ));
+        $slug = substr(implode('-', array_slice($parts, 0, 5)), 0, 60);
+
+        return rtrim($slug, '-') !== '' ? rtrim($slug, '-') : 'emissor';
+    }
+
+    /** Garante que o emissor tenha slug, resolvendo colisão com sufixo curto. */
+    public static function ensureSlug(int $issuerId, string $name): string
+    {
+        $row = Db::one('SELECT slug FROM issuers WHERE id = ? LIMIT 1', [$issuerId]);
+        $current = (string) ($row['slug'] ?? '');
+        if ($current !== '') {
+            return $current;
+        }
+
+        $wanted = self::slugify($name);
+        for ($try = 0; $try < 12; $try++) {
+            $slug = $try === 0 ? $wanted : $wanted . '-' . substr(bin2hex(random_bytes(2)), 0, 3);
+            try {
+                Db::run('UPDATE issuers SET slug = ? WHERE id = ?', [$slug, $issuerId]);
+                return $slug;
+            } catch (Throwable $e) {
+                // slug tomado: tenta outro sufixo
+            }
+        }
+
+        return 'emissor-' . $issuerId;
+    }
+
+    public static function setCategory(int $tenantId, int $issuerId, string $category): bool
+    {
+        if (!in_array($category, Brand::CATEGORIES, true)) {
+            return false;
+        }
+        Db::run('UPDATE issuers SET category = ? WHERE id = ? AND tenant_id = ?', [$category, $issuerId, $tenantId]);
+
+        return true;
+    }
+
+    /**
+     * Retrato público do emissor, para a página /e/{slug} e para o selo.
+     *
+     * Só agregados: nenhum nome de titular sai daqui. A página do emissor
+     * existe para provar que o emissor está no registro, não para listar
+     * quem estudou lá — isso seria divulgar dado pessoal sem nenhuma
+     * necessidade, e a LGPD chama essa necessidade de finalidade.
+     */
+    public static function publicBySlug(string $slug): ?array
+    {
+        $row = Db::one(
+            'SELECT id, tenant_id, name, slug, legal_id, level, category, created_at
+               FROM issuers WHERE slug = ? LIMIT 1',
+            [$slug]
+        );
+        if ($row === null) {
+            return null;
+        }
+
+        $agg = Db::one(
+            "SELECT COUNT(*) AS total,
+                    SUM(origin = 'issued') AS issued,
+                    SUM(origin = 'registered') AS registered,
+                    SUM(revoked_on IS NOT NULL) AS revoked,
+                    MIN(issued_on) AS first_on,
+                    MAX(issued_on) AS last_on
+               FROM issuances WHERE issuer_id = ?",
+            [(int) $row['id']]
+        ) ?? [];
+
+        return [
+            'id'         => (int) $row['id'],
+            'tenant_id'  => (int) $row['tenant_id'],
+            'name'       => (string) $row['name'],
+            'slug'       => (string) $row['slug'],
+            'legal_id'   => $row['legal_id'],
+            'level'      => (int) $row['level'],
+            'category'   => (string) ($row['category'] ?: Brand::CATEGORY_DEFAULT),
+            'created_at' => $row['created_at'],
+            'total'      => (int) ($agg['total'] ?? 0),
+            'issued'     => (int) ($agg['issued'] ?? 0),
+            'registered' => (int) ($agg['registered'] ?? 0),
+            'revoked'    => (int) ($agg['revoked'] ?? 0),
+            'first_on'   => $agg['first_on'] ?? null,
+            'last_on'    => $agg['last_on'] ?? null,
+        ];
+    }
+
     public static function programs(int $tenantId): array
     {
         return Db::all(

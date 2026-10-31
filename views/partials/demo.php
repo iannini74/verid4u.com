@@ -56,6 +56,7 @@ $verifyUrl = base_url() . $i18n->url('/v/' . $sample);
               <p class="demo-sheet-detail">8 <?= e($i18n->t('label.hours')) ?> · <?= e($i18n->t('modality.presencial')) ?></p>
               <div class="demo-strip">
                 <div class="demo-strip-qr" data-qr="<?= e($verifyUrl) ?>" aria-hidden="true"></div>
+                <?= Brand::mark('open', 'demo-strip-mark') ?>
                 <div>
                   <code><?= e($sample) ?></code>
                   <span>verid4u.com</span>

@@ -1,5 +1,7 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" role="img" aria-label="VerID4U">
-  <rect width="48" height="48" rx="12" fill="#1D5BE0"/>
-  <path d="M14.5 24.6 21 31.1 33.5 17.4" fill="none" stroke="#FFFFFF"
-        stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" role="img" aria-label="VerID4U">
+  <rect width="100" height="100" rx="22" fill="#1D5BE0"/>
+  <g transform="translate(15.17 2.94) scale(0.9412)">
+    <path d="M8 16H62V24L40 50L62 76V84H8Z" fill="#FFFFFF"/>
+    <path d="M66 27L44 50L66 73Z" fill="#FFFFFF"/>
+  </g>
 </svg>

@@ -11,6 +11,7 @@ $nav = [
     'register'   => ['registrar', 'nav.register'],
     'import'     => ['importar', 'nav.import'],
     'email'      => ['email', 'nav.email'],
+    'selo'       => ['selo', 'nav.seal'],
     'dobra'      => ['dobra', 'nav.hero'],
     'issuances'  => ['certificados', 'nav.issuances'],
 ];
@@ -25,14 +26,14 @@ $nav = [
 <link rel="icon" href="/assets/brand/mark-solid.svg" type="image/svg+xml">
 <link rel="preload" href="/assets/fonts/inter-tight-normal-600-700-latin.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="preload" href="/assets/fonts/inter-normal-400-700-latin.woff2" as="font" type="font/woff2" crossorigin>
-<link rel="stylesheet" href="/assets/fonts.css?v=17">
-<link rel="stylesheet" href="/assets/style.css?v=17">
+<link rel="stylesheet" href="/assets/fonts.css?v=18">
+<link rel="stylesheet" href="/assets/style.css?v=18">
 </head>
 <body class="app">
 <header class="app-bar">
   <div class="app-bar-inner">
     <a class="brand" href="<?= e($i18n->url('/app/')) ?>">
-      <svg class="brand-mark" viewBox="0 0 32 32" aria-hidden="true"><path d="M16 2.5 3.5 7v9.2c0 7.4 5 12 12.5 13.8 7.5-1.8 12.5-6.4 12.5-13.8V7Z" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linejoin="round"/><path d="m10.5 16.2 4 4.1 7.2-8" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      <?= Brand::mark('open', 'brand-mark') ?>
       <span class="brand-text">VerID<span class="brand-accent">4U</span></span>
     </a>
 
@@ -54,6 +55,6 @@ $nav = [
 </header>
 
 <main class="app-main"><?= $content ?></main>
-<script src="/assets/app.js?v=17" defer></script>
+<script src="/assets/app.js?v=18" defer></script>
 </body>
 </html>

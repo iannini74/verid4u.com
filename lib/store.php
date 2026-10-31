@@ -25,7 +25,8 @@ final class Store
                     holder_name, holder_display,
                     issued_on, valid_from, valid_until, revoked_on, revoke_reason,
                     version, superseded_by, content_hash, source_sha256, source_filename,
-                    anchored_on, is_demo
+                    anchored_on, is_demo,
+                    (SELECT slug FROM issuers WHERE issuers.id = issuances.issuer_id) AS issuer_slug
              FROM issuances WHERE code_base = ? LIMIT 1',
             [$base]
         );
@@ -50,6 +51,10 @@ final class Store
             'issuer_name'   => (string) $row['issuer_name'],
             'issuer_cnpj'   => $row['issuer_legal_id'],
             'issuer_level'  => (int) $row['issuer_level'],
+            // O nome do emissor é retrato do momento da emissão; o endereço
+            // público é vivo. Os dois convivem: o retrato diz o que foi
+            // atestado, o endereço leva a quem atestou.
+            'issuer_slug'   => $row['issuer_slug'] ?? null,
             'registered_by' => $row['registered_by'] ?? null,
             'holder_name'   => (string) $row['holder_name'],
             'holder_display'=> (string) $row['holder_display'],

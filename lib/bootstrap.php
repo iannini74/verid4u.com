@@ -13,6 +13,8 @@ require __DIR__ . '/crypto.php';
 require __DIR__ . '/db.php';
 require __DIR__ . '/code.php';
 require __DIR__ . '/store.php';
+require __DIR__ . '/brand.php';
+require __DIR__ . '/receipt.php';
 require __DIR__ . '/auth.php';
 require __DIR__ . '/issuer.php';
 require __DIR__ . '/import.php';

@@ -251,4 +251,52 @@ return [
 
     'generic.cancel' => 'Cancelar',
     'generic.saved' => 'Alterações salvas.',
+
+    /* ------------------------------------------------------ central do selo */
+    'nav.seal' => 'Selo',
+    'seal.title' => 'Selo e tarja',
+    'seal.intro' => 'Três peças: o selo que vai no seu site, a tarja que vai no certificado e o endereço público para onde as duas apontam.',
+    'seal.no_issuer' => 'Nenhum emissor configurado nesta conta ainda.',
+
+    'seal.site.title' => 'Selo do site',
+    'seal.site.body' => 'Servido pelo nosso domínio, e não entregue como arquivo. É de propósito: um PNG que qualquer um baixa provaria exatamente nada. Vindo daqui, o selo só existe enquanto você existir no registro — e é por isso que ele pode dizer “verificação ativa” sem mentir.',
+    'seal.preview.alt' => 'Prévia do selo do emissor',
+    'seal.variant.horizontal' => 'Horizontal',
+    'seal.variant.dark' => 'Horizontal, fundo escuro',
+    'seal.variant.compact' => 'Compacto',
+    'seal.min' => 'altura mínima {px}px',
+    'seal.min.why' => 'Os mínimos não são estéticos, são de leitura: medidos, abaixo deles o qualificador e a linha de verificação ficam com menos de 8px de letra e deixam de ser lidos. O que sobra é uma marca bonita que não afirma nada.',
+    'seal.compact.note' => 'O compacto não leva o qualificador: não há largura para ele sem reduzir a letra abaixo do legível, e selo com letra ilegível é enfeite. Use o horizontal onde houver espaço — é ele que diz o ramo.',
+
+    'seal.embed.title' => 'Código para colar',
+    'seal.embed.body' => 'Cole no rodapé, na página “sobre” ou ao lado da descrição dos cursos. O link leva à sua página pública no registro.',
+    'seal.copy' => 'Copiar código',
+    'seal.copied' => 'Copiado',
+
+    'seal.rules.title' => 'Como usar sem estragar',
+    'seal.rules.1' => 'Não baixe nem reproduza o selo como imagem própria. O selo tem de ser carregado daqui a cada visita — é a carga que faz a verificação ser ativa.',
+    'seal.rules.2' => 'Não altere cor, texto, proporção nem recorte. O selo alterado deixa de corresponder ao que o registro afirma.',
+    'seal.rules.3' => 'Mantenha o link. Selo sem link é adesivo: quem desconfia não tem para onde ir conferir.',
+    'seal.rules.4' => 'Respeite a altura mínima. Abaixo dela o qualificador e a linha de verificação somem, e o que sobra é só uma marca.',
+
+    'seal.strip.title' => 'Tarja do certificado',
+    'seal.strip.body' => 'Para o certificado que você já produz no seu modelo. A ordem é fixa — QR, marca, código, domínio — porque quem confere aprende o lugar de cada coisa uma vez só.',
+    'seal.strip.rules' => 'Mínimo de 14 mm de altura no impresso e 54px na tela. O QR não desce de 12 mm, com correção de erro M: QR pequeno em papel fotocopiado deixa de ler, e aí a tarja só ocupa espaço.',
+    'seal.strip.where' => 'Ver os certificados emitidos, com a tarja já montada',
+
+    'seal.ramo.title' => 'Ramo declarado',
+    'seal.ramo.body' => 'É o que imprime o qualificador no selo. O texto não é editável de propósito: selo com texto livre vira banner, e banner não prova nada.',
+    'seal.ramo.invalid' => 'Ramo não reconhecido.',
+    'seal.ramo.ensino' => 'Ensino',
+    'seal.ramo.treinamento' => 'Treinamento',
+    'seal.ramo.ambos' => 'Ensino e treinamento',
+    'seal.ramo.participacao' => 'Participação em eventos',
+    'seal.ramo.profissional' => 'Certificação profissional',
+    'seal.save' => 'Salvar ramo',
+    'seal.saved' => 'Ramo salvo. O selo já sai com o qualificador novo.',
+
+    'seal.page.title' => 'Sua página pública',
+    'seal.page.body' => 'O destino do selo. Mostra seu nome, o ramo, o nível de verificação e quantos certificados existem no registro — e nenhum nome de titular, nunca. Este endereço não muda: trocá-lo cegaria todo selo já instalado.',
+    'seal.state' => 'O que o selo diz hoje',
+    'seal.level0' => 'Enquanto o nível de verificação for 0, o selo diz “Registra no VerID4U” e não “Emissor verificado”. A palavra verificado precisa de documento conferido do outro lado — sem isso seria propaganda, e propaganda no selo estraga o selo de todo mundo.',
 ];

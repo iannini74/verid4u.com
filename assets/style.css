@@ -89,7 +89,7 @@ code { font-family: var(--font-mono); font-size: .92em; }
 .header-row { display: flex; align-items: center; gap: var(--space-5); min-height: 68px; }
 
 .brand { display: inline-flex; align-items: center; gap: 10px; text-decoration: none; color: var(--ink); }
-.brand-mark { width: 30px; height: 30px; flex: none; }
+.brand-mark { height: 23px; width: auto; flex: none; }
 .brand-text { font-family: var(--font-display); font-weight: 700; font-size: 21px; letter-spacing: -.03em; }
 .brand-accent { color: var(--brand); }
 
@@ -188,7 +188,7 @@ code { font-family: var(--font-mono); font-size: .92em; }
 @keyframes float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }
 @media (prefers-reduced-motion: reduce) { .hero-card { animation: none; } }
 .hero-card-top { display: flex; align-items: center; gap: var(--space-3); margin-bottom: var(--space-5); }
-.hero-card-seal { width: 46px; height: 46px; color: var(--ok); flex: none; }
+.hero-card-seal { height: 34px; width: auto; color: var(--ok); flex: none; }
 .hero-card-verdict { font-family: var(--font-display); font-size: 23px; font-weight: 700; letter-spacing: -.02em; color: var(--ok); line-height: 1.1; }
 .hero-card-code { font-family: var(--font-mono); font-size: var(--text-caption); color: var(--ink-subtle); letter-spacing: .05em; }
 .hero-card dl { display: grid; gap: var(--space-4) var(--space-5); grid-template-columns: 1fr 1fr; margin: 0; }
@@ -390,7 +390,7 @@ code { font-family: var(--font-mono); font-size: .92em; }
 .verdict-code { font-size: var(--text-overline); letter-spacing: var(--tracking-overline); text-transform: uppercase; color: var(--ink-subtle); margin: 0 0 var(--space-4); }
 .verdict-code code { font-family: var(--font-mono); font-size: var(--text-body-s); letter-spacing: .07em; color: var(--ink); text-transform: none; margin-left: var(--space-2); }
 .verdict-headline { display: flex; align-items: center; gap: var(--space-4); font-family: var(--font-display); font-size: clamp(28px, 4.6vw, 44px); font-weight: 700; letter-spacing: var(--tracking-display); line-height: 1.05; margin: 0 0 var(--space-3); }
-.verdict-seal { width: 56px; height: 56px; flex: none; }
+.verdict-seal { height: 42px; width: auto; flex: none; }
 .verdict-explain { font-size: var(--text-body-l); color: var(--ink-muted); margin: 0; max-width: 52ch; }
 
 .verdict-verified { background: var(--ok-tint); }
@@ -544,8 +544,6 @@ code { font-family: var(--font-mono); font-size: .92em; }
 .sheet-verify { font-size: 12px; color: #566376; margin: 0 0 2px; }
 .sheet-code { margin: 0; }
 .sheet-code code { font-family: var(--font-mono); font-size: 15px; font-weight: 700; letter-spacing: .06em; }
-.cert-seal { width: 34px; height: 34px; color: #0E7C5A; flex: none; }
-.cert-seal svg { width: 100%; height: 100%; }
 
 @media print {
   .no-print { display: none !important; }
@@ -683,6 +681,7 @@ code { font-family: var(--font-mono); font-size: .92em; }
 .demo-strip { display: flex; align-items: center; gap: var(--space-4); text-align: left; border-top: 1px dashed var(--line); padding-top: var(--space-4); }
 .demo-strip-qr { width: 54px; height: 54px; flex: none; background: #fff; border-radius: 4px; padding: 3px; }
 .demo-strip-qr img, .demo-strip-qr canvas { width: 100%; height: 100%; display: block; }
+.demo-strip-mark { height: 22px; width: auto; flex: none; color: var(--brand); }
 .demo-strip code { display: block; font-family: var(--font-mono); font-size: var(--text-body-s); font-weight: 700; letter-spacing: .04em; }
 .demo-strip span { font-size: var(--text-caption); color: var(--ink-subtle); }
 
@@ -738,4 +737,210 @@ code { font-family: var(--font-mono); font-size: .92em; }
 @media (max-width: 860px) {
   .faq-grid { grid-template-columns: 1fr; }
   .faq-grid > h2 { position: static; }
+}
+
+
+/* ===================================================== selos e comprovante
+   A marca tem duas posicoes e larguras diferentes em cada uma. Todo tamanho
+   daqui para baixo e dado em altura, com largura automatica: travar largura
+   numa marca que muda de largura e o jeito mais rapido de deformar o desenho.
+   ====================================================================== */
+
+/* .button foi usado em cinco telas sem nunca ter existido no CSS: os botoes
+   sairam com o estilo cru do navegador. Alias de .btn resolve sem mexer no
+   HTML de todas elas. */
+.button {
+  display: inline-flex; align-items: center; gap: var(--space-2);
+  font: inherit; font-weight: 600; font-size: var(--text-body-s);
+  padding: 10px var(--space-5); border-radius: var(--radius-pill);
+  border: 1px solid transparent; cursor: pointer; text-decoration: none;
+  background: var(--brand); color: #FFFFFF;
+  transition: background var(--dur) var(--ease), border-color var(--dur) var(--ease);
+}
+.button:hover { background: var(--brand-strong); }
+.button:active { transform: translateY(1px); }
+.button.ghost { background: transparent; color: var(--ink); border-color: var(--line-strong); }
+.button.ghost:hover { border-color: var(--ink); background: var(--surface-sunken); }
+
+.sr-only {
+  position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px;
+  overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0;
+}
+
+/* --------------------------------------------- pagina publica do emissor */
+
+.issuer-head { padding-bottom: var(--space-5); }
+.issuer-id { display: flex; align-items: flex-start; gap: var(--space-5); margin: var(--space-3) 0 var(--space-4); }
+.issuer-id-mark { display: inline-flex; color: var(--brand); flex: none; padding-top: 6px; }
+.issuer-mark { height: 38px; width: auto; }
+.issuer-id h1 { margin: 0; }
+.issuer-qualifier {
+  margin: var(--space-2) 0 0; font-size: var(--text-overline); font-weight: 700;
+  letter-spacing: var(--tracking-overline); text-transform: uppercase; color: var(--ink-muted);
+}
+
+.issuer-counts {
+  display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 1px; margin: 0 0 var(--space-6);
+  background: var(--line); border: 1px solid var(--line); border-radius: var(--radius-md); overflow: hidden;
+}
+.issuer-counts > div { background: var(--surface); padding: var(--space-4) var(--space-5); }
+.issuer-counts dt {
+  font-size: var(--text-caption); color: var(--ink-subtle);
+  text-transform: uppercase; letter-spacing: var(--tracking-overline);
+}
+.issuer-counts dd {
+  margin: 6px 0 0; font-family: var(--font-display); font-size: var(--text-display-m);
+  font-weight: 700; line-height: 1; font-variant-numeric: tabular-nums;
+}
+.issuer-counts .issuer-since { font-size: var(--text-body); font-weight: 600; font-family: inherit; }
+
+.issuer-privacy { margin: var(--space-6) 0 var(--space-7); }
+.issuer-privacy h2 { font-size: var(--text-body-l); margin: 0 0 var(--space-3); }
+.issuer-privacy p { color: var(--ink-muted); margin: 0; max-width: 62ch; }
+
+/* ------------------------------------------- oferta do comprovante na /v */
+
+.receipt-offer-body { font-size: var(--text-body-s); color: var(--ink-muted); margin: 0 0 var(--space-4); }
+
+/* ----------------------------------------- selo 4: carimbo do comprovante */
+
+.sheet-receipt { max-width: 188mm; }
+.receipt-head {
+  display: flex; align-items: baseline; justify-content: space-between;
+  gap: var(--space-4); border-bottom: 1px solid var(--line); padding-bottom: var(--space-3);
+}
+.receipt-brand { display: inline-flex; align-items: center; gap: 8px; font-weight: 700; color: var(--brand); }
+.receipt-mark { height: 17px; width: auto; }
+.receipt-kicker {
+  margin: 0; font-size: var(--text-caption); text-transform: uppercase;
+  letter-spacing: var(--tracking-overline); color: var(--ink-subtle);
+}
+.receipt-title { font-family: var(--font-display); font-size: var(--text-display-m); margin: var(--space-5) 0 var(--space-5); }
+.receipt-lead { color: var(--ink-muted); max-width: 62ch; }
+.receipt-typed code { font-family: var(--font-mono); font-weight: 700; letter-spacing: .06em; }
+.receipt-section {
+  margin: var(--space-6) 0 var(--space-3); font-size: var(--text-overline); font-weight: 700;
+  letter-spacing: var(--tracking-overline); text-transform: uppercase; color: var(--ink-subtle);
+}
+
+/* O carimbo. Borda dupla porque e carimbo, e carimbo tem anel. A cunha
+   encaixa so nos tres resultados que batem; revogado e nao encontrado voltam
+   a cunha solta, porque nada encaixou. */
+.stamp {
+  display: flex; align-items: center; gap: var(--space-5);
+  padding: var(--space-5) var(--space-5);
+  border: 2px solid currentColor; border-radius: var(--radius-md);
+  box-shadow: inset 0 0 0 1.5px var(--surface), inset 0 0 0 3px currentColor;
+  color: var(--ok);
+}
+.stamp-expiring, .stamp-expired { color: var(--warn); }
+.stamp-revoked { color: var(--bad); }
+.stamp-notfound { color: var(--ink-subtle); }
+.stamp-mark { height: 42px; width: auto; flex: none; }
+.stamp-text { min-width: 0; }
+.stamp-verdict {
+  margin: 0; font-family: var(--font-display); font-size: var(--text-display-m);
+  font-weight: 700; line-height: 1; text-transform: uppercase; letter-spacing: .01em;
+}
+.stamp-line {
+  margin: 6px 0 0; font-size: var(--text-caption); font-weight: 700;
+  text-transform: uppercase; letter-spacing: var(--tracking-overline);
+}
+.stamp-when { margin: var(--space-3) 0 0; font-size: var(--text-body-s); color: var(--ink); }
+.stamp-code { margin: 6px 0 0; display: flex; flex-wrap: wrap; align-items: baseline; gap: 10px; }
+.stamp-code code { font-family: var(--font-mono); font-weight: 700; letter-spacing: .05em; color: var(--ink); }
+.stamp-code span { font-size: var(--text-caption); color: var(--ink-muted); }
+
+.receipt-foot {
+  display: flex; align-items: flex-start; gap: var(--space-5);
+  margin-top: var(--space-6); border-top: 1px dashed var(--line-strong); padding-top: var(--space-5);
+}
+.receipt-foot-url { margin: 0 0 6px; font-family: var(--font-mono); font-size: var(--text-caption); color: var(--ink); word-break: break-all; }
+.receipt-foot-note { margin: 0; font-size: var(--text-caption); color: var(--ink-subtle); max-width: 68ch; }
+
+/* ------------------------------- selos 2 e 3 dentro do certificado */
+
+.sheet-strip-mark { height: 24px; width: auto; flex: none; color: var(--brand); }
+.sheet-domain {
+  margin: 2px 0 0; font-size: var(--text-caption); font-weight: 700;
+  letter-spacing: var(--tracking-overline); color: var(--ink-subtle);
+}
+.cert-round-seal { height: 96px; width: auto; flex: none; color: var(--brand); }
+.cert-round-seal .cert-ring { font-family: var(--font-sans); }
+
+/* ------------------------------------------------ central do selo (painel) */
+
+.app-h3 { font-size: var(--text-body-l); font-weight: 700; margin: var(--space-6) 0 var(--space-2); }
+.seal-card { margin-bottom: var(--space-5); }
+
+.seal-stage {
+  display: flex; flex-wrap: wrap; align-items: flex-end; gap: var(--space-5);
+  margin: var(--space-4) 0 var(--space-4);
+}
+.seal-stage figure {
+  margin: 0; padding: var(--space-4); border: 1px solid var(--line);
+  border-radius: var(--radius-md); background: var(--surface-sunken);
+}
+.seal-stage-dark { background: #0C1119 !important; border-color: #2E3F52 !important; }
+.seal-stage-dark figcaption { color: #9AA7B8; }
+.seal-stage figcaption {
+  margin-top: var(--space-3); font-size: var(--text-caption); color: var(--ink-subtle);
+}
+
+.snippet {
+  margin: var(--space-3) 0 var(--space-4); padding: var(--space-4);
+  background: var(--surface-ink); color: var(--ink-on-ink);
+  border-radius: var(--radius-md); overflow-x: auto;
+}
+.snippet code { font-family: var(--font-mono); font-size: var(--text-caption); line-height: 1.6; white-space: pre; }
+
+.seal-rules { margin-top: var(--space-6); }
+.seal-rules ul { margin: 0; padding-left: 1.1em; display: grid; gap: var(--space-3); }
+.seal-rules li { font-size: var(--text-body-s); color: var(--ink-muted); }
+
+.strip-demo {
+  display: flex; align-items: center; gap: var(--space-4);
+  margin: var(--space-4) 0; padding: var(--space-5);
+  background: #FFFFFF; color: #0A1020;
+  border: 1px solid var(--line-strong); border-radius: var(--radius-md);
+}
+.strip-demo .sheet-code code { color: #0A1020; }
+.strip-demo .sheet-verify, .strip-demo .sheet-domain { color: #566376; }
+
+.choices { border: 0; padding: 0; margin: var(--space-4) 0 0; display: grid; gap: var(--space-2); }
+.choice {
+  display: grid; grid-template-columns: auto 1fr; align-items: baseline;
+  gap: 4px var(--space-3); padding: var(--space-3) var(--space-4);
+  border: 1px solid var(--line); border-radius: var(--radius-md); cursor: pointer;
+}
+.choice:hover { border-color: var(--line-strong); background: var(--surface-sunken); }
+.choice:focus-within { border-color: var(--brand); }
+.choice input { margin: 0; accent-color: var(--brand); }
+.choice-label { font-weight: 600; }
+.choice-sample {
+  grid-column: 2; font-size: var(--text-caption); color: var(--ink-subtle);
+  letter-spacing: var(--tracking-overline); font-family: var(--font-mono);
+}
+
+.form-narrow { max-width: 46rem; }
+.seal-url { margin: var(--space-3) 0 var(--space-5); font-family: var(--font-mono); font-size: var(--text-body-s); word-break: break-all; }
+
+@media (max-width: 640px) {
+  .issuer-id { gap: var(--space-4); }
+  .stamp { flex-direction: column; align-items: flex-start; gap: var(--space-4); }
+  .receipt-foot { flex-direction: column; }
+}
+
+@media print {
+  /* No impresso a medida que importa e a fisica. 14 mm de tarja, 26 mm de
+     selo circular: sao os minimos em que o QR e o texto do anel ainda leem
+     depois de uma fotocopia. Abaixo disso a peca ocupa espaco e nao serve. */
+  .sheet-strip-mark { height: 8mm; }
+  .cert-round-seal { height: 26mm; }
+  .cert-qr, .share-qr { width: 14mm; height: 14mm; }
+  .stamp { break-inside: avoid; color: #0A1020; box-shadow: inset 0 0 0 1.5px #FFFFFF, inset 0 0 0 3px #0A1020; }
+  .stamp-mark { height: 11mm; }
+  .receipt-foot { break-inside: avoid; }
+  .sheet-receipt { max-width: none; }
 }

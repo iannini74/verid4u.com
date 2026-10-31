@@ -40,6 +40,7 @@ final class Panel
             'importar'     => self::importar($i18n, $user, $isPost, $sub),
             'email'        => self::emailSettings($i18n, $user, $isPost),
             'dobra'        => self::heroPanel($i18n, $user),
+            'selo'         => self::sealPanel($i18n, $user, $isPost),
             'certificados' => self::issuances($i18n, $user),
             'revogar'      => self::revoke($i18n, $user, $isPost),
             'certificado'  => self::certificate($i18n, $user, (string) ($sub[1] ?? '')),
@@ -96,6 +97,14 @@ final class Panel
             } elseif (!hash_equals($pass, $pass2)) {
                 $error = $i18n->a('activate.mismatch');
             } else {
+                // O endereço público do emissor sai limpo quando dá, porque ele
+                // vai em peça impressa e precisa ser ditável. Nunca muda depois:
+                // trocar o endereço cegaria todo selo já instalado por aí.
+                $slug = Issuer::slugify($old['org']);
+                if (Db::one('SELECT id FROM issuers WHERE slug = ? LIMIT 1', [$slug]) !== null) {
+                    $slug .= '-' . substr(bin2hex(random_bytes(2)), 0, 3);
+                }
+
                 $pdo = Db::pdo();
                 $pdo->beginTransaction();
                 try {
@@ -105,9 +114,16 @@ final class Panel
                         'free',
                     ]);
                     $tenantId = (int) $pdo->lastInsertId();
-                    Db::run('INSERT INTO issuers (tenant_id, name, legal_id, level) VALUES (?, ?, ?, 0)', [
-                        $tenantId, $old['org'], $old['legal'] !== '' ? $old['legal'] : null,
-                    ]);
+                    Db::run(
+                        'INSERT INTO issuers (tenant_id, name, legal_id, level, slug, category) VALUES (?, ?, ?, 0, ?, ?)',
+                        [
+                            $tenantId,
+                            $old['org'],
+                            $old['legal'] !== '' ? $old['legal'] : null,
+                            $slug,
+                            Brand::CATEGORY_DEFAULT,
+                        ]
+                    );
                     Db::run(
                         'INSERT INTO users (tenant_id, name, email_enc, email_index, role, password_hash) VALUES (?, ?, ?, ?, ?, ?)',
                         [
@@ -135,6 +151,53 @@ final class Panel
             }
         }
         self::shell($i18n, 'app/activate', ['error' => $error, 'old' => $old], null, '');
+    }
+
+    /* --------------------------------------------------------------- selo */
+
+    /**
+     * A central do selo.
+     *
+     * O que o emissor escolhe aqui é o ramo — e só. O texto do selo não é
+     * editável de propósito: selo com texto livre vira banner, e banner não
+     * prova nada. O qualificador sai do ramo declarado; o resto sai do
+     * estado do emissor no registro, que ele não controla.
+     */
+    private static function sealPanel(I18n $i18n, array $user, bool $isPost): void
+    {
+        $tenantId = (int) $user['tenant_id'];
+        $issuerRow = Issuer::defaultIssuer($tenantId);
+
+        if ($issuerRow === null) {
+            self::shell($i18n, 'app/seal', ['issuer' => null, 'slug' => '', 'error' => null], $user, 'selo');
+            return;
+        }
+
+        $issuerId = (int) $issuerRow['id'];
+        $error = null;
+
+        if ($isPost) {
+            $ramo = (string) ($_POST['ramo'] ?? '');
+            if (Issuer::setCategory($tenantId, $issuerId, $ramo)) {
+                Auth::audit('issuer.category', 'issuer', (string) $issuerId, ['ramo' => $ramo]);
+                redirect($i18n->url('/app/selo?ok=seal.saved'));
+                return;
+            }
+            $error = $i18n->a('seal.ramo.invalid');
+        }
+
+        // O endereço público pode faltar em emissor criado antes desta tela.
+        $slug = (string) ($issuerRow['slug'] ?? '');
+        if ($slug === '') {
+            $slug = Issuer::ensureSlug($issuerId, (string) $issuerRow['name']);
+        }
+
+        self::shell($i18n, 'app/seal', [
+            'issuer' => Issuer::publicBySlug($slug),
+            'slug'   => $slug,
+            'error'  => $error,
+            'flash'  => self::flash($i18n),
+        ], $user, 'selo');
     }
 
     /* ------------------------------------------------------------ entrada */

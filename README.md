@@ -40,6 +40,60 @@ Para ver funcionando sem criar conta: baixe
 e solte-o em «Não tem o código?» na home. Ele leva ao registro
 `T3R9-M2XK-8PVR`.
 
+## Os quatro selos
+
+A marca é um bloco com uma cunha faltando e a cunha ao lado. Duas posições, e
+a diferença entre elas é toda a semântica do produto:
+
+- **cunha solta** — o registro existe (`registrado`)
+- **cunha encaixada** — foi conferido (`conferido`)
+
+A fresta nunca fecha de todo. Se fechasse, a marca viraria um bloco só e o
+olho perderia a prova de que são duas peças. Tudo isso vive em `lib/brand.php`,
+em três constantes de path e nenhuma máscara — sem referência a `id`, a marca
+atravessa favicon, e-mail, SVG servido como imagem e PDF impresso sem quebrar.
+
+| Selo | Onde | Cunha | Mínimo |
+| --- | --- | --- | --- |
+| 1 — do emissor | site do cliente, via `/selo/{emissor}.svg` | encaixada (solta no nível 0) | 44px horizontal, 88px compacto |
+| 2 — tarja | certificado que o cliente já produz | solta | 14 mm impresso, 54px tela |
+| 3 — circular | certificados emitidos por nós | encaixada | 26 mm de diâmetro |
+| 4 — carimbo | comprovante de autenticação | encaixada; solta em revogado e não encontrado | — |
+
+Três coisas que não são escolha de gosto:
+
+**O selo do emissor não é entregue como arquivo.** Ele é servido daqui, com
+cinco minutos de cache. Um PNG que qualquer um baixa provaria exatamente nada;
+vindo daqui, o selo só existe enquanto o emissor existir no registro — e é por
+isso que a linha "verificação ativa" pode ser dita sem mentir. Pelo mesmo
+motivo `image/svg+xml` saiu do `ExpiresByType` no `.htaccess`: trinta dias de
+cache fariam o selo de um emissor que saiu do registro continuar afirmando
+"verificado" por um mês.
+
+**Emissor desconhecido recebe 200, não 404.** Um 404 devolveria imagem
+quebrada, e imagem quebrada não informa quem está olhando a página: some do
+jeito que um selo falso gostaria de sumir. O endereço responde com um selo
+cinza, de cunha solta, dizendo "selo não reconhecido". O status HTTP serve à
+máquina; o desenho serve à pessoa.
+
+**O carimbo do comprovante não diz "verificação ativa".** No papel não há
+verificação ativa nenhuma. O que há é a data, a hora com fuso, o código próprio
+e o convite a reconsultar. Um comprovante que se dissesse ativo mentiria no dia
+seguinte a uma revogação — que é justamente o dia em que ele mais importa.
+
+Os mínimos de tamanho foram medidos, não estimados. O selo circular estava
+especificado em 18 mm no estudo; a 18 mm a linha de baixo do anel tem 31
+caracteres dando a volta em meia circunferência, o que põe a maiúscula em
+1,0 mm — ilegível depois de uma fotocópia. 26 mm dão 1,5 mm, que é o piso.
+O qualificador do selo horizontal subiu de 7,8 para 9,2 unidades pela mesma
+conta: a 44px de uso, 7,8 davam 5,4px de letra.
+
+O texto do selo não é editável em lugar nenhum do painel. O cliente escolhe o
+ramo — ensino, treinamento, ambos, participação, certificação profissional — e
+o ramo imprime o qualificador. Selo com texto livre vira banner, e banner não
+prova nada.
+
+
 ## Stack
 
 PHP 8 sem dependências, sem etapa de build. Roda direto na hospedagem
@@ -69,6 +123,9 @@ compartilhada da Hostinger.
 | `/` | Redireciona para o idioma detectado |
 | `/{idioma}/` | Landing com o verificador |
 | `/{idioma}/v/{codigo}` | Resultado da verificação (`noindex`) |
+| `/{idioma}/e/{emissor}` | Página pública do emissor — para onde o selo aponta |
+| `/selo/{emissor}.svg` | Selo do emissor, servido por nós. Fora do idioma: o endereço vai colado em site de terceiro e não pode mudar |
+| `/c/{codigo}` | Comprovante de autenticação. Fora do idioma: sai impresso |
 | `/api/v1/verify/{codigo}` | Verificação em JSON |
 | `/api/v1/lookup` | `POST sha256=…` — acha o registro pela impressão digital do arquivo |
 | `/api/v1/health` | Estado do serviço e versão do esquema. Não devolve dado nenhum |
@@ -85,6 +142,7 @@ compartilhada da Hostinger.
 | `/{idioma}/app/importar` | Importação em lote, em três passos |
 | `/{idioma}/app/email` | Estado do envio, teste e lista de supressão |
 | `/{idioma}/app/certificados` | Lista, revogação e impressão |
+| `/{idioma}/app/selo` | Central do selo: prévia, código para colar, tarja e ramo declarado |
 
 Idiomas do lado público: `pt-br`, `pt`, `es`, `en`. O painel sai em pt-BR;
 `i18n/app.<locale>.php` já é o lugar das traduções quando houver cliente

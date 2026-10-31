@@ -39,6 +39,139 @@ if (($segments[0] ?? '') === 'sitemap.xml') {
     exit;
 }
 
+// ------------------------------------------- selo público do emissor
+// Fora do sistema de idioma de propósito: este endereço vai colado no HTML
+// de sites de terceiros e em peça impressa. Se ele mudasse com o idioma do
+// visitante, cada selo instalado passaria a apontar para um lugar diferente.
+if (($segments[0] ?? '') === 'selo') {
+    $pedido = (string) ($segments[1] ?? '');
+    $slug = substr($pedido, -4) === '.svg' ? strtolower(substr($pedido, 0, -4)) : '';
+
+    header('Content-Type: image/svg+xml; charset=UTF-8');
+    header('X-Content-Type-Options: nosniff');
+    header('X-Robots-Tag: noindex');
+    header("Content-Security-Policy: default-src 'none'; style-src 'unsafe-inline'");
+
+    // Cinco minutos. O selo afirma verificação ativa, então não pode ficar
+    // meses em cache dizendo que um emissor existe depois de ele sair — e
+    // também não pode bater aqui a cada visita de cada página do cliente.
+    header('Cache-Control: public, max-age=300');
+    header('Expires: ' . gmdate('D, d M Y H:i:s', time() + 300) . ' GMT');
+
+    $idioma = strtolower((string) ($_GET['l'] ?? 'pt-br'));
+    $i18nSelo = new I18n(I18n::isLocale($idioma) ? $idioma : 'pt-br');
+    $variante = ($_GET['v'] ?? '') === 'compacto' ? 'compacto' : 'horizontal';
+    $escuro = ($_GET['t'] ?? '') === 'escuro';
+
+    $emissor = null;
+    if (preg_match('/^[a-z0-9][a-z0-9-]{0,79}$/', $slug) === 1) {
+        try {
+            $emissor = Issuer::publicBySlug($slug);
+        } catch (Throwable $e) {
+            error_log('[verid4u] selo: ' . $e->getMessage());
+        }
+    }
+
+    if ($emissor === null) {
+        echo Brand::voidBadge(
+            $i18nSelo->t('badge.void'),
+            $i18nSelo->t('badge.void.hint'),
+            $escuro
+        );
+        exit;
+    }
+
+    // Nível 0 não ganha a palavra "verificado". Ele registra no VerID4U, e é
+    // só isso que o selo pode dizer sem passar a ser propaganda.
+    $conferido = (int) $emissor['level'] >= 1;
+
+    echo Brand::issuerBadge([
+        'name'         => $emissor['name'],
+        'verified'     => $i18nSelo->t($conferido ? 'badge.verified' : 'badge.registers'),
+        'qualifier'    => Brand::qualifier($emissor['category'], $i18nSelo),
+        'active'       => $i18nSelo->t('badge.active'),
+        'active_short' => $i18nSelo->t('badge.active.short'),
+        'fit'          => $conferido,
+    ], $variante, $escuro);
+    exit;
+}
+
+// ------------------------------------------ comprovante de autenticação
+// Também fora do idioma: o comprovante sai impresso com a URL no pé, e o
+// papel não se traduz depois. O idioma do comprovante é o da consulta que
+// o gerou, guardado junto com o retrato.
+if (($segments[0] ?? '') === 'c') {
+    $ehPost = ($_SERVER['REQUEST_METHOD'] ?? 'GET') === 'POST';
+
+    if ($ehPost) {
+        // Escrita pública sem sessão. A defesa é proporcional ao estrago:
+        // o pior que um pedido forjado consegue é criar uma linha de retrato.
+        // Então basta exigir que o pedido tenha nascido aqui e limitar o ritmo.
+        $origem = (string) ($_SERVER['HTTP_ORIGIN'] ?? '');
+        $referer = (string) ($_SERVER['HTTP_REFERER'] ?? '');
+        $daCasa = $origem !== ''
+            ? $origem === base_url()
+            : ($referer !== '' && strncmp($referer, base_url() . '/', strlen(base_url()) + 1) === 0);
+
+        $idioma = strtolower((string) ($_POST['l'] ?? 'pt-br'));
+        $idioma = I18n::isLocale($idioma) ? $idioma : 'pt-br';
+        $normalizado = Code::normalize((string) ($_POST['codigo'] ?? ''));
+
+        if (!$daCasa || !Code::isValid($normalizado) || rate_limit_exceeded('receipt', 12, 600)) {
+            // Volta para a verificação em vez de dar erro: quem está do outro
+            // lado veio conferir um certificado, não administrar a nossa fila.
+            redirect('/' . $idioma . '/v/' . Code::format($normalizado), 303);
+        }
+
+        try {
+            $registro = Store::find(Code::base($normalizado));
+            $base = Receipt::mint(
+                Code::base($normalizado),
+                $registro === null ? 'notfound' : (string) $registro['state'],
+                $registro,
+                $idioma
+            );
+        } catch (Throwable $e) {
+            error_log('[verid4u] comprovante: ' . $e->getMessage());
+            $base = null;
+        }
+
+        if ($base === null) {
+            redirect('/' . $idioma . '/v/' . Code::format($normalizado), 303);
+        }
+        redirect('/c/' . Code::format(Code::full($base)), 303);
+    }
+
+    security_headers(true);
+    $base = Receipt::normalize((string) ($segments[1] ?? ''));
+    $comprovante = null;
+
+    if (Code::isValid($base)) {
+        try {
+            $comprovante = Receipt::find(Code::base($base));
+        } catch (Throwable $e) {
+            error_log('[verid4u] comprovante: ' . $e->getMessage());
+        }
+    }
+    if ($comprovante === null) {
+        http_response_code(404);
+    }
+
+    $i18nRec = new I18n($comprovante !== null ? $comprovante['locale'] : I18n::detect());
+    render(
+        'receipt',
+        [
+            'i18n' => $i18nRec,
+            'receipt' => $comprovante,
+            'typed' => Code::isValid($base)
+                ? Receipt::display(Code::base($base))
+                : (string) ($segments[1] ?? ''),
+        ],
+        'app/print'
+    );
+    exit;
+}
+
 // -------------------------------------------------------------------- API
 if (($segments[0] ?? '') === 'api') {
     header('Content-Type: application/json; charset=UTF-8');
@@ -460,6 +593,30 @@ if ($route === '') {
         Hero::recordImpression((string) ($hv['slug'] ?? ''), $i18n->locale());
     }
     render('home', ['i18n' => $i18n, 'error' => null, 'typed' => '', 'hv' => $hv]);
+    exit;
+}
+
+// ----------------------------------------- página pública do emissor
+// Para onde o selo aponta. Só agregado: nenhum nome de titular aqui.
+if ($route === 'e') {
+    security_headers();
+    $slug = strtolower((string) ($segments[1] ?? ''));
+    $emissor = null;
+
+    if (preg_match('/^[a-z0-9][a-z0-9-]{0,79}$/', $slug) === 1) {
+        try {
+            $emissor = Issuer::publicBySlug($slug);
+        } catch (Throwable $e) {
+            error_log('[verid4u] emissor: ' . $e->getMessage());
+        }
+    }
+    if ($emissor === null) {
+        http_response_code(404);
+        render('home', ['i18n' => $i18n, 'error' => $i18n->t('error.issuer_notfound'), 'typed' => '']);
+        exit;
+    }
+
+    render('issuer', ['i18n' => $i18n, 'issuer' => $emissor]);
     exit;
 }
 

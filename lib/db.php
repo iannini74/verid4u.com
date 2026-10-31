@@ -45,7 +45,7 @@ final class Db
 
     /* ------------------------------------------------------------ migrações */
 
-    public const SCHEMA_VERSION = 9;
+    public const SCHEMA_VERSION = 10;
 
     private static function marker(): string
     {
@@ -275,6 +275,44 @@ final class Db
             /* Desempenho das variações da primeira dobra. Uma linha por
                variação e por dia: permite ver tanto o acumulado quanto a
                evolução, sem guardar nada sobre quem visitou. */
+            10 => [
+                // O emissor passa a ter endereço público e ramo declarado. O ramo
+                // é o que imprime o qualificador no selo ("EMISSOR DE CERTIFICADO
+                // DE ENSINO E TREINAMENTO"), então ele é dado do emissor, nunca
+                // texto digitado no selo — selo com texto livre deixa de provar.
+                "ALTER TABLE issuers ADD COLUMN slug VARCHAR(80) NULL AFTER name",
+                "ALTER TABLE issuers ADD COLUMN category VARCHAR(20) NOT NULL DEFAULT 'ambos' AFTER level",
+                "ALTER TABLE issuers ADD UNIQUE KEY uq_issuers_slug (slug)",
+
+                // A emissão já aponta para o emissor; o que faltava era poder
+                // contar por emissor sem varrer a tabela, que é o que a página
+                // pública do emissor faz a cada visita.
+                "ALTER TABLE issuances ADD INDEX idx_issuances_issuer (issuer_id, issued_on)",
+
+                "UPDATE issuers SET slug = 'centro-de-treinamento-alvorada', category = 'treinamento'
+                  WHERE slug IS NULL AND name = 'Centro de Treinamento Alvorada'",
+                "UPDATE issuers SET slug = 'escola-tecnica-horizonte', category = 'ambos'
+                  WHERE slug IS NULL AND name = 'Escola Técnica Horizonte'",
+                "UPDATE issuers SET slug = 'instituto-meridiano', category = 'profissional'
+                  WHERE slug IS NULL AND name = 'Instituto Meridiano de Educação Profissional'",
+
+                // O comprovante é um retrato de uma consulta, com código próprio.
+                // Guardá-lo em vez de recalcular é a única forma honesta: o papel
+                // diz o que era verdade naquele instante, e não o que é agora.
+                "CREATE TABLE IF NOT EXISTS receipts (
+                    id BIGINT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
+                    receipt_base CHAR(11) NOT NULL,
+                    code_base CHAR(11) NOT NULL,
+                    issuance_id BIGINT UNSIGNED NULL,
+                    outcome VARCHAR(24) NOT NULL,
+                    locale VARCHAR(8) NOT NULL DEFAULT 'pt-br',
+                    snapshot JSON NULL,
+                    checked_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+                    UNIQUE KEY uq_receipts_base (receipt_base),
+                    KEY idx_receipts_issuance (issuance_id, checked_at)
+                ) $engine",
+            ],
+
             9 => [
                 "CREATE TABLE IF NOT EXISTS hero_stats (
                     id BIGINT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,

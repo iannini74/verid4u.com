@@ -104,6 +104,34 @@ final class I18n
     }
 
     /** Dicionário da área do emissor. Cai para pt-BR enquanto não houver tradução. */
+    /**
+     * Data e hora com fuso explícito, para o comprovante.
+     *
+     * O fuso vai escrito porque o comprovante circula. "14:32" sem fuso num
+     * documento que atravessa país é um número sem significado — e o que o
+     * comprovante afirma é exatamente um instante.
+     */
+    public function datetime(?string $sql): string
+    {
+        if ($sql === null || $sql === '') {
+            return $this->t('value.none');
+        }
+        try {
+            $when = new DateTimeImmutable($sql, new DateTimeZone(APP_TZ));
+        } catch (Throwable $e) {
+            return $sql;
+        }
+        $offset = $when->format('P');   // -03:00
+        $offset = 'UTC' . rtrim(str_replace(':00', '', $offset), ':');
+
+        return $this->t('format.datetime', [
+            'd'    => $this->date($when->format('Y-m-d')),
+            'h'    => $when->format('H:i'),
+            'tz'   => $when->format('T'),
+            'utc'  => $offset,
+        ]);
+    }
+
     public function a(string $key, array $params = []): string
     {
         static $app = null;

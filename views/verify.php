@@ -75,7 +75,13 @@ $shareUrl = base_url() . $i18n->url('/v/' . $typed);
 
   <section class="wrap-narrow panel issuer">
     <p class="panel-kicker"><?= e($i18n->t('label.issuer')) ?></p>
-    <p class="issuer-name"><?= e($record['issuer_name']) ?></p>
+    <p class="issuer-name">
+      <?php if (!empty($record['issuer_slug'])): ?>
+        <a href="<?= e($i18n->url('/e/' . $record['issuer_slug'])) ?>"><?= e($record['issuer_name']) ?></a>
+      <?php else: ?>
+        <?= e($record['issuer_name']) ?>
+      <?php endif; ?>
+    </p>
     <?php if (!empty($record['issuer_cnpj'])): ?>
       <p class="issuer-cnpj">CNPJ <?= e($record['issuer_cnpj']) ?></p>
     <?php endif; ?>
@@ -114,6 +120,16 @@ $shareUrl = base_url() . $i18n->url('/v/' . $typed);
       <p class="filecheck-privacy"><?= e($i18n->t('filecheck.privacy')) ?></p>
     </section>
   <?php endif; ?>
+
+  <section class="wrap-narrow panel receipt-offer">
+    <p class="panel-kicker"><?= e($i18n->t('receipt.title')) ?></p>
+    <p class="receipt-offer-body"><?= e($i18n->t('receipt.button.hint')) ?></p>
+    <form method="post" action="/c">
+      <input type="hidden" name="codigo" value="<?= e($typed) ?>">
+      <input type="hidden" name="l" value="<?= e($i18n->locale()) ?>">
+      <button class="btn btn-ghost btn-sm" type="submit"><?= e($i18n->t('receipt.button')) ?></button>
+    </form>
+  </section>
 
   <section class="wrap-narrow panel share">
     <p class="panel-kicker"><?= e($i18n->t('share.title')) ?></p>

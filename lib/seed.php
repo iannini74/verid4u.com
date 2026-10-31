@@ -28,15 +28,15 @@ final class Seeder
         }
 
         $issuers = [
-            'alvorada'  => ['Centro de Treinamento Alvorada', '**.***.***/0001-90', 3],
-            'horizonte' => ['Escola Técnica Horizonte', '**.***.***/0001-24', 2],
-            'meridiano' => ['Instituto Meridiano de Educação Profissional', '**.***.***/0001-07', 3],
+            'alvorada'  => ['Centro de Treinamento Alvorada', '**.***.***/0001-90', 3, 'centro-treinamento-alvorada', 'treinamento'],
+            'horizonte' => ['Escola Técnica Horizonte', '**.***.***/0001-24', 2, 'escola-tecnica-horizonte', 'ambos'],
+            'meridiano' => ['Instituto Meridiano de Educação Profissional', '**.***.***/0001-07', 3, 'instituto-meridiano', 'profissional'],
         ];
         $issuerIds = [];
-        foreach ($issuers as $key => [$name, $legalId, $level]) {
+        foreach ($issuers as $key => [$name, $legalId, $level, $slug, $category]) {
             Db::run(
-                'INSERT INTO issuers (tenant_id, name, legal_id, level) VALUES (?, ?, ?, ?)',
-                [$tenantId, $name, $legalId, $level]
+                'INSERT INTO issuers (tenant_id, name, legal_id, level, slug, category) VALUES (?, ?, ?, ?, ?, ?)',
+                [$tenantId, $name, $legalId, $level, $slug, $category]
             );
             $issuerIds[$key] = (int) Db::pdo()->lastInsertId();
         }
