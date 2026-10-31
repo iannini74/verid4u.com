@@ -28,6 +28,13 @@ if (($segments[0] ?? '') === 'sitemap.xml') {
             echo "  <url>\n    <loc>{$base}/{$loc}/{$doc}</loc>\n  </url>\n";
         }
     }
+    foreach (array_keys(I18n::LOCALES) as $loc) {
+        echo "  <url>\n    <loc>{$base}/{$loc}/blog</loc>\n  </url>\n";
+        foreach (Blog::all($loc) as $post) {
+            $quando = e((string) ($post['verificado_em'] ?? $post['publicado_em']));
+            echo "  <url>\n    <loc>{$base}/{$loc}/blog/{$post['slug']}</loc>\n    <lastmod>{$quando}</lastmod>\n  </url>\n";
+        }
+    }
     echo '</urlset>';
     exit;
 }
@@ -411,6 +418,24 @@ if ($localeInUrl === null) {
 // --------------------------------------------- área do emissor
 if ($route === 'app') {
     Panel::handle($i18n, array_slice($segments, 1));
+    exit;
+}
+
+// ------------------------------------------------------------- blog
+if ($route === 'blog') {
+    security_headers();
+    $slug = (string) ($segments[1] ?? '');
+    if ($slug === '') {
+        render('blog', ['i18n' => $i18n, 'posts' => Blog::all($i18n->locale())]);
+        exit;
+    }
+    $post = Blog::find($slug, $i18n->locale());
+    if ($post === null) {
+        http_response_code(404);
+        render('blog', ['i18n' => $i18n, 'posts' => Blog::all($i18n->locale())]);
+        exit;
+    }
+    render('post', ['i18n' => $i18n, 'post' => $post]);
     exit;
 }
 

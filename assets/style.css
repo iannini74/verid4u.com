@@ -1,4 +1,4 @@
-@import url("/assets/tokens.css?v=12");
+@import url("/assets/tokens.css?v=13");
 
 /* ==========================================================================
    VerID4U — folha de estilo
@@ -583,3 +583,44 @@ code { font-family: var(--font-mono); font-size: .92em; }
 .footer-links { display: flex; gap: var(--space-4); }
 .footer-links a { font-size: var(--text-body-s); color: var(--ink-muted); text-decoration: none; }
 .footer-links a:hover { color: var(--brand); }
+
+/* --------------------------------------------------------------- blog */
+
+.post-list { list-style: none; padding: 0; margin: var(--space-8) 0 0; counter-reset: none; }
+.post-list li { border-top: 1px solid var(--line); }
+.post-list li:last-child { border-bottom: 1px solid var(--line); }
+.post-list a { display: block; padding: var(--space-6) 0; text-decoration: none; color: inherit; }
+.post-list a:hover h2 { color: var(--brand); }
+.post-pilar { font-size: var(--text-overline); font-weight: 600; letter-spacing: var(--tracking-overline); text-transform: uppercase; color: var(--brand); margin: 0 0 var(--space-2); }
+.post-list h2 { font-family: var(--font-display); font-size: var(--text-heading-l); font-weight: 700; letter-spacing: -.025em; margin: 0 0 var(--space-2); transition: color var(--dur) var(--ease); }
+.post-resumo { font-size: var(--text-body); color: var(--ink-muted); margin: 0 0 var(--space-3); max-width: var(--measure); }
+.post-meta { font-size: var(--text-caption); color: var(--ink-subtle); text-transform: uppercase; letter-spacing: var(--tracking-overline); margin: 0; }
+.post-meta-top { margin: var(--space-5) 0 var(--space-7); padding-bottom: var(--space-5); border-bottom: 1px solid var(--line); }
+.post-checked { color: var(--ok); cursor: help; border-bottom: 1px dotted currentColor; }
+
+.post-body { max-width: var(--measure); }
+.post-body h2 { font-family: var(--font-display); font-size: var(--text-heading-l); font-weight: 700; letter-spacing: -.025em; margin: var(--space-8) 0 var(--space-4); }
+.post-body h3 { font-size: var(--text-heading-m); font-weight: 650; margin: var(--space-6) 0 var(--space-3); }
+.post-body p { font-size: var(--text-body-l); line-height: 1.65; color: var(--ink-muted); margin: 0 0 var(--space-4); }
+.post-body strong { color: var(--ink); font-weight: 600; }
+.post-body a { color: var(--brand); }
+.post-body ul { margin: 0 0 var(--space-5); padding-left: var(--space-5); }
+.post-body li { font-size: var(--text-body-l); line-height: 1.6; color: var(--ink-muted); margin-bottom: var(--space-3); }
+.post-note {
+  margin: var(--space-6) 0; padding: var(--space-5);
+  background: var(--brand-tint); border-left: 3px solid var(--brand);
+  border-radius: 0 var(--radius-md) var(--radius-md) 0;
+  font-size: var(--text-body); color: var(--ink);
+}
+.post-table { overflow-x: auto; margin: var(--space-6) 0; }
+.post-table table { width: 100%; border-collapse: collapse; font-size: var(--text-body-s); }
+.post-table th { text-align: left; font-size: var(--text-caption); text-transform: uppercase; letter-spacing: var(--tracking-overline); color: var(--ink-subtle); font-weight: 600; padding: 0 var(--space-4) var(--space-3) 0; border-bottom: 2px solid var(--ink); white-space: nowrap; }
+.post-table td { padding: var(--space-3) var(--space-4) var(--space-3) 0; border-bottom: 1px solid var(--line); color: var(--ink-muted); vertical-align: top; }
+.post-table tr:last-child td { border-bottom: 0; }
+
+.post-cta {
+  margin-top: var(--space-9); padding: var(--space-6);
+  background: var(--surface-sunken); border: 1px solid var(--line); border-radius: var(--radius-lg);
+}
+.post-cta p { margin: 0 0 var(--space-3); color: var(--ink-muted); }
+.post-cta p strong { color: var(--ink); font-size: var(--text-heading-m); font-family: var(--font-display); letter-spacing: -.02em; }

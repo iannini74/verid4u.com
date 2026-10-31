@@ -161,6 +161,17 @@ return [
     'share.copied' => 'Link copied',
     'share.qr' => 'Point a camera at this to open the verification on another device.',
 
+    'blog.kicker' => 'Blog',
+    'blog.title' => 'Blog',
+    'blog.desc' => 'Research and practice on credentials, compliance and the training market. A new article every 15 days.',
+    'blog.empty' => 'No articles published yet.',
+    'blog.reading' => '{n} min read',
+    'blog.checked' => 'checked on {d}',
+    'blog.checked.why' => 'Writing about regulation goes stale. This date says when the content was last checked against the rules in force.',
+    'blog.cta.title' => 'Can your certificates be checked?',
+    'blog.cta.body' => 'Register them and let anyone confirm in ten seconds, free.',
+    'blog.cta.button' => 'See how it works',
+
     'legal.updated' => 'Last updated',
     'legal.termos' => 'Terms of Use',
     'legal.privacidade' => 'Privacy and Cookies',

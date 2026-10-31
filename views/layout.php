@@ -32,9 +32,10 @@ $base = base_url();
 <link rel="icon" href="/assets/brand/mark-solid.svg" type="image/svg+xml">
 <link rel="preload" href="/assets/fonts/inter-tight-normal-600-700-latin.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="preload" href="/assets/fonts/inter-normal-400-700-latin.woff2" as="font" type="font/woff2" crossorigin>
-<link rel="stylesheet" href="/assets/fonts.css?v=12">
+<link rel="stylesheet" href="/assets/fonts.css?v=13">
 <script>document.documentElement.classList.add("js");</script>
-<link rel="stylesheet" href="/assets/style.css?v=12">
+<?= $extraHead ?? '' ?>
+<link rel="stylesheet" href="/assets/style.css?v=13">
 </head>
 <body>
 <a class="skip" href="#main"><?= e($i18n->t('hero.title')) ?></a>
@@ -50,6 +51,7 @@ $base = base_url();
       <a href="<?= e($i18n->url()) ?>#como"><?= e($i18n->t('nav.how')) ?></a>
       <a href="<?= e($i18n->url()) ?>#para-quem"><?= e($i18n->t('nav.audiences')) ?></a>
       <a href="<?= e($i18n->url()) ?>#duvidas"><?= e($i18n->t('nav.faq')) ?></a>
+      <a href="<?= e($i18n->url('/blog')) ?>"><?= e($i18n->t('blog.title')) ?></a>
     </nav>
 
     <div class="lang" role="group" aria-label="Idioma">
@@ -74,6 +76,6 @@ $base = base_url();
   </div>
 </footer>
 
-<script src="/assets/app.js?v=12" defer></script>
+<script src="/assets/app.js?v=13" defer></script>
 </body>
 </html>

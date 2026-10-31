@@ -238,6 +238,17 @@ return [
     'share.copied' => 'Link copiado',
     'share.qr' => 'Aponte a câmera para abrir esta verificação em outro aparelho.',
 
+    'blog.kicker' => 'Blog',
+    'blog.title' => 'Blog',
+    'blog.desc' => 'Pesquisa e prática sobre credenciais, conformidade e o mercado de cursos. Artigo novo a cada 15 dias.',
+    'blog.empty' => 'Nenhum artigo publicado ainda.',
+    'blog.reading' => '{n} min de leitura',
+    'blog.checked' => 'conferido em {d}',
+    'blog.checked.why' => 'Texto sobre norma apodrece. Esta data diz quando o conteúdo foi conferido pela última vez contra a legislação vigente.',
+    'blog.cta.title' => 'Seus certificados podem ser conferidos?',
+    'blog.cta.body' => 'Registre e deixe que qualquer pessoa confirme em dez segundos, de graça.',
+    'blog.cta.button' => 'Ver como funciona',
+
     'legal.updated' => 'Atualizado em',
     'legal.termos' => 'Termos de Uso',
     'legal.privacidade' => 'Privacidade e Cookies',

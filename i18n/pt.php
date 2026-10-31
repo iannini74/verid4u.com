@@ -161,6 +161,17 @@ return [
     'share.copied' => 'Ligação copiada',
     'share.qr' => 'Aponte a câmara para abrir esta verificação noutro aparelho.',
 
+    'blog.kicker' => 'Blog',
+    'blog.title' => 'Blog',
+    'blog.desc' => 'Investigação e prática sobre credenciais, conformidade e o mercado da formação. Artigo novo a cada 15 dias.',
+    'blog.empty' => 'Ainda não há artigos publicados.',
+    'blog.reading' => '{n} min de leitura',
+    'blog.checked' => 'conferido a {d}',
+    'blog.checked.why' => 'Texto sobre norma desatualiza-se. Esta data indica quando o conteúdo foi conferido pela última vez.',
+    'blog.cta.title' => 'Os seus certificados podem ser confirmados?',
+    'blog.cta.body' => 'Registe e permita que qualquer pessoa confirme em dez segundos, gratuitamente.',
+    'blog.cta.button' => 'Ver como funciona',
+
     'legal.updated' => 'Atualizado em',
     'legal.termos' => 'Termos de Utilização',
     'legal.privacidade' => 'Privacidade e Cookies',

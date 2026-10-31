@@ -25,8 +25,8 @@ $nav = [
 <link rel="icon" href="/assets/brand/mark-solid.svg" type="image/svg+xml">
 <link rel="preload" href="/assets/fonts/inter-tight-normal-600-700-latin.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="preload" href="/assets/fonts/inter-normal-400-700-latin.woff2" as="font" type="font/woff2" crossorigin>
-<link rel="stylesheet" href="/assets/fonts.css?v=12">
-<link rel="stylesheet" href="/assets/style.css?v=12">
+<link rel="stylesheet" href="/assets/fonts.css?v=13">
+<link rel="stylesheet" href="/assets/style.css?v=13">
 </head>
 <body class="app">
 <header class="app-bar">
@@ -54,6 +54,6 @@ $nav = [
 </header>
 
 <main class="app-main"><?= $content ?></main>
-<script src="/assets/app.js?v=12" defer></script>
+<script src="/assets/app.js?v=13" defer></script>
 </body>
 </html>
