@@ -59,7 +59,7 @@ return [
 ['h' => '7. Terceiros que participam do serviço', 'p' => [
   '**Hostinger** — hospedagem, banco de dados e CDN. Os dados ficam na infraestrutura dela.',
   '**Resend** — envio de e-mail transacional, na região de São Paulo. Recebe o endereço do destinatário e o conteúdo da mensagem.',
-  '**Google Fonts e Cloudflare (cdnjs)** — fornecem as fontes tipográficas e a biblioteca que desenha o QR Code. O navegador de quem visita faz uma requisição a esses serviços, o que expõe o endereço IP a eles. Estamos avaliando passar a servir esses arquivos do nosso próprio domínio para eliminar essa exposição.',
+  '**Nenhum outro.** Fontes tipográficas, folhas de estilo, scripts e a biblioteca que desenha o QR Code são servidos pelo nosso próprio domínio. Visitar o VerID4U não faz o seu navegador conversar com Google, Cloudflare, rede social ou qualquer outro terceiro — sua política de segurança de conteúdo proíbe isso tecnicamente, não só por promessa.',
   'Não vendemos, alugamos nem cedemos dados pessoais a ninguém.',
 ]],
 

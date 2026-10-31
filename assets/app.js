@@ -141,7 +141,7 @@
   }
 
   var script = document.createElement('script');
-  script.src = 'https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js';
+  script.src = '/assets/vendor/qrcode.min.js';
   script.async = true;
   script.onload = draw;
   document.head.appendChild(script);

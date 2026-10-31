@@ -48,9 +48,9 @@ function security_headers(bool $noindex = false): void
     header('Permissions-Policy: geolocation=(), microphone=(), camera=()');
     header(
         "Content-Security-Policy: default-src 'self'; "
-        . "script-src 'self' https://cdnjs.cloudflare.com; "
-        . "style-src 'self' https://fonts.googleapis.com 'unsafe-inline'; "
-        . "font-src 'self' https://fonts.gstatic.com; "
+        . "script-src 'self'; "
+        . "style-src 'self' 'unsafe-inline'; "
+        . "font-src 'self'; "
         . "img-src 'self' data:; "
         . "connect-src 'self'; base-uri 'self'; form-action 'self'; frame-ancestors 'self'"
     );
