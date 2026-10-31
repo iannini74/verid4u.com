@@ -215,6 +215,32 @@ semanas sem surpresa nos relatórios, apertar para:
 
 O segredo está em `mail.cron_key`, no `lib/config.local.php`.
 
+## Os três vídeos que valem gravar
+
+A home traz uma demonstração interativa em três passos, montada com os
+componentes reais do produto. Ela existe porque espaço vazio esperando
+vídeo é pior que nenhuma seção. Quando houver vídeo, `content/demo.<locale>.php`
+o substitui sem tocar em código.
+
+Roteiros, em ordem de valor:
+
+**1. «Dez segundos» — 40 s, sem narração.** Uma mão segura um certificado
+impresso, o celular escaneia o QR, a página de verificação abre com o selo
+verde. Corta. É o vídeo mais útil porque mostra a promessa inteira sem
+nenhuma palavra, e serve de anúncio.
+
+**2. «O que o fiscal pede» — 90 s, com narração.** Um responsável de SST
+abre o painel de vencimentos, filtra o que vence em 30 dias, exporta e
+mostra o relatório. Fecha com a página de verificação aberta no celular do
+auditor. Público: consultoria de SST, que é o nicho de entrada.
+
+**3. «Registrar o que já existe» — 60 s.** Arrasta um PDF antigo para a tela
+de registro, o hash é calculado no navegador, o certificado ganha código.
+Mostra que não é preciso trocar de sistema — a objeção número um de quem já
+emite.
+
+Grave na vertical para as duas primeiras: elas vivem em celular.
+
 ## Próximos passos
 
 1. Escolher o provedor de e-mail e publicar SPF, DKIM e DMARC: entrega do certificado ao titular,

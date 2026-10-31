@@ -164,6 +164,8 @@ $states = [
   </div>
 </section>
 
+<?php require __DIR__ . '/partials/demo.php'; ?>
+
 <section class="section">
   <div class="wrap">
     <h2 class="display-m stack-lead" data-reveal><?= e($i18n->t('showcase.title')) ?></h2>

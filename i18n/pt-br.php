@@ -238,6 +238,17 @@ return [
     'share.copied' => 'Link copiado',
     'share.qr' => 'Aponte a câmera para abrir esta verificação em outro aparelho.',
 
+    'demo.kicker' => 'Veja funcionando',
+    'demo.title' => 'Do certificado ao veredito em dez segundos.',
+    'demo.1.label' => 'O certificado sai com código e QR',
+    'demo.1.hint' => 'Emitido aqui ou registrado por você — a tarja é a mesma.',
+    'demo.2.label' => 'Qualquer pessoa aponta a câmera',
+    'demo.2.hint' => 'Ou digita o código. Sem aplicativo, sem cadastro.',
+    'demo.3.label' => 'O veredito aparece',
+    'demo.3.hint' => 'Autêntico, vencido ou revogado. Nunca um talvez.',
+    'demo.3.foot' => 'Conferido no registro público do VerID4U.',
+    'demo.try' => 'Prefere ver de verdade? Este código existe:',
+
     'blog.kicker' => 'Blog',
     'blog.title' => 'Blog',
     'blog.desc' => 'Pesquisa e prática sobre credenciais, conformidade e o mercado de cursos. Artigo novo a cada 15 dias.',

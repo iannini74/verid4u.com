@@ -161,6 +161,17 @@ return [
     'share.copied' => 'Link copied',
     'share.qr' => 'Point a camera at this to open the verification on another device.',
 
+    'demo.kicker' => 'See it working',
+    'demo.title' => 'From certificate to verdict in ten seconds.',
+    'demo.1.label' => 'The certificate carries a code and a QR',
+    'demo.1.hint' => 'Issued here or registered by you — the strip is the same.',
+    'demo.2.label' => 'Anyone points a camera at it',
+    'demo.2.hint' => 'Or types the code. No app, no sign-up.',
+    'demo.3.label' => 'The verdict appears',
+    'demo.3.hint' => 'Genuine, expired or revoked. Never a maybe.',
+    'demo.3.foot' => 'Checked against the VerID4U public register.',
+    'demo.try' => 'Rather see the real thing? This code exists:',
+
     'blog.kicker' => 'Blog',
     'blog.title' => 'Blog',
     'blog.desc' => 'Research and practice on credentials, compliance and the training market. A new article every 15 days.',

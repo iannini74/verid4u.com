@@ -267,3 +267,66 @@
   Array.prototype.forEach.call(modos, function (el) { el.addEventListener('change', sync); });
   sync();
 })();
+
+/* ==========================================================================
+   Demonstração em três passos.
+   Avança sozinha até a primeira interação — depois para, porque disputar o
+   controle com quem já decidiu olhar é irritante. Respeita quem pediu menos
+   movimento no sistema.
+   ========================================================================== */
+(function () {
+  'use strict';
+  var caixa = document.querySelector('[data-demo]');
+  if (!caixa) return;
+
+  var abas = Array.prototype.slice.call(caixa.querySelectorAll('[data-demo-tab]'));
+  var paineis = Array.prototype.slice.call(caixa.querySelectorAll('[data-demo-panel]'));
+  if (!abas.length) return;
+
+  var atual = 0, timer = null, interagiu = false;
+  var paradoPorPreferencia = window.matchMedia &&
+      window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  function mostrar(i, focar) {
+    atual = (i + abas.length) % abas.length;
+    abas.forEach(function (b, n) {
+      var ativo = n === atual;
+      b.setAttribute('aria-selected', ativo ? 'true' : 'false');
+      b.tabIndex = ativo ? 0 : -1;
+      if (ativo && focar) b.focus();
+    });
+    paineis.forEach(function (p, n) { p.hidden = n !== atual; });
+  }
+
+  function parar() {
+    interagiu = true;
+    if (timer) { clearInterval(timer); timer = null; }
+  }
+
+  abas.forEach(function (b, n) {
+    b.addEventListener('click', function () { parar(); mostrar(n, false); });
+    b.addEventListener('keydown', function (ev) {
+      var k = ev.key;
+      if (k !== 'ArrowRight' && k !== 'ArrowLeft' && k !== 'Home' && k !== 'End') return;
+      ev.preventDefault();
+      parar();
+      if (k === 'Home') return mostrar(0, true);
+      if (k === 'End') return mostrar(abas.length - 1, true);
+      mostrar(atual + (k === 'ArrowRight' ? 1 : -1), true);
+    });
+  });
+
+  if (paradoPorPreferencia) return;
+
+  // só começa a girar quando a seção aparece, e para quando sai de vista
+  var observador = new IntersectionObserver(function (entradas) {
+    entradas.forEach(function (e) {
+      if (e.isIntersecting && !interagiu && !timer) {
+        timer = setInterval(function () { mostrar(atual + 1, false); }, 4200);
+      } else if (!e.isIntersecting && timer) {
+        clearInterval(timer); timer = null;
+      }
+    });
+  }, { threshold: 0.4 });
+  observador.observe(caixa);
+})();

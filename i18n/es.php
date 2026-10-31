@@ -161,6 +161,17 @@ return [
     'share.copied' => 'Enlace copiado',
     'share.qr' => 'Apunta la cámara para abrir esta verificación en otro dispositivo.',
 
+    'demo.kicker' => 'Míralo funcionando',
+    'demo.title' => 'Del certificado al veredicto en diez segundos.',
+    'demo.1.label' => 'El certificado sale con código y QR',
+    'demo.1.hint' => 'Emitido aquí o registrado por ti: la franja es la misma.',
+    'demo.2.label' => 'Cualquiera apunta la cámara',
+    'demo.2.hint' => 'O escribe el código. Sin app, sin registrarse.',
+    'demo.3.label' => 'Aparece el veredicto',
+    'demo.3.hint' => 'Auténtico, caducado o revocado. Nunca un quizá.',
+    'demo.3.foot' => 'Comprobado en el registro público de VerID4U.',
+    'demo.try' => '¿Prefieres verlo de verdad? Este código existe:',
+
     'blog.kicker' => 'Blog',
     'blog.title' => 'Blog',
     'blog.desc' => 'Investigación y práctica sobre credenciales, cumplimiento y el mercado de la formación. Un artículo nuevo cada 15 días.',
