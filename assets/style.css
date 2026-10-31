@@ -554,3 +554,5 @@ code { font-family: var(--font-mono); font-size: .92em; }
 .lookup-privacy { color: rgba(255,255,255,.74); }
 
 .form input[type="file"] { padding: 10px var(--space-3); background: var(--surface-sunken); font-size: var(--text-body-s); }
+
+.hero-kicker { margin: 0 0 var(--space-4); color: var(--brand); }

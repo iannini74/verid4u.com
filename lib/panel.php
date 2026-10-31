@@ -39,6 +39,7 @@ final class Panel
             'registrar'    => self::registerExternal($i18n, $user, $isPost),
             'importar'     => self::importar($i18n, $user, $isPost, $sub),
             'email'        => self::emailSettings($i18n, $user, $isPost),
+            'dobra'        => self::heroPanel($i18n, $user),
             'certificados' => self::issuances($i18n, $user),
             'revogar'      => self::revoke($i18n, $user, $isPost),
             'certificado'  => self::certificate($i18n, $user, (string) ($sub[1] ?? '')),
@@ -514,6 +515,15 @@ final class Panel
             'flash' => $flash,
             'error' => $error,
         ], $user, 'email');
+    }
+
+    private static function heroPanel(I18n $i18n, array $user): void
+    {
+        self::shell($i18n, 'app/hero', [
+            'variants' => Hero::variants($i18n->locale()),
+            'perf'     => Hero::performance(),
+            'atual'    => Hero::current($i18n->locale()),
+        ], $user, 'dobra');
     }
 
     private static function programaDoLote(array $programs, array $batch): ?array

@@ -7,6 +7,7 @@ $pageDesc = $i18n->t('meta.home.desc');
 $showcase = Store::showcase();
 $sample = $showcase !== [] ? Code::format(Code::full($showcase[0])) : 'K7M2-93FQ-5XB0';
 $counters = Store::counters();
+$hv = $hv ?? Hero::current($i18n->locale());
 $states = [
     'verified' => 'check',
     'expiring' => 'clock',
@@ -19,11 +20,15 @@ $states = [
   <div class="wrap hero-inner">
     <div class="hero-grid">
       <div>
-        <h1 class="display-xl"><?= e($i18n->t('hero.title')) ?></h1>
-        <p class="hero-sub"><?= e($i18n->t('hero.sub')) ?></p>
+        <?php if ($hv !== null && ($hv['kicker'] ?? '') !== ''): ?>
+          <p class="overline hero-kicker"><?= e($hv['kicker']) ?></p>
+        <?php endif; ?>
+        <h1 class="display-xl"><?= e($hv['title'] ?? $i18n->t('hero.title')) ?></h1>
+        <p class="hero-sub"><?= e($hv['sub'] ?? $i18n->t('hero.sub')) ?></p>
 
         <form class="verifier<?= $error !== null ? ' has-error' : '' ?>" method="post" action="<?= e($i18n->url()) ?>" novalidate>
           <label class="verifier-label" for="codigo"><?= e($i18n->t('hero.label')) ?></label>
+          <input type="hidden" name="hv" value="<?= e($hv['slug'] ?? '') ?>">
           <div class="verifier-row">
             <input id="codigo" name="codigo" type="text" inputmode="latin" autocomplete="off"
                    autocapitalize="characters" spellcheck="false" maxlength="20"

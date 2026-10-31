@@ -99,6 +99,26 @@ return [
 
     'nav.email' => 'E-mail',
 
+    'nav.hero' => 'Primeira dobra',
+
+    'hero.title' => 'Primeira dobra',
+    'hero.intro' => 'A chamada da home muda sozinha a cada {dias} dias, por aritmética de data — sem tarefa agendada que possa falhar. As variações ficam em arquivo versionado; para trocar o texto, é um commit. Para fixar uma delas, defina «hero_pin» no config.local.php com o slug.',
+    'hero.current' => 'No ar agora',
+    'hero.none' => 'Nenhuma variação encontrada para este idioma.',
+    'hero.slug' => 'Identificador',
+    'hero.audience' => 'Fala com',
+    'hero.cycle' => 'Ciclo',
+    'hero.next' => 'Próxima troca',
+    'hero.in_days' => 'em {n} dias',
+    'hero.pinned' => 'Esta variação está fixada manualmente pelo config. A rotação automática está suspensa enquanto «hero_pin» existir.',
+    'hero.performance' => 'Desempenho',
+    'hero.perf_hint' => 'Conversão aqui é um código válido enviado a partir da home. Comparar taxas só faz sentido depois de algumas centenas de visitas por variação — abaixo disso, a diferença é ruído.',
+    'hero.variant' => 'Variação',
+    'hero.impressions' => 'Visitas',
+    'hero.conversions' => 'Verificações',
+    'hero.rate' => 'Taxa',
+    'hero.now' => 'no ar',
+
     'mail.title' => 'E-mail',
     'mail.status' => 'Configuração atual',
     'mail.driver' => 'Modo de envio',

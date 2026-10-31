@@ -16,6 +16,7 @@ require __DIR__ . '/store.php';
 require __DIR__ . '/auth.php';
 require __DIR__ . '/issuer.php';
 require __DIR__ . '/import.php';
+require __DIR__ . '/hero.php';
 require __DIR__ . '/smtp.php';
 require __DIR__ . '/mailer.php';
 require __DIR__ . '/panel.php';

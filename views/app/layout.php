@@ -11,6 +11,7 @@ $nav = [
     'register'   => ['registrar', 'nav.register'],
     'import'     => ['importar', 'nav.import'],
     'email'      => ['email', 'nav.email'],
+    'dobra'      => ['dobra', 'nav.hero'],
     'issuances'  => ['certificados', 'nav.issuances'],
 ];
 ?>

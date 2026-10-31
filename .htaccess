@@ -39,7 +39,7 @@ DirectoryIndex index.php
 </IfModule>
 
 # Código de aplicação nunca é servido direto
-RedirectMatch 404 ^/(lib|views|i18n|storage|mail)(/|$)
+RedirectMatch 404 ^/(lib|views|i18n|storage|mail|content)(/|$)
 
 <FilesMatch "\.(md|sql|json|lock|yml|yaml|example\.php|local\.php)$">
   Require all denied

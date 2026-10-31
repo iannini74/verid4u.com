@@ -45,7 +45,7 @@ final class Db
 
     /* ------------------------------------------------------------ migrações */
 
-    public const SCHEMA_VERSION = 8;
+    public const SCHEMA_VERSION = 9;
 
     private static function marker(): string
     {
@@ -272,6 +272,21 @@ final class Db
                pronto: assim corrigir um modelo conserta o que ainda não saiu,
                e o corpo não incha o banco. O endereço vai cifrado, com índice
                cego para a supressão poder consultar sem decifrar nada. */
+            /* Desempenho das variações da primeira dobra. Uma linha por
+               variação e por dia: permite ver tanto o acumulado quanto a
+               evolução, sem guardar nada sobre quem visitou. */
+            9 => [
+                "CREATE TABLE IF NOT EXISTS hero_stats (
+                    id BIGINT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
+                    variant_slug VARCHAR(40) NOT NULL,
+                    locale VARCHAR(8) NOT NULL DEFAULT 'pt-br',
+                    day DATE NOT NULL,
+                    impressions INT UNSIGNED NOT NULL DEFAULT 0,
+                    conversions INT UNSIGNED NOT NULL DEFAULT 0,
+                    UNIQUE KEY uq_hero_day (variant_slug, locale, day)
+                ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci",
+            ],
+
             8 => [
                 "CREATE TABLE IF NOT EXISTS mail_messages (
                     id BIGINT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,

@@ -391,6 +391,10 @@ if ($route !== 'app' && ($_SERVER['REQUEST_METHOD'] ?? 'GET') === 'POST') {
         render('home', ['i18n' => $i18n, 'error' => $i18n->t('error.format'), 'typed' => $typed]);
         exit;
     }
+    $daDobra = (string) ($_POST['hv'] ?? '');
+    if ($daDobra !== '') {
+        Hero::recordConversion($daDobra, $i18n->locale());
+    }
     redirect($i18n->url('/v/' . Code::format($normalized)), 303);
 }
 
@@ -408,7 +412,11 @@ if ($route === 'app') {
 // --------------------------------------------------------------- páginas
 if ($route === '') {
     security_headers();
-    render('home', ['i18n' => $i18n, 'error' => null, 'typed' => '']);
+    $hv = Hero::current($i18n->locale());
+    if ($hv !== null) {
+        Hero::recordImpression((string) ($hv['slug'] ?? ''), $i18n->locale());
+    }
+    render('home', ['i18n' => $i18n, 'error' => null, 'typed' => '', 'hv' => $hv]);
     exit;
 }
 
