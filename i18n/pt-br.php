@@ -65,6 +65,83 @@ return [
     'faq.3.q' => 'Meus dados ficam públicos?',
     'faq.3.a' => 'Não. A página de verificação nunca mostra CPF, documento, e-mail ou telefone, e o nome aparece de forma parcial por padrão — o titular decide. As páginas de verificação também não são indexadas por buscadores.',
 
+    /* ---------------------------------------------------------- o problema
+       Números do estudo de mercado. Cada um com fonte, porque um produto que
+       vende confiança não pode citar estatística sem dizer de onde veio. */
+    'problem.kicker' => 'O problema',
+    'problem.title' => 'Hoje, qualquer pessoa pode dizer que fez o seu curso.',
+    'problem.lead' => 'E ninguém tem como conferir. O certificado que você emitiu com cuidado circula no mesmo mundo em que um PDF falsificado em dez minutos parece exatamente igual — porque, do lado de quem recebe, os dois são apenas um arquivo.',
+
+    'problem.s1.n' => '64,2%',
+    'problem.s1.t' => 'dos adultos já mentiram em um currículo — eram 55% em 2022',
+    'problem.s1.src' => 'StandOut-CV, 2025',
+
+    'problem.s2.n' => '71%',
+    'problem.s2.t' => 'dos profissionais de RH já receberam informação fabricada. Só 20% confiam em conseguir detectá-la',
+    'problem.s2.src' => 'Equifax',
+
+    'problem.s3.n' => '1 em 4',
+    'problem.s3.t' => 'perfis de candidato no mundo podem ser fraudulentos até 2028, parte com áudio e vídeo gerados por IA',
+    'problem.s3.src' => 'Gartner',
+
+    'problem.s4.n' => '~2,7 bi',
+    'problem.s4.t' => 'de certificados são emitidos por ano no mundo. Cerca de 97% em categorias sem nenhum registro verificável',
+    'problem.s4.src' => 'Estimativa VerID4U',
+
+    'problem.close' => 'O resultado é um mercado que desconta a média: como tudo é aceito, nada vale muito. Quem estudou de verdade paga o preço da desconfiança gerada pelos outros — e quem ensina de verdade compete com quem só imprime.',
+
+    /* ------------------------------------------------- propósito da empresa */
+    'ptm.kicker' => 'Por que existimos',
+    'ptm.title' => 'Que nenhum aprendizado honesto precise ser aceito no escuro.',
+    'ptm.body1' => 'Um livro tem ISBN. Um voo tem código. Uma nota fiscal tem chave de acesso que qualquer pessoa consulta. Um certificado de curso tem… um nome de arquivo PDF. Essa lacuna não é um detalhe técnico: é a razão pela qual o esforço de milhões de pessoas vale menos do que deveria.',
+    'ptm.body2' => 'O VerID4U existe para dar a cada certificado uma identidade verificável por qualquer um, de graça, para sempre. Não para substituir quem ensina — para que quem ensina bem possa provar.',
+
+    /* ------------------------------------- provocação para quem emite curso */
+    'why.kicker' => 'Para quem emite',
+    'why.title' => 'Por que o seu curso deveria oferecer validação VerID4U?',
+    'why.lead' => 'Porque o seu certificado vale exatamente o quanto ele pode ser conferido. Sem isso, ele compete em pé de igualdade com o certificado que alguém imprimiu em casa.',
+
+    'why.1.t' => 'Separa você de quem vende papel',
+    'why.1.b' => 'Existe quem venda certificado sem curso. Enquanto o seu documento for só um PDF, o comprador não consegue distinguir — e decide pelo preço. Um registro verificável é a diferença que aparece sem você precisar falar mal de ninguém.',
+
+    'why.2.t' => 'O seu aluno divulga por você',
+    'why.2.b' => 'Certificado que pode ser conferido é certificado que o aluno publica no LinkedIn sem medo. Cada verificação leva o nome da sua instituição a alguém que não te conhecia — e você não pagou por esse alcance.',
+
+    'why.3.t' => 'Tira a secretaria do telefone',
+    'why.3.b' => 'Todo pedido de «esse certificado é de vocês mesmo?» vira uma consulta que a própria empresa faz sozinha, em dez segundos, sem passar por você.',
+
+    'why.4.t' => 'Transforma obrigação em recorrência',
+    'why.4.b' => 'Quando o certificado tem validade, o sistema avisa o titular e o gestor antes de vencer. A reciclagem deixa de depender da memória de alguém — e volta para você em vez de ir para o concorrente.',
+
+    'why.close' => 'Não pedimos que você mude como ensina. Pedimos dois minutos para que o que você já faz passe a ser comprovável.',
+
+    /* ------------------------------------------------------------ segmentos */
+    'audiences.lead' => 'A dor muda conforme quem emite. O registro é o mesmo; o que resolve, não.',
+
+    'audiences.sst' => 'Segurança do trabalho e NR',
+    'audiences.sst.pain' => '«O cliente pede os certificados de 300 pessoas e eu procuro em pasta. Se o fiscal chegar hoje, levo horas para provar que todo mundo está treinado.»',
+    'audiences.sst.gain' => 'Validade e reciclagem controladas por data, aviso automático antes de vencer, e uma consulta pública que o auditor faz sozinho. A NR-1 atualizada tornou isso urgente: desde agosto de 2026 o fiscal não orienta mais antes de autuar.',
+
+    'audiences.schools' => 'Escolas e centros de treinamento',
+    'audiences.schools.pain' => '«Emito quatro mil certificados por ano no Word, e ainda assim alguém sempre duvida se é nosso.»',
+    'audiences.schools.gain' => 'Emissão em lote com a sua marca, importação de todo o histórico antigo numa tarde, e um selo que distingue a sua escola de quem vende diploma sem aula.',
+
+    'audiences.universities' => 'Universidades e faculdades',
+    'audiences.universities.pain' => '«Diploma a gente resolveu com o diploma digital do MEC. O caos é a extensão, os eventos, as disciplinas isoladas.»',
+    'audiences.universities.gain' => 'Exatamente o que a regra do MEC não cobre — e que é a maior parte do volume de uma IES. Com página de verificação sob o domínio da própria instituição.',
+
+    'audiences.creators' => 'Cursos online e infoprodutores',
+    'audiences.creators.pain' => '«Meu certificado parece amador, e tem gente vendendo o mesmo curso falsificado mais barato.»',
+    'audiences.creators.gain' => 'Um certificado que o aluno tem orgulho de publicar, com verificação pública que prova que o curso existiu e que ele concluiu. Integra com a sua plataforma de vendas.',
+
+    'audiences.companies' => 'Empresas, RH e compliance',
+    'audiences.companies.pain' => '«Não tenho como saber se o curso no currículo existe. E não consigo provar numa auditoria que a equipe está em dia.»',
+    'audiences.companies.gain' => 'Verificação do que o candidato declara e painel do que está vencendo na equipe — dos dois lados do mesmo problema.',
+
+    'audiences.events' => 'Eventos, congressos e associações',
+    'audiences.events.pain' => '«Mando mil certificados de participação por e-mail e metade some.»',
+    'audiences.events.gain' => 'Emissão em lote a partir da lista de presença, cada um com código próprio e link permanente que não depende do e-mail ter chegado.',
+
     'cta.title' => 'Você também emite certificados?',
     'cta.body' => 'Registre os seus e deixe que qualquer pessoa confirme em 10 segundos.',
     'cta.button' => 'Começar gratuitamente',

@@ -101,6 +101,39 @@ $states = [
   </div>
 </section>
 
+<?php if ($i18n->has('problem.title')): ?>
+
+<section class="section" id="problema">
+  <div class="wrap">
+    <p class="overline" data-reveal><?= e($i18n->t('problem.kicker')) ?></p>
+    <h2 class="display-m measure" data-reveal data-reveal-delay="1"><?= e($i18n->t('problem.title')) ?></h2>
+    <p class="lead measure" data-reveal data-reveal-delay="2" style="margin-top: var(--space-5);"><?= e($i18n->t('problem.lead')) ?></p>
+
+    <div class="stats">
+      <?php for ($n = 1; $n <= 4; $n++): ?>
+        <figure class="stat" data-reveal data-reveal-delay="<?= min(3, $n - 1) ?>">
+          <div class="stat-n"><?= e($i18n->t("problem.s$n.n")) ?></div>
+          <figcaption class="stat-t"><?= e($i18n->t("problem.s$n.t")) ?></figcaption>
+          <cite class="stat-src"><?= e($i18n->t("problem.s$n.src")) ?></cite>
+        </figure>
+      <?php endfor; ?>
+    </div>
+
+    <p class="lead measure" data-reveal><?= e($i18n->t('problem.close')) ?></p>
+  </div>
+</section>
+
+<section class="section bg-sunken" id="proposito">
+  <div class="wrap-narrow ptm" data-reveal>
+    <p class="overline"><?= e($i18n->t('ptm.kicker')) ?></p>
+    <blockquote class="ptm-claim"><?= e($i18n->t('ptm.title')) ?></blockquote>
+    <p class="lead"><?= e($i18n->t('ptm.body1')) ?></p>
+    <p class="lead"><?= e($i18n->t('ptm.body2')) ?></p>
+  </div>
+</section>
+
+<?php else: ?>
+
 <section class="section">
   <div class="wrap-narrow">
     <p class="overline" data-reveal><?= e($i18n->t('nav.how')) ?></p>
@@ -108,6 +141,8 @@ $states = [
     <p class="lead" data-reveal data-reveal-delay="2" style="margin-top: var(--space-5); max-width: 62ch;"><?= e($i18n->t('pitch.body')) ?></p>
   </div>
 </section>
+
+<?php endif; ?>
 
 <section class="section bg-sunken" id="como">
   <div class="wrap">
@@ -139,6 +174,27 @@ $states = [
   </div>
 </section>
 
+<?php if ($i18n->has('why.title')): ?>
+<section class="section" id="por-que">
+  <div class="wrap">
+    <p class="overline" data-reveal><?= e($i18n->t('why.kicker')) ?></p>
+    <h2 class="display-m measure stack-lead" data-reveal><?= e($i18n->t('why.title')) ?></h2>
+    <p class="lead measure" data-reveal><?= e($i18n->t('why.lead')) ?></p>
+
+    <ol class="why">
+      <?php for ($n = 1; $n <= 4; $n++): ?>
+        <li data-reveal data-reveal-delay="<?= min(3, $n - 1) ?>">
+          <h3><?= e($i18n->t("why.$n.t")) ?></h3>
+          <p><?= e($i18n->t("why.$n.b")) ?></p>
+        </li>
+      <?php endfor; ?>
+    </ol>
+
+    <p class="why-close measure" data-reveal><?= e($i18n->t('why.close')) ?></p>
+  </div>
+</section>
+<?php endif; ?>
+
 <section class="section bg-sunken">
   <div class="wrap">
     <h2 class="display-m stack-lead" data-reveal><?= e($i18n->t('paths.title')) ?></h2>
@@ -158,6 +214,21 @@ $states = [
 <section class="section" id="para-quem">
   <div class="wrap">
     <h2 class="display-m stack-lead" data-reveal><?= e($i18n->t('audiences.title')) ?></h2>
+    <?php if ($i18n->has('audiences.lead')): ?>
+      <p class="lead measure" data-reveal><?= e($i18n->t('audiences.lead')) ?></p>
+    <?php endif; ?>
+
+    <?php if ($i18n->has('audiences.sst.pain')): ?>
+      <div class="segments">
+        <?php $i = 0; foreach (['sst', 'schools', 'universities', 'creators', 'companies', 'events'] as $who): ?>
+          <article class="segment" data-reveal data-reveal-delay="<?= min(3, $i++) ?>">
+            <h3><?= e($i18n->t("audiences.$who")) ?></h3>
+            <p class="segment-pain"><?= e($i18n->t("audiences.$who.pain")) ?></p>
+            <p class="segment-gain"><?= e($i18n->t("audiences.$who.gain")) ?></p>
+          </article>
+        <?php endforeach; ?>
+      </div>
+    <?php else: ?>
     <ul class="audiences">
       <?php $i = 0; foreach (['sst', 'schools', 'universities', 'hr', 'creators'] as $who): ?>
         <li data-reveal data-reveal-delay="<?= min(3, $i++) ?>">
@@ -166,6 +237,7 @@ $states = [
         </li>
       <?php endforeach; ?>
     </ul>
+    <?php endif; ?>
   </div>
 </section>
 
