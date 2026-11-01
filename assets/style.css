@@ -805,7 +805,12 @@ code { font-family: var(--font-mono); font-size: .92em; }
 
 /* ----------------------------------------- selo 4: carimbo do comprovante */
 
-.sheet-receipt { max-width: 188mm; }
+/* O certificado é peça cerimonial e por isso .sheet é centralizado. O
+   comprovante não é: é documento de registro, lido de cima a baixo e em
+   diagonal por quem audita. Centralizado, o carimbo ficava com o texto
+   flutuando ao lado da marca e a lista de fatos sem eixo para o olho correr. */
+.sheet-receipt { max-width: 188mm; text-align: left; }
+.sheet-receipt .receipt-title { text-align: left; }
 .receipt-head {
   display: flex; align-items: baseline; justify-content: space-between;
   gap: var(--space-4); border-bottom: 1px solid var(--line); padding-bottom: var(--space-3);
