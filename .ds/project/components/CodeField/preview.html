@@ -1,0 +1,49 @@
+<!-- @dsCard group="Verificação" height=300 -->
+<div class="field-on-brand">
+  <label class="field-label" for="p-code">Código do certificado</label>
+  <div class="field-row">
+    <input id="p-code" class="field" value="K7M2-93FQ-5XB0" spellcheck="false" readonly>
+    <button class="field-btn">Verificar</button>
+  </div>
+  <p class="field-hint">Pode digitar com ou sem hífen, maiúsculas ou minúsculas.</p>
+</div>
+
+<div class="field-on-surface">
+  <label class="field-label light" for="p-code2">Verificar outro certificado</label>
+  <div class="field-row">
+    <input id="p-code2" class="field light" placeholder="K7M2-93FQ-5XB0" spellcheck="false" readonly>
+    <button class="field-btn light">Verificar</button>
+  </div>
+  <p class="field-err" role="alert">
+    <svg viewBox="0 0 20 20" aria-hidden="true"><circle cx="10" cy="10" r="8.2" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M10 5.6v5" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><circle cx="10" cy="14" r="1.1" fill="currentColor"/></svg>
+    Este código não existe. Confira se todos os caracteres foram digitados corretamente.
+  </p>
+</div>
+
+<style>
+  .field-on-brand { background: var(--brand); padding: var(--space-5); border-radius: var(--radius-lg); margin-bottom: var(--space-4); }
+  .field-on-surface { background: var(--surface-sunken); padding: var(--space-5); border-radius: var(--radius-lg); }
+  .field-label { display: block; font-size: 11.5px; font-weight: 600; letter-spacing: .09em; text-transform: uppercase; color: rgba(255,255,255,.88); margin-bottom: var(--space-2); }
+  .field-label.light { color: var(--ink-subtle); }
+  .field-row { display: flex; gap: var(--space-2); }
+  .field {
+    flex: 1 1 auto; min-width: 0;
+    font-family: var(--font-mono, "JetBrains Mono", monospace);
+    font-size: 19px; font-weight: 500; letter-spacing: .07em; text-transform: uppercase;
+    padding: 16px var(--space-5); color: #FFFFFF;
+    background: rgba(255,255,255,.13); border: 1.5px solid rgba(255,255,255,.22);
+    border-radius: var(--radius-pill);
+  }
+  .field::placeholder { color: rgba(255,255,255,.68); }
+  .field.light { background: var(--surface); border-color: var(--line); color: var(--ink); }
+  .field.light::placeholder { color: var(--ink-subtle); }
+  .field-btn {
+    flex: none; font-family: var(--font-sans, Inter, sans-serif); font-weight: 600; font-size: 16px;
+    padding: 16px var(--space-6); border: 0; border-radius: var(--radius-pill);
+    background: #FFFFFF; color: var(--brand); cursor: pointer;
+  }
+  .field-btn.light { background: var(--brand); color: #FFFFFF; }
+  .field-hint { font-size: 13px; color: rgba(255,255,255,.84); margin: var(--space-3) 0 0; }
+  .field-err { display: flex; gap: var(--space-2); align-items: flex-start; font-size: 14.5px; color: var(--bad); margin: var(--space-3) 0 0; }
+  .field-err svg { width: 18px; height: 18px; flex: none; margin-top: 3px; }
+</style>

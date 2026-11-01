@@ -3,5 +3,7 @@
 /storage/
 /.env
 /lib/config.local.php
-/.ds/
+# /.ds/ saiu do ignore: ali mora o design system escrito, e nao estado de
+# ferramenta descartavel. Ficando de fora, a marca, os quatro selos e o
+# capitulo de Voz e tom existiam so num notebook.
 /lib/mail.secret

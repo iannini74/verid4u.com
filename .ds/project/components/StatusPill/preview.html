@@ -1,0 +1,25 @@
+<!-- @dsCard group="Verificação" height=180 -->
+<table class="grid">
+  <thead><tr><th>Código</th><th>Titular</th><th>Estado</th></tr></thead>
+  <tbody>
+    <tr><td><code>K7M2-93FQ-5XB0</code> <span class="chip chip-demo">demo</span></td><td>Maria S. L.</td><td><span class="pill pill-ok">Verificado</span></td></tr>
+    <tr><td><code>H4T8-R2WX-1NQD</code></td><td>João C. F.</td><td><span class="pill pill-warn">Vence em breve</span></td></tr>
+    <tr><td><code>B9CD-5K3Z-Y7MD</code></td><td>Ana P. R.</td><td><span class="pill pill-stale">Vencido</span></td></tr>
+    <tr><td><code>P2V6-S8GJ-4TRK</code></td><td>Roberto N.</td><td><span class="pill pill-bad">Revogado</span></td></tr>
+  </tbody>
+</table>
+
+<style>
+  .grid { width: 100%; border-collapse: collapse; font-family: var(--font-sans, Inter, sans-serif); font-size: 14.5px; color: var(--ink); }
+  .grid th { text-align: left; font-size: 11.5px; letter-spacing: .09em; text-transform: uppercase; color: var(--ink-subtle); font-weight: 600; padding: 0 var(--space-3) var(--space-2) 0; border-bottom: 1px solid var(--line); }
+  .grid td { padding: var(--space-3) var(--space-3) var(--space-3) 0; border-bottom: 1px solid var(--line); }
+  .grid tr:last-child td { border-bottom: 0; }
+  .grid code { font-family: var(--font-mono, "JetBrains Mono", monospace); font-size: 13px; letter-spacing: .05em; }
+  .pill { display: inline-block; font-size: 13px; font-weight: 600; padding: 3px 11px; border-radius: var(--radius-pill); }
+  .pill-ok { background: var(--ok-tint); color: var(--ok); }
+  .pill-warn { background: var(--warn-tint); color: var(--warn); }
+  .pill-stale { background: var(--stale-tint); color: var(--stale); }
+  .pill-bad { background: var(--bad-tint); color: var(--bad); }
+  .chip { display: inline-block; font-size: 11.5px; font-weight: 600; letter-spacing: .04em; padding: 2px 8px; border-radius: var(--radius-sm); margin-left: var(--space-2); }
+  .chip-demo { background: var(--warn-tint); color: var(--warn); }
+</style>

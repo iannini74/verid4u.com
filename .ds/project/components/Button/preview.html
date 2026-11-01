@@ -1,0 +1,34 @@
+<!-- @dsCard group="Actions" height=200 -->
+<div class="row">
+  <button class="btn btn-primary">Verificar</button>
+  <button class="btn btn-ghost">Ver exemplo</button>
+  <button class="btn btn-primary btn-sm">Emitir</button>
+  <button class="btn btn-danger btn-sm">Revogar</button>
+</div>
+
+<div class="row on-brand">
+  <button class="btn btn-invert">Começar gratuitamente</button>
+  <button class="btn btn-ghost-invert">Falar com vendas</button>
+</div>
+
+<style>
+  .row { display: flex; gap: var(--space-3); flex-wrap: wrap; align-items: center; margin-bottom: var(--space-4); }
+  .row.on-brand { background: var(--brand); padding: var(--space-5); border-radius: var(--radius-lg); margin-bottom: 0; }
+  .btn {
+    display: inline-flex; align-items: center; justify-content: center;
+    font-family: var(--font-sans, Inter, sans-serif);
+    font-weight: 600; font-size: 16px; min-height: 44px;
+    padding: 14px var(--space-6);
+    border: 1.5px solid transparent; border-radius: var(--radius-pill);
+    cursor: pointer; transition: background 240ms cubic-bezier(.2,.8,.2,1), transform 150ms;
+  }
+  .btn:active { transform: translateY(1px); }
+  .btn-sm { padding: 10px var(--space-5); font-size: 14.5px; min-height: 38px; }
+  .btn-primary { background: var(--brand); color: #FFFFFF; }
+  .btn-primary:hover { background: var(--brand-strong); }
+  .btn-ghost { background: transparent; color: var(--ink); border-color: var(--line-strong); }
+  .btn-ghost:hover { border-color: var(--ink); }
+  .btn-danger { background: var(--bad); color: #FFFFFF; }
+  .btn-invert { background: #FFFFFF; color: var(--brand); }
+  .btn-ghost-invert { background: transparent; color: #FFFFFF; border-color: rgba(255,255,255,.45); }
+</style>

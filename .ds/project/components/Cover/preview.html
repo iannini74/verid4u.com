@@ -1,0 +1,53 @@
+<!-- @dsCard group="Cover" height=420 -->
+<div class="cover">
+  <div class="cover-mark" aria-hidden="true">
+    <svg viewBox="0 0 48 48">
+      <circle cx="24" cy="24" r="22" fill="none" stroke="#FFFFFF" stroke-width="2.5"
+              stroke-dasharray="2.8 4.111" stroke-linecap="round" opacity=".6"/>
+      <circle cx="24" cy="24" r="16" fill="#FFFFFF"/>
+      <path d="M16.5 24.3 21.6 29.4 31.5 18.8" fill="none" stroke="var(--brand)"
+            stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"/>
+    </svg>
+  </div>
+  <h1>Todo certificado merece uma prova.</h1>
+  <p>O registro digital de certificados. Qualquer pessoa confere em dez segundos, de graça e sem cadastro.</p>
+  <div class="cover-swatches" aria-hidden="true">
+    <span style="background: var(--ok)"></span>
+    <span style="background: var(--warn)"></span>
+    <span style="background: var(--stale)"></span>
+    <span style="background: var(--bad)"></span>
+  </div>
+</div>
+
+<style>
+  .cover {
+    background: var(--brand);
+    color: #FFFFFF;
+    border-radius: var(--radius-xl);
+    padding: var(--space-8) var(--space-7);
+    min-height: 380px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    position: relative;
+    overflow: hidden;
+  }
+  .cover::after {
+    content: ""; position: absolute; inset: auto -12% -55% 45%;
+    height: 85%; border-radius: 50%;
+    background: radial-gradient(closest-side, rgba(255,255,255,.16), transparent 70%);
+  }
+  .cover-mark { width: 56px; height: 56px; margin-bottom: var(--space-6); position: relative; z-index: 1; }
+  .cover h1 {
+    font-family: var(--font-display, "Inter Tight", sans-serif);
+    font-size: clamp(32px, 5.4vw, 52px);
+    font-weight: 700; line-height: 1.02; letter-spacing: -.032em;
+    margin: 0 0 var(--space-4); max-width: 15ch; position: relative; z-index: 1;
+  }
+  .cover p {
+    font-size: 18px; line-height: 1.55; color: rgba(255,255,255,.88);
+    margin: 0; max-width: 46ch; position: relative; z-index: 1;
+  }
+  .cover-swatches { display: flex; gap: var(--space-2); margin-top: var(--space-7); position: relative; z-index: 1; }
+  .cover-swatches span { width: 36px; height: 8px; border-radius: 999px; display: block; }
+</style>
