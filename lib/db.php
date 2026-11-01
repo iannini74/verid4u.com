@@ -45,7 +45,7 @@ final class Db
 
     /* ------------------------------------------------------------ migrações */
 
-    public const SCHEMA_VERSION = 12;
+    public const SCHEMA_VERSION = 13;
 
     private static function marker(): string
     {
@@ -275,6 +275,42 @@ final class Db
             /* Desempenho das variações da primeira dobra. Uma linha por
                variação e por dia: permite ver tanto o acumulado quanto a
                evolução, sem guardar nada sobre quem visitou. */
+            13 => [
+                // A chave nunca é guardada: guardamos o hash e um prefixo
+                // curto, que é o que a tela mostra para o cliente reconhecer
+                // qual chave é qual. Quem perder a chave gera outra; nem nós
+                // conseguimos devolvê-la, e é assim que tem de ser.
+                "CREATE TABLE IF NOT EXISTS api_keys (
+                    id INT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
+                    tenant_id INT UNSIGNED NOT NULL,
+                    name VARCHAR(80) NOT NULL,
+                    prefix VARCHAR(20) NOT NULL,
+                    key_hash CHAR(64) NOT NULL,
+                    last_used_at DATETIME NULL,
+                    revoked_at DATETIME NULL,
+                    created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+                    UNIQUE KEY uq_api_key (key_hash),
+                    KEY idx_api_tenant (tenant_id, revoked_at)
+                ) $engine",
+
+                // Toda integração reenvia: timeout, retentativa, fila que
+                // roda duas vezes. Sem isto, reenviar gera um segundo
+                // certificado para o mesmo aluno — o pior defeito possível
+                // num registro, porque ninguém descobre na hora.
+                "CREATE TABLE IF NOT EXISTS api_idempotency (
+                    id BIGINT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
+                    tenant_id INT UNSIGNED NOT NULL,
+                    idem_key VARCHAR(190) NOT NULL,
+                    endpoint VARCHAR(64) NOT NULL,
+                    request_hash CHAR(64) NOT NULL,
+                    status_code SMALLINT UNSIGNED NOT NULL,
+                    response_json MEDIUMTEXT NOT NULL,
+                    created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+                    UNIQUE KEY uq_idem (tenant_id, idem_key),
+                    KEY idx_idem_idade (created_at)
+                ) $engine",
+            ],
+
             12 => [
                 // A cópia da landing promete «emissão em lote com a sua marca»
                 // em três lugares. Até aqui o certificado saía só com o nome

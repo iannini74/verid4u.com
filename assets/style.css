@@ -1088,3 +1088,12 @@ code { font-family: var(--font-mono); font-size: .92em; }
 @media print{
   .sheet-logo{max-height:20mm}
 }
+
+
+/* ------------------------------------------------------- chaves da API */
+
+.keynew{border-color:var(--brand);background:var(--brand-tint)}
+.keynew-warn{font-size:var(--text-body-s);color:var(--ink);margin:var(--space-2) 0 var(--space-4);max-width:72ch}
+.keynew .snippet{background:var(--surface-ink);color:var(--ink-on-ink)}
+.row-off{opacity:.55}
+.row-off code{text-decoration:line-through}

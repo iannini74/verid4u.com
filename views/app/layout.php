@@ -12,6 +12,7 @@ $nav = [
     'import'     => ['importar', 'nav.import'],
     'email'      => ['email', 'nav.email'],
     'selo'       => ['selo', 'nav.seal'],
+    'api'        => ['api', 'nav.api'],
     'dobra'      => ['dobra', 'nav.hero'],
     'issuances'  => ['certificados', 'nav.issuances'],
 ];

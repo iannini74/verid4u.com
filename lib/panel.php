@@ -52,6 +52,7 @@ final class Panel
             'email'        => self::emailSettings($i18n, $user, $isPost),
             'dobra'        => self::heroPanel($i18n, $user),
             'selo'         => self::sealPanel($i18n, $user, $isPost),
+            'api'          => self::apiPanel($i18n, $user, $isPost),
             'reenviar'     => self::resendConfirmation($i18n, $user, $isPost),
             'certificados' => self::issuances($i18n, $user),
             'revogar'      => self::revoke($i18n, $user, $isPost),
@@ -335,6 +336,53 @@ final class Panel
             $i18n->locale()
         );
         redirect($i18n->url('/app/?ok=signup.resent'));
+    }
+
+    /* ---------------------------------------------------------------- API */
+
+    /**
+     * Chaves da API.
+     *
+     * A chave aparece uma vez e some. Guardamos o hash, não o texto — se
+     * conseguíssemos mostrá-la de novo, quem tivesse acesso ao nosso banco
+     * também conseguiria. O que a tela repete depois é só o prefixo, que
+     * serve para o cliente saber qual chave é qual.
+     */
+    private static function apiPanel(I18n $i18n, array $user, bool $isPost): void
+    {
+        $tenantId = (int) $user['tenant_id'];
+        $error = null;
+        $nova = null;
+
+        if ($isPost) {
+            $acao = (string) ($_POST['acao'] ?? 'criar');
+
+            if ($acao === 'revogar') {
+                ApiKey::revoke($tenantId, (int) ($_POST['id'] ?? 0));
+                Auth::audit('apikey.revoked', 'api_key', (string) ($_POST['id'] ?? 0));
+                redirect($i18n->url('/app/api?ok=api.revoked'));
+                return;
+            }
+
+            // A trava fica na escrita, não aqui. Chave é credencial; o que
+            // decide se pode gravar é o estado da conta no momento em que a
+            // gravação acontece. Travar a criação daria a falsa impressão de
+            // que, tendo a chave, está liberado — e a conta pode esgotar a
+            // faixa ou perder a confirmação depois de a chave existir.
+            if (count(ApiKey::forTenant($tenantId)) >= 10) {
+                $error = $i18n->a('api.too_many');
+            } else {
+                $nova = ApiKey::create($tenantId, (string) ($_POST['name'] ?? ''));
+                Auth::audit('apikey.created', 'api_key', (string) $nova['id']);
+            }
+        }
+
+        self::shell($i18n, 'app/api', [
+            'keys'  => ApiKey::forTenant($tenantId),
+            'nova'  => $nova,
+            'error' => $error,
+            'flash' => self::flash($i18n),
+        ], $user, 'api');
     }
 
     /* ------------------------------------------------------------ entrada */

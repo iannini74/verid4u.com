@@ -474,6 +474,12 @@ if (($segments[0] ?? '') === 'api') {
         exit;
     }
 
+    // Escrita: cursos, emissões, registros e revogação. A classe sai sozinha
+    // quando a rota é dela; devolve o controle quando não é.
+    if (($segments[1] ?? '') === 'v1') {
+        Api::handle($segments);
+    }
+
     $isVerifyRoute = ($segments[1] ?? '') === 'v1' && ($segments[2] ?? '') === 'verify';
     if (!$isVerifyRoute) {
         http_response_code(404);

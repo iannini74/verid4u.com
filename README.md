@@ -94,6 +94,36 @@ o ramo imprime o qualificador. Selo com texto livre vira banner, e banner não
 prova nada.
 
 
+## A API de escrita
+
+Chave por cliente, `Authorization: Bearer vk_live_…`. A chave aparece uma vez
+e some: guardamos o hash e um prefixo curto, e nem nós conseguimos devolvê-la.
+
+Quatro decisões que valem lembrar:
+
+**`Idempotency-Key` é obrigatório em todo POST.** Toda integração reenvia —
+timeout, retentativa, fila que roda duas vezes. Reenviar com a mesma chave
+devolve a resposta gravada, com `Idempotent-Replay: true`; reenviar a mesma
+chave com corpo diferente é `409`, porque adivinhar qual das duas operações
+vale seria pior do que recusar. Sem isso, reenviar geraria um segundo
+certificado para o mesmo aluno — o defeito que ninguém descobre na hora.
+
+**Erro em `application/problem+json` com um campo `code` estável.** A mensagem
+muda e um dia será traduzida; quem integra compara o `code`.
+
+**Não há CORS nos endereços de escrita, de propósito.** Liberar convidaria a
+pôr a chave em JavaScript de navegador. A leitura pública continua com CORS
+aberto, porque qualquer página deve poder conferir um certificado.
+
+**A trava fica na escrita, não na criação da chave.** Chave é credencial; o
+que decide se pode gravar é o estado da conta no instante da gravação —
+`email_unconfirmed` e `quota_exceeded` são problemas diferentes, com códigos
+diferentes, porque um se resolve clicando num link e o outro não.
+
+Nada aqui é exclusivo da API: toda função alcançável por chave existe no
+painel e na importação. Integrar nunca é condição para usar a plataforma.
+
+
 ## Stack
 
 PHP 8 sem dependências, sem etapa de build. Roda direto na hospedagem
@@ -129,6 +159,12 @@ compartilhada da Hostinger.
 | `/api/v1/verify/{codigo}` | Verificação em JSON |
 | `/api/v1/lookup` | `POST sha256=…` — acha o registro pela impressão digital do arquivo |
 | `/api/v1/health` | Estado do serviço e versão do esquema. Não devolve dado nenhum |
+| `GET /api/v1/me` | A conta, a chave e o uso do mês. Exige chave |
+| `GET /api/v1/programs` | Lista os cursos. Exige chave |
+| `POST /api/v1/programs` | Cria um curso. Exige chave e `Idempotency-Key` |
+| `POST /api/v1/issuances` | Emite contra um curso. Exige chave e `Idempotency-Key` |
+| `POST /api/v1/registrations` | Registra certificado emitido fora. Exige chave e `Idempotency-Key` |
+| `POST /api/v1/issuances/{codigo}/revoke` | Revoga, com motivo obrigatório |
 | `/api/v1/cron/mail?key=…` | Despacha a fila de e-mail. Protegida por segredo do config |
 | `/api/v1/cron/expiry?key=…` | Enfileira os avisos de vencimento de 90, 30 e 7 dias |
 | `/api/v1/cron/diag?key=…` | Forma da configuração de e-mail: diz se os campos estão preenchidos, nunca o que contêm |
@@ -143,6 +179,8 @@ compartilhada da Hostinger.
 | `/{idioma}/app/email` | Estado do envio, teste e lista de supressão |
 | `/{idioma}/app/certificados` | Lista, revogação e impressão |
 | `/{idioma}/app/selo` | Central do selo: prévia, código para colar, tarja e ramo declarado |
+| `/{idioma}/app/api` | Chaves da API e o manual de uso ao lado delas |
+| `/{idioma}/app/criar-conta` | Cadastro pelo próprio cliente |
 
 Idiomas do lado público: `pt-br`, `pt`, `es`, `en`. O painel sai em pt-BR;
 `i18n/app.<locale>.php` já é o lugar das traduções quando houver cliente
