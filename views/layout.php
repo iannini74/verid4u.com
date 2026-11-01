@@ -32,10 +32,10 @@ $base = base_url();
 <link rel="icon" href="/assets/brand/mark-solid.svg" type="image/svg+xml">
 <link rel="preload" href="/assets/fonts/inter-tight-normal-600-700-latin.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="preload" href="/assets/fonts/inter-normal-400-700-latin.woff2" as="font" type="font/woff2" crossorigin>
-<link rel="stylesheet" href="/assets/fonts.css?v=18">
+<link rel="stylesheet" href="/assets/fonts.css?v=<?= ASSET_VERSION ?>">
 <script>document.documentElement.classList.add("js");</script>
 <?= $extraHead ?? '' ?>
-<link rel="stylesheet" href="/assets/style.css?v=20">
+<link rel="stylesheet" href="/assets/style.css?v=<?= ASSET_VERSION ?>">
 </head>
 <body>
 <a class="skip" href="#main"><?= e($i18n->t('hero.title')) ?></a>
@@ -43,28 +43,50 @@ $base = base_url();
 <header class="site-header" data-sticky-header>
   <div class="wrap header-row">
     <a class="brand" href="<?= e($i18n->url()) ?>">
-      <span style="color: var(--brand); display: inline-flex;"><?php require __DIR__ . '/partials/mark.php'; ?></span>
+      <span class="brand-sign"><?php require __DIR__ . '/partials/mark.php'; ?></span>
       <span class="brand-text">VerID<span class="brand-accent">4U</span></span>
     </a>
 
-    <nav class="site-nav" aria-label="<?= e($i18n->t('nav.how')) ?>">
-      <a href="<?= e($i18n->url()) ?>#como"><?= e($i18n->t('nav.how')) ?></a>
-      <a href="<?= e($i18n->url()) ?>#para-quem"><?= e($i18n->t('nav.audiences')) ?></a>
-      <a href="<?= e($i18n->url()) ?>#duvidas"><?= e($i18n->t('nav.faq')) ?></a>
-      <a href="<?= e($i18n->url('/blog')) ?>"><?= e($i18n->t('blog.title')) ?></a>
-    </nav>
+    <?php
+    /*
+     * Um <details> serve de menu, e não há JS envolvido em abri-lo ou fechá-lo.
+     * Vem com `open` escrito no HTML de propósito: sem JS, o celular mostra o
+     * menu aberto — cabeçalho comprido e tudo alcançável. É a direção certa de
+     * falhar. O app.js só fecha o menu quando a tela é estreita; se ele não
+     * carregar, ninguém fica sem navegação, que é o que acontecia até agora.
+     */
+    ?>
+    <details class="menu" open data-menu>
+      <summary class="menu-btn" aria-label="<?= e($i18n->t('nav.menu')) ?>">
+        <svg viewBox="0 0 24 24" aria-hidden="true" width="24" height="24">
+          <path class="menu-open" d="M4 7h16M4 12h16M4 17h16" fill="none" stroke="currentColor"
+                stroke-width="2" stroke-linecap="round"/>
+          <path class="menu-close" d="M6 6l12 12M18 6L6 18" fill="none" stroke="currentColor"
+                stroke-width="2" stroke-linecap="round"/>
+        </svg>
+      </summary>
 
-    <div class="header-actions">
-      <a class="btn btn-ghost btn-sm" href="<?= e($i18n->url('/app/entrar')) ?>"><?= e($i18n->t('nav.signin')) ?></a>
-      <a class="btn btn-primary btn-sm" href="<?= e($i18n->url('/app/criar-conta')) ?>"><?= e($i18n->t('nav.start')) ?></a>
-    </div>
+      <div class="menu-panel">
+        <nav class="site-nav" aria-label="<?= e($i18n->t('nav.how')) ?>">
+          <a href="<?= e($i18n->url()) ?>#como"><?= e($i18n->t('nav.how')) ?></a>
+          <a href="<?= e($i18n->url()) ?>#para-quem"><?= e($i18n->t('nav.audiences')) ?></a>
+          <a href="<?= e($i18n->url()) ?>#duvidas"><?= e($i18n->t('nav.faq')) ?></a>
+          <a href="<?= e($i18n->url('/blog')) ?>"><?= e($i18n->t('blog.title')) ?></a>
+        </nav>
 
-    <div class="lang" role="group" aria-label="Idioma">
-      <?php foreach (I18n::LOCALES as $loc => $meta): ?>
-        <a href="<?= e(localized_path($loc)) ?>" hreflang="<?= e($meta['tag']) ?>" title="<?= e($meta['name']) ?>"
-           <?= $loc === $i18n->locale() ? 'aria-current="true"' : '' ?>><?= e($meta['short']) ?></a>
-      <?php endforeach; ?>
-    </div>
+        <div class="header-actions">
+          <a class="btn btn-ghost btn-sm" href="<?= e($i18n->url('/app/entrar')) ?>"><?= e($i18n->t('nav.signin')) ?></a>
+          <a class="btn btn-primary btn-sm" href="<?= e($i18n->url('/app/criar-conta')) ?>"><?= e($i18n->t('nav.start')) ?></a>
+        </div>
+
+        <div class="lang" role="group" aria-label="<?= e($i18n->t('nav.language')) ?>">
+          <?php foreach (I18n::LOCALES as $loc => $meta): ?>
+            <a href="<?= e(localized_path($loc)) ?>" hreflang="<?= e($meta['tag']) ?>" title="<?= e($meta['name']) ?>"
+               <?= $loc === $i18n->locale() ? 'aria-current="true"' : '' ?>><?= e($meta['short']) ?></a>
+          <?php endforeach; ?>
+        </div>
+      </div>
+    </details>
   </div>
 </header>
 
@@ -81,6 +103,6 @@ $base = base_url();
   </div>
 </footer>
 
-<script src="/assets/app.js?v=18" defer></script>
+<script src="/assets/app.js?v=<?= ASSET_VERSION ?>" defer></script>
 </body>
 </html>

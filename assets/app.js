@@ -330,3 +330,48 @@
   }, { threshold: 0.4 });
   observador.observe(caixa);
 })();
+
+/* ------------------------------------------------------------ menu do topo
+ *
+ * O <details> vem com `open` escrito no HTML. Quem está no celular com JS
+ * ativo recebe ele fechado; quem está sem JS recebe aberto, que é um
+ * cabeçalho comprido e nenhuma navegação perdida. Falhar para o lado do
+ * conteúdo visível, nunca para o lado do conteúdo escondido.
+ */
+(function () {
+  var menu = document.querySelector('[data-menu]');
+  if (!menu) return;
+
+  var estreito = window.matchMedia('(max-width: 860px)');
+  var tocado = false;   // depois que a pessoa mexe, o script sai do caminho
+
+  function ajustar() {
+    if (tocado) return;
+    menu.open = !estreito.matches;
+  }
+
+  menu.addEventListener('toggle', function () { tocado = true; });
+  ajustar();
+
+  if (estreito.addEventListener) {
+    estreito.addEventListener('change', function () { tocado = false; ajustar(); });
+  }
+
+  // Escolher um destino fecha o menu: deixá-lo aberto por cima da âncora
+  // recém-clicada esconde justamente o que a pessoa foi ver.
+  menu.addEventListener('click', function (ev) {
+    var alvo = ev.target.closest ? ev.target.closest('a') : null;
+    if (alvo && estreito.matches) {
+      menu.open = false;
+    }
+  });
+
+  // Esc fecha, como todo painel sobreposto.
+  document.addEventListener('keydown', function (ev) {
+    if (ev.key === 'Escape' && menu.open && estreito.matches) {
+      menu.open = false;
+      var botao = menu.querySelector('summary');
+      if (botao) botao.focus();
+    }
+  });
+})();

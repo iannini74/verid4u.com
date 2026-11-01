@@ -256,4 +256,6 @@ return [
     'cert.seal.bottom' => 'VERIFICAÇÃO ATIVA · VERID4U.COM',
     'cert.strip.line' => 'Comprovação de emissão · verificação ativa',
     'format.datetime' => '{d}, às {h} ({tz})',
+    'nav.menu' => 'Menu',
+    'nav.language' => 'Idioma',
 ];

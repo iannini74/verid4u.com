@@ -53,9 +53,16 @@ final class Brand
         // viewBox colado no desenho: a altura definida no CSS é a altura que
         // aparece, e a largura acompanha. Encaixada a marca é mais estreita,
         // porque a cunha entrou — é a própria ideia, não um defeito de caixa.
-        $box = $fit ? '8 16 58 68' : '8 16 86 68';
+        //
+        // width e height vão como atributo além do viewBox, e isso não é
+        // redundância. Sem eles o SVG não tem tamanho intrínseco, e dentro de
+        // um flex apertado o navegador resolve `width: auto` como zero — foi
+        // exatamente assim que a marca sumiu do cabeçalho no celular.
+        [$w, $h] = $fit ? [58, 68] : [86, 68];
+        $box = '8 16 ' . $w . ' ' . $h;
 
-        return '<svg class="' . e($class) . '" viewBox="' . $box . '"' . $a11y . '>'
+        return '<svg class="' . e($class) . '" viewBox="' . $box . '"'
+            . ' width="' . $w . '" height="' . $h . '"' . $a11y . '>'
             . '<path d="' . self::BLOCK . '" fill="currentColor"/>'
             . '<path d="' . $wedge . '" fill="currentColor"/>'
             . '</svg>';

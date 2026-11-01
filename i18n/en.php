@@ -256,4 +256,6 @@ return [
     'cert.seal.bottom' => 'LIVE VERIFICATION · VERID4U.COM',
     'cert.strip.line' => 'Proof of issuance · live verification',
     'format.datetime' => '{d} at {h} ({tz})',
+    'nav.menu' => 'Menu',
+    'nav.language' => 'Language',
 ];
