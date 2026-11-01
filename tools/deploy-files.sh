@@ -13,7 +13,7 @@
 #   export VERID_AUTH=...       # auth_key
 #   export VERID_AUTH_REST=...  # rest_auth_key
 #   tools/deploy-files.sh arquivo [arquivo...]
-#   tools/deploy-files.sh --do-commit HEAD      # os arquivos de um commit
+#   tools/deploy-files.sh --do-commit HEAD [commit...]   # o que os commits mudaram
 #
 # As chaves ficam so no ambiente desta execucao: nunca em arquivo, nunca no Git.
 
@@ -26,8 +26,14 @@ set -euo pipefail
 raiz="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 cd "$raiz"
 
+arquivos=()
 if [ "${1:-}" = "--do-commit" ]; then
-  mapfile -t arquivos < <(git show --stat --name-only --format= "${2:-HEAD}" | grep -v '^$')
+  shift
+  [ "$#" -gt 0 ] || set -- HEAD
+  # Nada de mapfile: o bash do macOS e 3.2 e nao tem. while/read funciona nos dois.
+  while IFS= read -r linha; do
+    [ -n "$linha" ] && arquivos+=("$linha")
+  done < <(for c in "$@"; do git show --stat --name-only --format= "$c"; done | sort -u)
 else
   arquivos=("$@")
 fi

@@ -255,5 +255,5 @@ return [
     'cert.seal.top' => 'EMITIDO Y REGISTRADO',
     'cert.seal.bottom' => 'VERIFICACIÓN ACTIVA · VERID4U.COM',
     'cert.strip.line' => 'Comprobación de emisión · verificación activa',
-    'format.datetime' => '{d}, a las {h} ({tz}, {utc})',
+    'format.datetime' => '{d}, a las {h} ({tz})',
 ];

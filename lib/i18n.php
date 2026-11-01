@@ -124,11 +124,19 @@ final class I18n
         $offset = $when->format('P');   // -03:00
         $offset = 'UTC' . rtrim(str_replace(':00', '', $offset), ':');
 
+        // Nem todo fuso tem sigla. America/Sao_Paulo devolve "-03" em T, e aí
+        // o resultado saía "(-03, UTC-03)" — a mesma coisa duas vezes. Quando
+        // não há sigla de verdade, fica só o deslocamento, que é o que um
+        // documento que atravessa país precisa mesmo.
+        $abrev = $when->format('T');
+        $zona = preg_match('/^[A-Za-z]{2,5}$/', $abrev) === 1
+            ? $abrev . ', ' . $offset
+            : $offset;
+
         return $this->t('format.datetime', [
-            'd'    => $this->date($when->format('Y-m-d')),
-            'h'    => $when->format('H:i'),
-            'tz'   => $when->format('T'),
-            'utc'  => $offset,
+            'd'  => $this->date($when->format('Y-m-d')),
+            'h'  => $when->format('H:i'),
+            'tz' => $zona,
         ]);
     }
 

@@ -255,5 +255,5 @@ return [
     'cert.seal.top' => 'ISSUED AND REGISTERED',
     'cert.seal.bottom' => 'LIVE VERIFICATION · VERID4U.COM',
     'cert.strip.line' => 'Proof of issuance · live verification',
-    'format.datetime' => '{d} at {h} ({tz}, {utc})',
+    'format.datetime' => '{d} at {h} ({tz})',
 ];
