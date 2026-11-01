@@ -11,6 +11,13 @@ $verifyUrl = base_url() . $i18n->url('/v/' . $code);
 
 <article class="sheet">
   <header class="sheet-head">
+    <?php if (!empty($record['issuer_logo']) && !empty($record['issuer_slug'])): ?>
+      <?php /* A logo acompanha o nome, nunca o substitui: quem confere precisa
+               ler o nome do emissor, e imagem não se lê em voz alta nem
+               sobrevive a uma fotocópia ruim. */ ?>
+      <img class="sheet-logo" src="<?= e(base_url() . '/marca/' . $record['issuer_slug']) ?>"
+           alt="<?= e($record['issuer_name']) ?>">
+    <?php endif; ?>
     <p class="sheet-issuer"><?= e($record['issuer_name']) ?></p>
     <?php if (!empty($record['issuer_cnpj'])): ?>
       <p class="sheet-legal">CNPJ <?= e($record['issuer_cnpj']) ?></p>

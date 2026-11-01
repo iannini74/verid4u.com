@@ -112,7 +112,42 @@ $base = base_url();
       </p>
     </section>
 
-    <!-- -------------------------------------------- 3. o ramo declarado -->
+    <!-- --------------------------------------- 3. a logo do emissor -->
+    <section class="card seal-card">
+      <h2 class="app-h2"><?= e($i18n->a('logo.title')) ?></h2>
+      <p class="field-hint"><?= e($i18n->a('logo.body')) ?></p>
+
+      <?php if (($logo ?? '') !== ''): ?>
+        <div class="logo-stage">
+          <img src="<?= e($base . '/marca/' . $slug) ?>?v=<?= e(substr(md5($logo), 0, 8)) ?>"
+               alt="<?= e($i18n->a('logo.current')) ?>" height="56">
+          <form method="post" action="<?= e($i18n->url('/app/selo')) ?>">
+            <input type="hidden" name="csrf" value="<?= e(Auth::csrf()) ?>">
+            <input type="hidden" name="acao" value="logo_remover">
+            <button class="button ghost" type="submit"><?= e($i18n->a('logo.remove')) ?></button>
+          </form>
+        </div>
+      <?php endif; ?>
+
+      <form method="post" action="<?= e($i18n->url('/app/selo')) ?>"
+            enctype="multipart/form-data" class="form-narrow logo-form">
+        <input type="hidden" name="csrf" value="<?= e(Auth::csrf()) ?>">
+        <input type="hidden" name="acao" value="logo">
+        <?php
+        /* Sem onchange inline: a CSP do site é script-src 'self', e atributo
+           de evento é script inline — seria recusado em silêncio e o botão
+           não faria nada. Campo visível e botão de enviar funcionam sempre. */
+        ?>
+        <label for="logo-arq" class="field-label"><?= e($i18n->a(($logo ?? '') !== '' ? 'logo.replace' : 'logo.choose')) ?></label>
+        <input id="logo-arq" type="file" name="logo" accept="image/png,image/jpeg" required>
+        <button class="button" type="submit"><?= e($i18n->a('logo.send')) ?></button>
+      </form>
+
+      <p class="field-hint"><?= e($i18n->a('logo.rules', ['px' => Logo::MIN_WIDTH, 'mb' => 1])) ?></p>
+      <p class="field-hint"><?= e($i18n->a('logo.no_svg')) ?></p>
+    </section>
+
+    <!-- -------------------------------------------- 4. o ramo declarado -->
     <section class="card seal-card">
       <h2 class="app-h2"><?= e($i18n->a('seal.ramo.title')) ?></h2>
       <p class="field-hint"><?= e($i18n->a('seal.ramo.body')) ?></p>
@@ -133,7 +168,7 @@ $base = base_url();
       </form>
     </section>
 
-    <!-- ----------------------------------- 4. o endereço público -->
+    <!-- ----------------------------------- 5. o endereço público -->
     <section class="card seal-card">
       <h2 class="app-h2"><?= e($i18n->a('seal.page.title')) ?></h2>
       <p class="field-hint"><?= e($i18n->a('seal.page.body')) ?></p>

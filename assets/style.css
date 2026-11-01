@@ -361,8 +361,17 @@ code { font-family: var(--font-mono); font-size: .92em; }
 /* O estado escondido vive atrás de .js: sem JavaScript, ou se o observador
    falhar, o conteúdo aparece normalmente. Conteúdo invisível por causa de
    animação é o pior defeito possível numa página pública. */
+/* A animação de entrada está desligada, e isto aqui é o registro do porquê.
+   Ela dependia de uma classe .js posta por um <script> embutido no <head>, e
+   a CSP do site é script-src 'self' — ou seja, o script era recusado em toda
+   requisição, a classe nunca entrava e a regra nunca valia. Ninguém notou
+   porque o modo de falhar era o certo: conteúdo visível.
+
+   Ficou desligada de propósito até o redesenho tratar movimento direito. O
+   conserto não é afrouxar a CSP: é a animação nascer do próprio app.js, sem
+   depender de classe posta antes da pintura.
 .js [data-reveal] { opacity: 0; transform: translateY(var(--rise)); transition: opacity var(--dur-slow) var(--ease-out), transform var(--dur-slow) var(--ease-out); }
-.js [data-reveal].is-in { opacity: 1; transform: none; }
+.js [data-reveal].is-in { opacity: 1; transform: none; } */
 [data-reveal][data-reveal-delay="1"] { transition-delay: 70ms; }
 [data-reveal][data-reveal-delay="2"] { transition-delay: 140ms; }
 [data-reveal][data-reveal-delay="3"] { transition-delay: 210ms; }
@@ -1063,3 +1072,19 @@ code { font-family: var(--font-mono); font-size: .92em; }
 /* Sem JavaScript o menu fica aberto, porque é assim que ele vem no HTML. O
    app.js fecha quando a tela é estreita. Falhar com o menu aberto é um
    cabeçalho comprido; falhar fechado seria um site sem navegação. */
+
+
+/* ------------------------------------------------------ logo do emissor */
+
+.sheet-logo{max-height:22mm;max-width:70mm;width:auto;height:auto;display:block;margin:0 auto var(--space-4)}
+.logo-stage{display:flex;align-items:center;gap:var(--space-5);flex-wrap:wrap;
+  margin:var(--space-4) 0;padding:var(--space-5);background:#FFFFFF;
+  border:1px solid var(--line-strong);border-radius:var(--radius-md)}
+.logo-stage img{max-height:56px;width:auto}
+.logo-form{margin-top:var(--space-4)}
+.logo-form input[type=file]{display:block;margin:var(--space-2) 0 var(--space-4);font-size:var(--text-body-s);max-width:100%}
+.field-label{display:block;font-size:var(--text-caption);font-weight:600;color:var(--ink-muted);margin-bottom:6px}
+
+@media print{
+  .sheet-logo{max-height:20mm}
+}

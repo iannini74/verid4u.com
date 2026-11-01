@@ -189,13 +189,45 @@ final class Panel
         $error = null;
 
         if ($isPost) {
-            $ramo = (string) ($_POST['ramo'] ?? '');
-            if (Issuer::setCategory($tenantId, $issuerId, $ramo)) {
-                Auth::audit('issuer.category', 'issuer', (string) $issuerId, ['ramo' => $ramo]);
-                redirect($i18n->url('/app/selo?ok=seal.saved'));
+            $acao = (string) ($_POST['acao'] ?? 'ramo');
+
+            if ($acao === 'logo') {
+                $r = Logo::store($issuerId, $_FILES['logo'] ?? []);
+                if ($r['ok']) {
+                    // A anterior só sai depois que a nova entrou. Apagar antes
+                    // deixaria o emissor sem logo nenhuma se a gravação falhasse.
+                    Logo::remove((string) ($issuerRow['logo_path'] ?? ''));
+                    Db::run(
+                        'UPDATE issuers SET logo_path = ?, logo_updated_at = NOW() WHERE id = ? AND tenant_id = ?',
+                        [$r['file'], $issuerId, $tenantId]
+                    );
+                    Auth::audit('issuer.logo', 'issuer', (string) $issuerId);
+                    redirect($i18n->url('/app/selo?ok=logo.saved'));
+                    return;
+                }
+                $error = $i18n->a((string) $r['error'], [
+                    'mb' => 1,
+                    'px' => Logo::MIN_WIDTH,
+                    'max' => Logo::MAX_SIDE,
+                ]);
+            } elseif ($acao === 'logo_remover') {
+                Logo::remove((string) ($issuerRow['logo_path'] ?? ''));
+                Db::run(
+                    'UPDATE issuers SET logo_path = NULL, logo_updated_at = NULL WHERE id = ? AND tenant_id = ?',
+                    [$issuerId, $tenantId]
+                );
+                Auth::audit('issuer.logo.removed', 'issuer', (string) $issuerId);
+                redirect($i18n->url('/app/selo?ok=logo.removed'));
                 return;
+            } else {
+                $ramo = (string) ($_POST['ramo'] ?? '');
+                if (Issuer::setCategory($tenantId, $issuerId, $ramo)) {
+                    Auth::audit('issuer.category', 'issuer', (string) $issuerId, ['ramo' => $ramo]);
+                    redirect($i18n->url('/app/selo?ok=seal.saved'));
+                    return;
+                }
+                $error = $i18n->a('seal.ramo.invalid');
             }
-            $error = $i18n->a('seal.ramo.invalid');
         }
 
         // O endereço público pode faltar em emissor criado antes desta tela.
@@ -207,6 +239,7 @@ final class Panel
         self::shell($i18n, 'app/seal', [
             'issuer' => Issuer::publicBySlug($slug),
             'slug'   => $slug,
+            'logo'   => (string) ($issuerRow['logo_path'] ?? ''),
             'error'  => $error,
             'flash'  => self::flash($i18n),
         ], $user, 'selo');

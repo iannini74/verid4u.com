@@ -344,4 +344,23 @@ return [
     'plan.remaining' => 'Restam {n} nesta competência.',
     'plan.exhausted' => 'Você chegou às {n} emissões do mês. O que já está no registro continua lá e continua conferível — a faixa limita emitir, nunca verificar.',
     'plan.verify_always_free' => 'Verificar é sempre grátis e ilimitado.',
+
+    /* ------------------------------------------------------ logo do emissor */
+    'logo.title' => 'Logo no certificado',
+    'logo.body' => 'Entra no topo do certificado, acompanhando o nome do emissor — nunca no lugar dele. Quem confere precisa ler o nome, e imagem não se lê em voz alta nem sobrevive a uma fotocópia ruim.',
+    'logo.current' => 'Logo atual',
+    'logo.choose' => 'Escolher a logo',
+    'logo.replace' => 'Trocar a logo',
+    'logo.send' => 'Enviar',
+    'logo.remove' => 'Remover',
+    'logo.saved' => 'Logo salva. Os próximos certificados já saem com ela.',
+    'logo.removed' => 'Logo removida.',
+    'logo.rules' => 'PNG ou JPEG, no mínimo {px}px de largura e no máximo {mb} MB. Fundo transparente funciona melhor.',
+    'logo.no_svg' => 'SVG não é aceito de propósito: SVG é um documento que pode trazer script, e saneá-lo direito é um projeto, não uma validação. Para impressão grande, envie um PNG grande.',
+    'logo.none' => 'Escolha um arquivo.',
+    'logo.too_big' => 'O arquivo passa de {mb} MB.',
+    'logo.too_small' => 'A imagem tem menos de {px}px de largura. Nesse tamanho ela sai borrada no impresso.',
+    'logo.too_large_px' => 'A imagem passa de {max}px de lado. Reduza antes de enviar.',
+    'logo.bad_type' => 'Só PNG ou JPEG. O tipo é conferido pelo conteúdo do arquivo, não pela extensão.',
+    'logo.failed' => 'Não foi possível gravar o arquivo. Tente de novo.',
 ];

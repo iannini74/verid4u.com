@@ -45,7 +45,7 @@ final class Db
 
     /* ------------------------------------------------------------ migrações */
 
-    public const SCHEMA_VERSION = 11;
+    public const SCHEMA_VERSION = 12;
 
     private static function marker(): string
     {
@@ -275,6 +275,14 @@ final class Db
             /* Desempenho das variações da primeira dobra. Uma linha por
                variação e por dia: permite ver tanto o acumulado quanto a
                evolução, sem guardar nada sobre quem visitou. */
+            12 => [
+                // A cópia da landing promete «emissão em lote com a sua marca»
+                // em três lugares. Até aqui o certificado saía só com o nome
+                // do emissor em texto.
+                "ALTER TABLE issuers ADD COLUMN logo_path VARCHAR(190) NULL AFTER category",
+                "ALTER TABLE issuers ADD COLUMN logo_updated_at DATETIME NULL AFTER logo_path",
+            ],
+
             11 => [
                 // Um token serve a dois propósitos agora: entrar e confirmar
                 // e-mail. Duas tabelas idênticas seriam dois lugares para

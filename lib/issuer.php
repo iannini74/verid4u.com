@@ -437,9 +437,23 @@ final class Issuer
         ];
     }
 
+    /**
+     * A emissão, com a marca viva do emissor ao lado do retrato.
+     *
+     * O nome do emissor guardado na emissão é retrato do momento em que ela
+     * foi criada, e continua sendo — é ele que o certificado imprime. A logo
+     * e o endereço público são vivos, e vêm por fora: trocar de logo não pode
+     * reescrever o que já foi atestado, mas reimprimir um certificado antigo
+     * com a logo velha também não faria sentido.
+     */
     public static function byCode(int $tenantId, string $base): ?array
     {
-        $row = Db::one('SELECT * FROM issuances WHERE tenant_id = ? AND code_base = ? LIMIT 1', [$tenantId, $base]);
-        return $row;
+        return Db::one(
+            'SELECT n.*, e.logo_path AS issuer_logo, e.slug AS issuer_slug
+               FROM issuances n
+          LEFT JOIN issuers e ON e.id = n.issuer_id
+              WHERE n.tenant_id = ? AND n.code_base = ? LIMIT 1',
+            [$tenantId, $base]
+        );
     }
 }

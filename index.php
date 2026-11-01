@@ -39,6 +39,37 @@ if (($segments[0] ?? '') === 'sitemap.xml') {
     exit;
 }
 
+// ------------------------------------------------- logo do emissor
+// Servida por nós, de fora da raiz web. Fora do idioma porque entra no
+// certificado impresso e no selo, que não se traduzem depois.
+if (($segments[0] ?? '') === 'marca') {
+    $slug = strtolower((string) ($segments[1] ?? ''));
+    $linha = null;
+
+    if (preg_match('/^[a-z0-9][a-z0-9-]{0,79}$/', $slug) === 1) {
+        try {
+            $linha = Db::one('SELECT logo_path FROM issuers WHERE slug = ? LIMIT 1', [$slug]);
+        } catch (Throwable $e) {
+            error_log('[verid4u] marca: ' . $e->getMessage());
+        }
+    }
+
+    $arquivo = (string) ($linha['logo_path'] ?? '');
+    if ($arquivo === '' || !Logo::isSafeName($arquivo) || !is_file(Logo::pathFor($arquivo))) {
+        http_response_code(404);
+        header('Content-Type: text/plain; charset=UTF-8');
+        exit;
+    }
+
+    header('Content-Type: ' . Logo::contentType($arquivo));
+    header('X-Content-Type-Options: nosniff');
+    header('Content-Security-Policy: default-src \'none\'');
+    header('Cache-Control: public, max-age=3600');
+    header('Content-Length: ' . (string) filesize(Logo::pathFor($arquivo)));
+    readfile(Logo::pathFor($arquivo));
+    exit;
+}
+
 // ------------------------------------------- selo público do emissor
 // Fora do sistema de idioma de propósito: este endereço vai colado no HTML
 // de sites de terceiros e em peça impressa. Se ele mudasse com o idioma do
