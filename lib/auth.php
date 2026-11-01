@@ -30,7 +30,7 @@ final class Auth
                  FROM sessions s
                  JOIN users u ON u.id = s.user_id
                  WHERE s.token_hash = ? AND s.expires_at > NOW()
-                   AND u.status IN ('active', 'pending')
+                   AND u.status IN ("active", "pending")
                  LIMIT 1',
                 [Crypto::tokenHash($token)]
             );

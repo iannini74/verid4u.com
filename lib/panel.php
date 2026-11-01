@@ -250,8 +250,9 @@ final class Panel
                     $userId = (int) $r['user_id'];
                     Auth::startSession($userId);
                     Auth::audit('tenant.signup', 'user', (string) $userId);
+                    $novo = Db::one('SELECT tenant_id FROM users WHERE id = ? LIMIT 1', [$userId]);
                     Onboarding::sendConfirmation(
-                        $userId,
+                        (int) ($novo['tenant_id'] ?? 0),
                         $old['email'],
                         $old['org'],
                         (string) $r['token'],
@@ -294,7 +295,7 @@ final class Panel
         }
         $email = (string) Crypto::decrypt((string) $user['email_enc']);
         Onboarding::sendConfirmation(
-            (int) $user['id'],
+            (int) $user['tenant_id'],
             $email,
             (string) $user['name'],
             Onboarding::mintConfirmToken((int) $user['id']),

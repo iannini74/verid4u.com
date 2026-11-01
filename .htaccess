@@ -48,6 +48,13 @@ DirectoryIndex index.php
 # Código de aplicação nunca é servido direto
 RedirectMatch 404 ^/(lib|views|i18n|storage|mail|content|tools|docs|\.ds|\.hostinger)(/|$)
 
+# Nada cujo nome comece com _ é servido. É a rede para arquivo temporário
+# que sobrou: a API da hospedagem não apaga arquivo avulso, então o nome
+# precisa carregar a própria proteção.
+<FilesMatch "^_">
+  Require all denied
+</FilesMatch>
+
 <FilesMatch "\.(md|sql|json|lock|yml|yaml|sh|secret|example\.php|local\.php)$">
   Require all denied
 </FilesMatch>

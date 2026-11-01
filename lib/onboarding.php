@@ -145,8 +145,18 @@ final class Onboarding
         return Db::one('SELECT id, tenant_id, name, status FROM users WHERE id = ? LIMIT 1', [(int) $row['user_id']]);
     }
 
-    public static function sendConfirmation(int $userId, string $email, string $org, string $token, string $locale): void
-    {
+    /**
+     * O e-mail de confirmação pertence ao cliente, e vai enfileirado com o
+     * tenant: sem isso ele some do log de e-mail do próprio cliente, que é
+     * justamente onde ele vai olhar quando disser «não recebi».
+     */
+    public static function sendConfirmation(
+        int $tenantId,
+        string $email,
+        string $org,
+        string $token,
+        string $locale
+    ): void {
         Mailer::queue(
             'account_confirm',
             $email,
@@ -156,7 +166,7 @@ final class Onboarding
                 'org' => $org,
                 'url' => base_url() . '/' . $locale . '/app/confirmar/' . $token,
             ],
-            null,
+            $tenantId,
             null,
             'transactional'
         );
