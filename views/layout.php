@@ -69,6 +69,7 @@ $base = base_url();
         <nav class="site-nav" aria-label="<?= e($i18n->t('nav.how')) ?>">
           <a href="<?= e($i18n->url()) ?>#como"><?= e($i18n->t('nav.how')) ?></a>
           <a href="<?= e($i18n->url()) ?>#para-quem"><?= e($i18n->t('nav.audiences')) ?></a>
+          <a href="<?= e($i18n->url('/precos')) ?>"><?= e($i18n->t('nav.pricing')) ?></a>
           <a href="<?= e($i18n->url()) ?>#duvidas"><?= e($i18n->t('nav.faq')) ?></a>
           <a href="<?= e($i18n->url('/blog')) ?>"><?= e($i18n->t('blog.title')) ?></a>
         </nav>

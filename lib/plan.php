@@ -4,19 +4,16 @@ declare(strict_types=1);
 /**
  * Planos e medição de uso.
  *
- * Enquanto a cobrança não existe, a faixa gratuita é o único plano — e ela é
- * limitada desde o primeiro dia. Abrir cadastro sem limite seria abrir conta
- * ilimitada de graça, e retirar depois o que já foi dado é pior do que nunca
- * ter dado.
+ * Esta classe mede. Quem define o quanto cabe é o catálogo, em Catalog — o
+ * preço e a cota vivem em tabela para mudarem sem publicar código.
  *
  * A medição é por competência (mês civil), contando **emissões no período** e
  * não certificados ativos. Cobrar por ativo puniria o cliente que mantém o
  * histórico no registro, que é exatamente o comportamento que queremos: um
  * registro com buracos não serve para conferir nada.
  *
- * Os dois números abaixo foram decididos com o Tulio em 2026-11-01. Vivem em
- * constante, e não em tabela, porque enquanto só existe um plano uma tabela
- * de planos seria uma linha só com cara de arquitetura.
+ * As constantes abaixo são as que não dependem de plano: o piso gratuito e o
+ * limiar da marca do cliente, decididos com o Tulio em 2026-11-01.
  */
 final class Plan
 {
@@ -67,14 +64,22 @@ final class Plan
         );
     }
 
+    /**
+     * A cota do mês, vinda do plano vigente.
+     *
+     * 'unlimited' na coluna plan do tenant continua existindo e passa na
+     * frente de tudo: é a conta da própria Inspire4U e a liberação manual.
+     * Fora isso, quem manda é a assinatura — e assinatura vencida cai para o
+     * gratuito, nunca para zero.
+     */
     public static function limit(int $tenantId): int
     {
         $row = Db::one('SELECT plan FROM tenants WHERE id = ? LIMIT 1', [$tenantId]);
-        $plano = (string) ($row['plan'] ?? 'free');
+        if ((string) ($row['plan'] ?? '') === 'unlimited') {
+            return PHP_INT_MAX;
+        }
 
-        // Um único plano hoje. 'unlimited' existe para a conta da própria
-        // Inspire4U e para quem for liberado na mão enquanto não há cobrança.
-        return $plano === 'unlimited' ? PHP_INT_MAX : self::FREE_MONTHLY;
+        return (int) (Catalog::currentPlan($tenantId)['monthly_quota'] ?? self::FREE_MONTHLY);
     }
 
     public static function remaining(int $tenantId): int

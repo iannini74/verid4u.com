@@ -45,7 +45,7 @@ final class Db
 
     /* ------------------------------------------------------------ migrações */
 
-    public const SCHEMA_VERSION = 13;
+    public const SCHEMA_VERSION = 14;
 
     private static function marker(): string
     {
@@ -275,6 +275,82 @@ final class Db
             /* Desempenho das variações da primeira dobra. Uma linha por
                variação e por dia: permite ver tanto o acumulado quanto a
                evolução, sem guardar nada sobre quem visitou. */
+            14 => [
+                // Preço em centavos, inteiro. Dinheiro em ponto flutuante é
+                // como a conta fecha com um centavo de diferença e ninguém
+                // descobre de onde veio.
+                "CREATE TABLE IF NOT EXISTS plans (
+                    id INT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
+                    code VARCHAR(24) NOT NULL,
+                    name VARCHAR(60) NOT NULL,
+                    monthly_quota INT UNSIGNED NOT NULL,
+                    price_cents INT UNSIGNED NOT NULL DEFAULT 0,
+                    promo_cents INT UNSIGNED NULL,
+                    promo_until DATE NULL,
+                    yearly_cents INT UNSIGNED NULL,
+                    brand_included TINYINT(1) NOT NULL DEFAULT 0,
+                    sort_order TINYINT UNSIGNED NOT NULL DEFAULT 0,
+                    active TINYINT(1) NOT NULL DEFAULT 1,
+                    created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+                    UNIQUE KEY uq_plan_code (code)
+                ) $engine",
+
+                "CREATE TABLE IF NOT EXISTS coupons (
+                    id INT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
+                    code VARCHAR(32) NOT NULL,
+                    kind ENUM('percent','amount') NOT NULL,
+                    value INT UNSIGNED NOT NULL,
+                    plan_code VARCHAR(24) NULL,
+                    starts_on DATE NULL,
+                    ends_on DATE NULL,
+                    max_redemptions INT UNSIGNED NULL,
+                    per_tenant_limit TINYINT UNSIGNED NOT NULL DEFAULT 1,
+                    months INT UNSIGNED NULL,
+                    redemptions INT UNSIGNED NOT NULL DEFAULT 0,
+                    active TINYINT(1) NOT NULL DEFAULT 1,
+                    note VARCHAR(190) NULL,
+                    created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+                    UNIQUE KEY uq_coupon_code (code)
+                ) $engine",
+
+                "CREATE TABLE IF NOT EXISTS coupon_redemptions (
+                    id BIGINT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
+                    coupon_id INT UNSIGNED NOT NULL,
+                    tenant_id INT UNSIGNED NOT NULL,
+                    created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+                    KEY idx_redeem (coupon_id, tenant_id),
+                    CONSTRAINT fk_redeem_coupon FOREIGN KEY (coupon_id) REFERENCES coupons (id) ON DELETE CASCADE,
+                    CONSTRAINT fk_redeem_tenant FOREIGN KEY (tenant_id) REFERENCES tenants (id) ON DELETE CASCADE
+                ) $engine",
+
+                "CREATE TABLE IF NOT EXISTS subscriptions (
+                    id INT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
+                    tenant_id INT UNSIGNED NOT NULL,
+                    plan_code VARCHAR(24) NOT NULL,
+                    status VARCHAR(24) NOT NULL DEFAULT 'pending',
+                    coupon_id INT UNSIGNED NULL,
+                    cycle ENUM('monthly','yearly') NOT NULL DEFAULT 'monthly',
+                    gateway VARCHAR(16) NULL,
+                    gateway_ref VARCHAR(190) NULL,
+                    current_period_end DATE NULL,
+                    cancelled_at DATETIME NULL,
+                    created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+                    UNIQUE KEY uq_sub_tenant (tenant_id),
+                    KEY idx_sub_ref (gateway_ref)
+                ) $engine",
+
+                // O catálogo proposto. Vive em tabela e não em código para o
+                // preço mudar sem publicar nada — e os valores abaixo são
+                // proposta, não decisão: foram postos para a máquina existir.
+                "INSERT INTO plans (code, name, monthly_quota, price_cents, yearly_cents, brand_included, sort_order)
+                 VALUES
+                   ('free',  'Gratuito',     50,     0,     0, 0, 1),
+                   ('start', 'Essencial',   300,  9700, 97000, 0, 2),
+                   ('pro',   'Profissional', 1000, 29700, 297000, 1, 3),
+                   ('scale', 'Escala',      5000, 69700, 697000, 1, 4)
+                 ON DUPLICATE KEY UPDATE name = VALUES(name)",
+            ],
+
             13 => [
                 // A chave nunca é guardada: guardamos o hash e um prefixo
                 // curto, que é o que a tela mostra para o cliente reconhecer

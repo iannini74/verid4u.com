@@ -24,6 +24,9 @@ if (($segments[0] ?? '') === 'sitemap.xml') {
         echo "    <xhtml:link rel=\"alternate\" hreflang=\"x-default\" href=\"{$base}/\"/>\n  </url>\n";
     }
     foreach (array_keys(I18n::LOCALES) as $loc) {
+        echo "  <url>\n    <loc>{$base}/{$loc}/precos</loc>\n  </url>\n";
+    }
+    foreach (array_keys(I18n::LOCALES) as $loc) {
         foreach (Legal::DOCS as $doc) {
             echo "  <url>\n    <loc>{$base}/{$loc}/{$doc}</loc>\n  </url>\n";
         }
@@ -640,6 +643,13 @@ if ($route === '') {
         Hero::recordImpression((string) ($hv['slug'] ?? ''), $i18n->locale());
     }
     render('home', ['i18n' => $i18n, 'error' => null, 'typed' => '', 'hv' => $hv]);
+    exit;
+}
+
+// ----------------------------------------------------------- preços
+if ($route === 'precos') {
+    security_headers();
+    render('pricing', ['i18n' => $i18n, 'plans' => Catalog::plans()]);
     exit;
 }
 
