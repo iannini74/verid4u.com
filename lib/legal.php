@@ -57,7 +57,12 @@ final class Legal
             '{email_contato}' => (string) ($e['email_contato'] ?? ''),
             '{cnpj_frase}'    => $cnpj !== '' ? ', inscrita no CNPJ sob o nº ' . $cnpj : '',
             '{endereco_frase}'=> $end !== '' ? ', com sede em ' . $end : '',
-            '{foro_frase}'    => $foro !== '' ? 'da comarca de ' . $foro : 'do domicílio da contratada',
+            // Enquanto a comarca não está definida, o foro é o do contratante.
+            // O padrão inverso — foro da contratada — é cláusula que o CDC
+            // trata como abusiva quando o outro lado é consumidor, e boa parte
+            // dos nossos clientes pequenos é. Errar para o lado do cliente aqui
+            // não custa nada; errar para o nosso lado derruba a cláusula.
+            '{foro_frase}'    => $foro !== '' ? 'da comarca de ' . $foro : 'do domicílio do contratante',
         ]);
     }
 

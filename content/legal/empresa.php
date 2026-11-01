@@ -7,11 +7,11 @@
  * completo e não é.
  */
 return [
-    'razao_social' => 'Inspire4U',
-    'cnpj'         => '',                       // pendente
+    'razao_social' => 'INSPIRE4U GOVERNANÇA CORPORATIVA LTDA',
+    'cnpj'         => '33.922.313/0001-56',
     'endereco'     => '',                       // pendente
     'email_dpo'    => 'privacidade@verid4u.com',
     'email_contato'=> 'contato@verid4u.com',
     'foro'         => '',                       // pendente: comarca
-    'atualizado'   => '2026-10-30',
+    'atualizado'   => '2026-11-01',
 ];
