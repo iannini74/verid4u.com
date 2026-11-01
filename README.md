@@ -124,6 +124,44 @@ Nada aqui é exclusivo da API: toda função alcançável por chave existe no
 painel e na importação. Integrar nunca é condição para usar a plataforma.
 
 
+## O servidor MCP
+
+Um endereço, `POST /mcp`, JSON-RPC 2.0, PHP puro. Protocolo 2025-06-18, com
+2025-03-26 e 2024-11-05 aceitos.
+
+**A decisão que vale mais que a tecnologia: verificar não pede chave.**
+Qualquer assistente de IA confere um certificado no registro sem contrato,
+sem cadastro e sem custo. Hoje contratação acontece dentro de conversa com
+IA; quando o recrutador pergunta «esse certificado é real?», quem responde
+somos nós. Deixa de ser um site que se visita e passa a ser a fonte que os
+assistentes consultam.
+
+Sem credencial, `tools/list` mostra uma ferramenta. Com a chave da API, cinco.
+
+| Ferramenta | Chave |
+| --- | --- |
+| `verificar_certificado` | não |
+| `listar_cursos` | sim |
+| `registrar_certificado` | sim |
+| `emitir_certificado` | sim |
+| `listar_vencimentos` | sim |
+
+A idempotência aqui é diferente da API: **a chave sai do conteúdo.** Um
+agente não administra chave de idempotência — não sabe que existe e não tem
+onde guardar — então mesmo titular, mesmo curso e mesma data devolvem o
+certificado que já existe em vez de criar um segundo. Quem precisar mesmo de
+dois iguais passa `idempotency_key` explícito.
+
+Toda resposta de verificação carrega um campo `nao_prova`. É a regra de Voz e
+tom levada à interface de máquina: o registro atesta que a emissão consta,
+não que o curso foi bom nem que a pessoa aprendeu, e um assistente que vai
+repetir isso em voz alta precisa ter a ressalva na mão.
+
+Erro de ferramenta vai como resultado com `isError`, nunca como erro
+JSON-RPC: o modelo do outro lado precisa ler o motivo para decidir o que
+fazer, e erro de protocolo ele não vê.
+
+
 ## Stack
 
 PHP 8 sem dependências, sem etapa de build. Roda direto na hospedagem
@@ -165,6 +203,7 @@ compartilhada da Hostinger.
 | `POST /api/v1/issuances` | Emite contra um curso. Exige chave e `Idempotency-Key` |
 | `POST /api/v1/registrations` | Registra certificado emitido fora. Exige chave e `Idempotency-Key` |
 | `POST /api/v1/issuances/{codigo}/revoke` | Revoga, com motivo obrigatório |
+| `POST /mcp` | Servidor MCP, JSON-RPC 2.0. `verificar_certificado` não pede chave |
 | `/api/v1/cron/mail?key=…` | Despacha a fila de e-mail. Protegida por segredo do config |
 | `/api/v1/cron/expiry?key=…` | Enfileira os avisos de vencimento de 90, 30 e 7 dias |
 | `/api/v1/cron/diag?key=…` | Forma da configuração de e-mail: diz se os campos estão preenchidos, nunca o que contêm |

@@ -31,6 +31,7 @@ require __DIR__ . '/issuer.php';
 require __DIR__ . '/onboarding.php';
 require __DIR__ . '/apikey.php';
 require __DIR__ . '/api.php';
+require __DIR__ . '/mcp.php';
 require __DIR__ . '/import.php';
 require __DIR__ . '/hero.php';
 require __DIR__ . '/legal.php';

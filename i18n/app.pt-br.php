@@ -411,4 +411,16 @@ return [
     'api.rule.2' => 'A faixa do plano barra escrita e nunca leitura. Esgotada, o que já está no registro continua conferível.',
     'api.rule.3' => 'Revogar exige motivo. Revogação sem motivo registrado não serve a quem consulta depois.',
     'api.rule.4' => 'Não há CORS nos endereços de escrita, de propósito: a chave precisa viver no seu servidor, nunca em JavaScript de navegador.',
+
+    /* ------------------------------------------------------------- MCP */
+    'mcp.title' => 'MCP — para assistentes de IA',
+    'mcp.lead' => 'O mesmo registro, alcançável de dentro de uma conversa com IA. Cole isto na configuração do cliente MCP (Claude, Cursor, ou outro que fale MCP por HTTP).',
+    'mcp.public' => 'E sem chave nenhuma, qualquer assistente do mundo pode conferir um certificado nosso. Verificar não precisa de credencial e nunca vai precisar — é o que faz o registro valer.',
+    'mcp.tools' => 'O que o assistente ganha',
+    'mcp.t1' => 'confere um código. Sem chave, de graça, para qualquer um.',
+    'mcp.t2' => 'lista os seus cursos, com os ids para emitir.',
+    'mcp.t3' => 'registra um certificado que você emitiu no seu sistema.',
+    'mcp.t4' => 'emite um certificado novo contra um curso seu.',
+    'mcp.t5' => 'o que vence nos próximos dias, para planejar reciclagem.',
+    'mcp.idem' => 'Aqui a idempotência é automática: a chave sai do conteúdo. Mesmo titular, mesmo curso e mesma data devolvem o certificado que já existe, em vez de criar um segundo — porque um agente não administra chave de idempotência, não sabe que ela existe e não tem onde guardar.',
 ];

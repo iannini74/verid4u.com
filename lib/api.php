@@ -360,7 +360,8 @@ final class Api
         ];
     }
 
-    private static function authHeader(): ?string
+    /** Público porque o MCP lê a mesma credencial pelo mesmo caminho. */
+    public static function authHeader(): ?string
     {
         $h = $_SERVER['HTTP_AUTHORIZATION'] ?? $_SERVER['REDIRECT_HTTP_AUTHORIZATION'] ?? null;
         if ($h === null && function_exists('apache_request_headers')) {

@@ -39,6 +39,16 @@ if (($segments[0] ?? '') === 'sitemap.xml') {
     exit;
 }
 
+// ------------------------------------------------------------- MCP
+// Um endereço, JSON-RPC 2.0. Fora do idioma: é endereço de máquina, posto
+// na configuração de um cliente e não visitado por pessoa.
+if (($segments[0] ?? '') === 'mcp') {
+    security_headers(true);
+    Mcp::autenticar(Api::authHeader());
+    Mcp::handle();
+    exit;
+}
+
 // ------------------------------------------------- logo do emissor
 // Servida por nós, de fora da raiz web. Fora do idioma porque entra no
 // certificado impresso e no selo, que não se traduzem depois.

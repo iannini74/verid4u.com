@@ -36,7 +36,7 @@ devolver o código de registro.** O que muda é quem bate nela.
 | --- | --- | --- |
 | **Importação de dados** | Quem tem planilha e não tem programador | Pronta (CSV, com ensaio antes de gravar) |
 | **API** | Plataforma de cursos que quer registrar ao final da emissão | Pronta: chaves, idempotência, erros em problem+json |
-| **MCP** | Agente de IA que precisa registrar ou conferir dentro de uma conversa | Não existe |
+| **MCP** | Agente de IA que precisa registrar ou conferir dentro de uma conversa | Pronto. Conferir não pede chave |
 
 Integrar nunca pode ser condição. Quem não quiser integrar usa a importação
 ou digita na mão, e recebe exatamente a mesma garantia.
@@ -110,7 +110,6 @@ Duas consequências que vão no código antes de irem na tabela de preço:
 
 Lista honesta, em 2026-11-01:
 
-- Servidor MCP
 - Marca e paleta do cliente na página de verificação
 - Planos, preço cheio e promocional, cupons (percentual, valor, janela de
   validade) e cobrança pela Stripe — a faixa gratuita de 50 já está medida e

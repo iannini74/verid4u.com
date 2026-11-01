@@ -82,6 +82,43 @@ $base = base_url();
     </form>
   </section>
 
+
+  <!-- ---------------------------------------------------------- MCP -->
+  <section class="card">
+    <h2 class="app-h2"><?= e($i18n->a('mcp.title')) ?></h2>
+    <p class="field-hint"><?= e($i18n->a('mcp.lead')) ?></p>
+
+    <pre class="snippet"><code>{
+  "mcpServers": {
+    "verid4u": {
+      "type": "http",
+      "url": "<?= e($base) ?>/mcp",
+      "headers": { "Authorization": "Bearer vk_live_…" }
+    }
+  }
+}</code></pre>
+
+    <p class="field-hint"><?= e($i18n->a('mcp.public')) ?></p>
+    <pre class="snippet"><code>{
+  "mcpServers": {
+    "verid4u": { "type": "http", "url": "<?= e($base) ?>/mcp" }
+  }
+}</code></pre>
+
+    <div class="seal-rules">
+      <h3 class="app-h3"><?= e($i18n->a('mcp.tools')) ?></h3>
+      <ul>
+        <li><strong>verificar_certificado</strong> — <?= e($i18n->a('mcp.t1')) ?></li>
+        <li><strong>listar_cursos</strong> — <?= e($i18n->a('mcp.t2')) ?></li>
+        <li><strong>registrar_certificado</strong> — <?= e($i18n->a('mcp.t3')) ?></li>
+        <li><strong>emitir_certificado</strong> — <?= e($i18n->a('mcp.t4')) ?></li>
+        <li><strong>listar_vencimentos</strong> — <?= e($i18n->a('mcp.t5')) ?></li>
+      </ul>
+    </div>
+
+    <p class="field-hint"><?= e($i18n->a('mcp.idem')) ?></p>
+  </section>
+
   <!-- ------------------------------------------------------ o manual -->
   <section class="card">
     <h2 class="app-h2"><?= e($i18n->a('api.doc.title')) ?></h2>
