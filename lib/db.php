@@ -45,7 +45,7 @@ final class Db
 
     /* ------------------------------------------------------------ migrações */
 
-    public const SCHEMA_VERSION = 10;
+    public const SCHEMA_VERSION = 11;
 
     private static function marker(): string
     {
@@ -275,6 +275,40 @@ final class Db
             /* Desempenho das variações da primeira dobra. Uma linha por
                variação e por dia: permite ver tanto o acumulado quanto a
                evolução, sem guardar nada sobre quem visitou. */
+            11 => [
+                // Um token serve a dois propósitos agora: entrar e confirmar
+                // e-mail. Duas tabelas idênticas seriam dois lugares para
+                // esquecer de expirar.
+                "ALTER TABLE login_tokens ADD COLUMN purpose VARCHAR(24) NOT NULL DEFAULT 'login' AFTER user_id",
+
+                "ALTER TABLE tenants ADD COLUMN status VARCHAR(16) NOT NULL DEFAULT 'active' AFTER plan",
+                "ALTER TABLE tenants ADD COLUMN created_via VARCHAR(16) NOT NULL DEFAULT 'setup' AFTER status",
+                "ALTER TABLE tenants ADD COLUMN brand_enabled_at DATETIME NULL AFTER created_via",
+
+                // Medição por competência, e não por certificado ativo. Cobrar
+                // por ativo puniria justamente o cliente que mantém histórico,
+                // que é o comportamento que queremos.
+                "CREATE TABLE IF NOT EXISTS usage_counters (
+                    id BIGINT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
+                    tenant_id INT UNSIGNED NOT NULL,
+                    competencia CHAR(7) NOT NULL,
+                    issuances INT UNSIGNED NOT NULL DEFAULT 0,
+                    registrations INT UNSIGNED NOT NULL DEFAULT 0,
+                    UNIQUE KEY uq_usage (tenant_id, competencia),
+                    CONSTRAINT fk_usage_tenant FOREIGN KEY (tenant_id) REFERENCES tenants (id) ON DELETE CASCADE
+                ) $engine",
+
+                // O histórico que já existe vale para o limiar da marca do
+                // cliente, que olha os últimos meses.
+                "INSERT INTO usage_counters (tenant_id, competencia, issuances, registrations)
+                 SELECT tenant_id, DATE_FORMAT(issued_on, '%Y-%m'),
+                        SUM(origin = 'issued'), SUM(origin = 'registered')
+                   FROM issuances
+                  WHERE issued_on IS NOT NULL
+                  GROUP BY tenant_id, DATE_FORMAT(issued_on, '%Y-%m')
+                 ON DUPLICATE KEY UPDATE issuances = VALUES(issuances), registrations = VALUES(registrations)",
+            ],
+
             10 => [
                 // O emissor passa a ter endereço público e ramo declarado. O ramo
                 // é o que imprime o qualificador no selo ("EMISSOR DE CERTIFICADO

@@ -76,6 +76,27 @@ Três travas que não se negociam nessa personalização:
 3. **Contraste é verificado, não confiado.** Paleta que reprova 4,5:1 é
    recusada no momento em que o cliente salva, com a medida na tela.
 
+## Números decididos
+
+Fechados com o Tulio em 2026-11-01. Vivem em `lib/plan.php` enquanto só
+existir um plano — tabela de planos com uma linha só é arquitetura fingida.
+
+| | |
+| --- | --- |
+| Faixa gratuita | **50 emissões por competência** (mês civil) |
+| Marca do cliente na verificação | a partir de **500 emissões por mês** |
+| Janela do limiar | basta um dos últimos **3 meses** ter passado de 500 |
+| Adquirente | **Stripe** — a Inspire4U já tem conta |
+
+Duas consequências que vão no código antes de irem na tabela de preço:
+
+- **A faixa limita emitir, nunca verificar.** Esgotada a faixa, o que já está
+  no registro continua lá e continua conferível. Verificação é grátis e
+  ilimitada para sempre, para qualquer um.
+- **Quem já provou volume não perde a marca por um mês fraco.** O limiar olha
+  três meses para trás porque tirar a marca do ar quebraria o selo já
+  instalado no site do cliente, por um motivo que ele não controla.
+
 ## O que não se negocia
 
 - **Verificar é sempre grátis e sem cadastro.** No dia em que custar, o
@@ -89,12 +110,11 @@ Três travas que não se negociam nessa personalização:
 
 Lista honesta, em 2026-11-01:
 
-- Cadastro self-service — hoje a ativação é de dono único e o botão
-  «Começar grátis» leva a uma porta fechada
 - API de escrita e servidor MCP
 - Marca e paleta do cliente na página de verificação
 - Planos, preço cheio e promocional, cupons (percentual, valor, janela de
-  validade), faixa gratuita até X certificados
+  validade) e cobrança pela Stripe — a faixa gratuita de 50 já está medida e
+  aplicada
 - Área administrativa da plataforma
 - Logo do emissor no certificado — a cópia já promete «com a sua marca»
 - Cabeçalho mobile e tradução de pt/es/en

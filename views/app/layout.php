@@ -27,7 +27,7 @@ $nav = [
 <link rel="preload" href="/assets/fonts/inter-tight-normal-600-700-latin.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="preload" href="/assets/fonts/inter-normal-400-700-latin.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="stylesheet" href="/assets/fonts.css?v=18">
-<link rel="stylesheet" href="/assets/style.css?v=19">
+<link rel="stylesheet" href="/assets/style.css?v=20">
 </head>
 <body class="app">
 <header class="app-bar">

@@ -26,10 +26,11 @@ final class Auth
         }
         try {
             $row = Db::one(
-                'SELECT u.id, u.tenant_id, u.name, u.email_enc, u.role, s.id AS session_id
+                'SELECT u.id, u.tenant_id, u.name, u.email_enc, u.role, u.status, s.id AS session_id
                  FROM sessions s
                  JOIN users u ON u.id = s.user_id
-                 WHERE s.token_hash = ? AND s.expires_at > NOW() AND u.status = "active"
+                 WHERE s.token_hash = ? AND s.expires_at > NOW()
+                   AND u.status IN ('active', 'pending')
                  LIMIT 1',
                 [Crypto::tokenHash($token)]
             );
@@ -97,7 +98,12 @@ final class Auth
         // para não revelar quais e-mails estão cadastrados.
         $hash = is_array($row) ? (string) ($row['password_hash'] ?? '') : '';
         $ok = $hash !== '' && password_verify($password, $hash);
-        if (!$ok || !is_array($row) || $row['status'] !== 'active') {
+        // 'pending' entra: é a conta recém-criada que ainda não confirmou o
+        // e-mail. Ela pode entrar, olhar e configurar — o que ela não pode é
+        // pôr registro no cadastro público, e isso é decidido em
+        // Onboarding::canIssue(), não aqui. Barrar a entrada faria o cliente
+        // perder a senha que acabou de escolher sem nunca ter visto o produto.
+        if (!$ok || !is_array($row) || !in_array($row['status'], ['active', 'pending'], true)) {
             password_verify($password, '$2y$12$usuarioInexistenteParaIgualarOTempo0000000000000000000000');
             return null;
         }

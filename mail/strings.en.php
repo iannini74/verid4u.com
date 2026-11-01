@@ -36,4 +36,12 @@ return [
     'issuance_revoked.p2' => 'Reason given: {reason}',
     'issuance_revoked.p3' => 'From now on, anyone checking this code will see that it has been revoked. If you believe this is a mistake, contact the institution.',
     'issuance_revoked.cta' => 'See the current status',
+
+    'account_confirm.subject' => 'Confirm your email on VerID4U',
+    'account_confirm.preheader' => 'One click and {org} can start issuing.',
+    'account_confirm.heading' => 'One click left',
+    'account_confirm.p1' => 'The account for {org} has been created on VerID4U. Confirm this address to enable issuing certificates.',
+    'account_confirm.p2' => 'The confirmation exists for a simple reason: what goes into the registry is public and checkable by anyone. An unconfirmed address puts nothing there.',
+    'account_confirm.p3' => 'The link is good for three days. If you did not create this account, ignore this email — without the click, nothing happens.',
+    'account_confirm.cta' => 'Confirm my email',
 ];

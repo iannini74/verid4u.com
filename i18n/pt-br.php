@@ -143,7 +143,7 @@ return [
     'audiences.events.gain' => 'Emissão em lote a partir da lista de presença, cada um com código próprio e link permanente que não depende do e-mail ter chegado.',
 
     'cta.title' => 'Você também emite certificados?',
-    'cta.body' => 'Registre os seus e deixe que qualquer pessoa confirme em 10 segundos.',
+    'cta.body' => 'Até 50 certificados por mês, de graça e sem cartão. Quem recebe confere em dez segundos, sem cadastro.',
     'cta.button' => 'Começar gratuitamente',
 
     'footer.by' => 'Desenvolvimento: Inspire4U',

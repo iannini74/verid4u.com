@@ -15,6 +15,17 @@ final class Panel
             self::activate($i18n, $isPost);
             return;
         }
+        if ($action === 'criar-conta') {
+            if ($user !== null) {
+                redirect($i18n->url('/app/'));
+            }
+            self::signup($i18n, $isPost);
+            return;
+        }
+        if ($action === 'confirmar') {
+            self::confirmEmail($i18n, (string) ($sub[1] ?? ''));
+            return;
+        }
         if ($action === 'entrar') {
             if ($user !== null) {
                 redirect($i18n->url('/app/'));
@@ -41,6 +52,7 @@ final class Panel
             'email'        => self::emailSettings($i18n, $user, $isPost),
             'dobra'        => self::heroPanel($i18n, $user),
             'selo'         => self::sealPanel($i18n, $user, $isPost),
+            'reenviar'     => self::resendConfirmation($i18n, $user, $isPost),
             'certificados' => self::issuances($i18n, $user),
             'revogar'      => self::revoke($i18n, $user, $isPost),
             'certificado'  => self::certificate($i18n, $user, (string) ($sub[1] ?? '')),
@@ -200,6 +212,97 @@ final class Panel
         ], $user, 'selo');
     }
 
+    /* ------------------------------------------------------ criar conta */
+
+    /**
+     * Cadastro pelo próprio cliente.
+     *
+     * Três campos e nenhum cartão. A conta nasce podendo entrar e configurar,
+     * e sem poder emitir até confirmar o e-mail — deixar endereço não
+     * confirmado pôr registro no cadastro público é abrir a porta para quem
+     * quer sujá-lo.
+     */
+    private static function signup(I18n $i18n, bool $isPost): void
+    {
+        $old = ['org' => '', 'name' => '', 'email' => ''];
+        $error = null;
+
+        if ($isPost) {
+            $old = [
+                'org'   => trim((string) ($_POST['org'] ?? '')),
+                'name'  => trim((string) ($_POST['name'] ?? '')),
+                'email' => trim((string) ($_POST['email'] ?? '')),
+            ];
+            $senha = (string) ($_POST['password'] ?? '');
+            $senha2 = (string) ($_POST['password2'] ?? '');
+
+            if (!Auth::checkCsrf($_POST['csrf'] ?? null)) {
+                $error = $i18n->a('login.csrf');
+            } elseif (empty($_POST['aceite'])) {
+                $error = $i18n->a('signup.need_terms');
+            } elseif (!hash_equals($senha, $senha2)) {
+                $error = $i18n->a('activate.mismatch');
+            } elseif (rate_limit_exceeded('signup', 5, 3600)) {
+                $error = $i18n->a('signup.too_many');
+            } else {
+                $r = Onboarding::create($old + ['password' => $senha]);
+                if ($r['ok']) {
+                    $userId = (int) $r['user_id'];
+                    Auth::startSession($userId);
+                    Auth::audit('tenant.signup', 'user', (string) $userId);
+                    Onboarding::sendConfirmation(
+                        $userId,
+                        $old['email'],
+                        $old['org'],
+                        (string) $r['token'],
+                        $i18n->locale()
+                    );
+                    redirect($i18n->url('/app/?ok=signup.welcome'));
+                    return;
+                }
+                $chave = (string) $r['error'];
+                $error = strncmp($chave, 'error.', 6) === 0 ? $i18n->t($chave) : $i18n->a($chave);
+            }
+        }
+
+        self::shell($i18n, 'app/signup', ['error' => $error, 'old' => $old], null, '');
+    }
+
+    private static function confirmEmail(I18n $i18n, string $token): void
+    {
+        $user = Onboarding::confirm($token);
+        if ($user === null) {
+            self::shell($i18n, 'app/login', ['error' => $i18n->a('signup.bad_token')], null, '');
+            return;
+        }
+        Auth::audit('user.confirmed', 'user', (string) $user['id']);
+
+        // Quem clica no link do e-mail pode estar em outro navegador. Se já há
+        // sessão, segue direto; se não, a tela de entrada recebe o aviso bom.
+        redirect($i18n->url(Auth::user() !== null ? '/app/?ok=signup.confirmed' : '/app/entrar?ok=signup.confirmed'));
+    }
+
+    private static function resendConfirmation(I18n $i18n, array $user, bool $isPost): void
+    {
+        if (!$isPost || Onboarding::emailConfirmed($user)) {
+            redirect($i18n->url('/app/'));
+            return;
+        }
+        if (rate_limit_exceeded('resend', 3, 900)) {
+            redirect($i18n->url('/app/?ok=signup.resend_wait'));
+            return;
+        }
+        $email = (string) Crypto::decrypt((string) $user['email_enc']);
+        Onboarding::sendConfirmation(
+            (int) $user['id'],
+            $email,
+            (string) $user['name'],
+            Onboarding::mintConfirmToken((int) $user['id']),
+            $i18n->locale()
+        );
+        redirect($i18n->url('/app/?ok=signup.resent'));
+    }
+
     /* ------------------------------------------------------------ entrada */
 
     private static function login(I18n $i18n, bool $isPost): void
@@ -240,6 +343,8 @@ final class Panel
             'stats' => Issuer::stats($tenantId),
             'expiring' => Issuer::expiring($tenantId),
             'flash' => self::flash($i18n),
+            'plano' => Plan::summary($tenantId),
+            'pendente' => !Onboarding::emailConfirmed($user),
         ], $user, 'dashboard');
     }
 
@@ -285,6 +390,17 @@ final class Panel
         $tenantId = (int) $user['tenant_id'];
         $programs = Issuer::programs($tenantId);
         $error = null;
+        // E-mail não confirmado ou faixa esgotada barram a gravação, nunca a
+        // leitura: o cliente continua vendo o que já tem. A mensagem diz qual
+        // das duas é — sem isso ele conserta a errada.
+        $bloqueio = Onboarding::blockReason($user);
+        if ($bloqueio !== null && $isPost) {
+            $isPost = false;
+            $error = strncmp($bloqueio, 'plan.', 5) === 0
+                ? $i18n->a($bloqueio, ['n' => Plan::FREE_MONTHLY])
+                : $i18n->a($bloqueio);
+        }
+
         $issued = null;
         $old = [];
 
@@ -338,6 +454,17 @@ final class Panel
     {
         $tenantId = (int) $user['tenant_id'];
         $error = null;
+        // E-mail não confirmado ou faixa esgotada barram a gravação, nunca a
+        // leitura: o cliente continua vendo o que já tem. A mensagem diz qual
+        // das duas é — sem isso ele conserta a errada.
+        $bloqueio = Onboarding::blockReason($user);
+        if ($bloqueio !== null && $isPost) {
+            $isPost = false;
+            $error = strncmp($bloqueio, 'plan.', 5) === 0
+                ? $i18n->a($bloqueio, ['n' => Plan::FREE_MONTHLY])
+                : $i18n->a($bloqueio);
+        }
+
         $registered = null;
         $old = [];
 
@@ -407,6 +534,17 @@ final class Panel
         $tenantId = (int) $user['tenant_id'];
         $programs = Issuer::programs($tenantId);
         $error = null;
+        // E-mail não confirmado ou faixa esgotada barram a gravação, nunca a
+        // leitura: o cliente continua vendo o que já tem. A mensagem diz qual
+        // das duas é — sem isso ele conserta a errada.
+        $bloqueio = Onboarding::blockReason($user);
+        if ($bloqueio !== null && $isPost) {
+            $isPost = false;
+            $error = strncmp($bloqueio, 'plan.', 5) === 0
+                ? $i18n->a($bloqueio, ['n' => Plan::FREE_MONTHLY])
+                : $i18n->a($bloqueio);
+        }
+
         $resultado = null;
 
         // Relatório de erros em CSV

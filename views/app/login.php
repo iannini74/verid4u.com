@@ -19,4 +19,9 @@ $pageTitle = $i18n->a('login.title');
 
     <button type="submit"><?= e($i18n->a('login.submit')) ?></button>
   </form>
+
+  <p class="auth-alt">
+    <?= e($i18n->a('login.no_account')) ?>
+    <a class="quiet-link" href="<?= e($i18n->url('/app/criar-conta')) ?>"><?= e($i18n->a('signup.title')) ?></a>
+  </p>
 </div>

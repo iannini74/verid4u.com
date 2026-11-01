@@ -285,6 +285,6 @@ $states = [
   <div class="wrap-narrow cta" data-reveal>
     <h2 class="display-l"><?= e($i18n->t('cta.title')) ?></h2>
     <p class="lead" style="color: rgba(255,255,255,.84); max-width: 44ch; margin-inline: auto;"><?= e($i18n->t('cta.body')) ?></p>
-    <a class="btn btn-invert" href="<?= e($i18n->url('/app/entrar')) ?>"><?= e($i18n->t('cta.button')) ?></a>
+    <a class="btn btn-invert" href="<?= e($i18n->url('/app/criar-conta')) ?>"><?= e($i18n->t('cta.button')) ?></a>
   </div>
 </section>

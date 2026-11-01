@@ -218,6 +218,7 @@ final class Issuer
                 ]
             );
             $id = (int) $pdo->lastInsertId();
+            Plan::record($tenantId, 'issued', $issuedOn);
             $pdo->commit();
 
             Auth::audit('issuance.created', 'issuance', (string) $id, ['code' => Code::full($base)]);
@@ -297,6 +298,7 @@ final class Issuer
                 ]
             );
             $id = (int) $pdo->lastInsertId();
+            Plan::record($tenantId, 'registered', (string) $input['issued_on']);
             $pdo->commit();
 
             Auth::audit('issuance.registered', 'issuance', (string) $id, ['code' => Code::full($base)]);

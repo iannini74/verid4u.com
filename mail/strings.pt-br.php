@@ -43,4 +43,12 @@ return [
     'issuance_revoked.p2' => 'Motivo informado: {reason}',
     'issuance_revoked.p3' => 'A partir de agora, quem consultar este código verá que ele foi revogado. Se você acredita que houve engano, procure a instituição.',
     'issuance_revoked.cta' => 'Ver a situação atual',
+
+    'account_confirm.subject' => 'Confirme seu e-mail no VerID4U',
+    'account_confirm.preheader' => 'Um clique e a conta de {org} pode emitir.',
+    'account_confirm.heading' => 'Falta um clique',
+    'account_confirm.p1' => 'A conta de {org} foi criada no VerID4U. Confirme este endereço para liberar a emissão de certificados.',
+    'account_confirm.p2' => 'A confirmação existe por um motivo simples: o que entra no registro fica público e conferível por qualquer pessoa. Endereço não confirmado não põe nada lá.',
+    'account_confirm.p3' => 'O link vale por três dias. Se não foi você quem criou esta conta, ignore este e-mail — sem o clique, nada acontece.',
+    'account_confirm.cta' => 'Confirmar meu e-mail',
 ];

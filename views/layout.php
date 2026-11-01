@@ -35,7 +35,7 @@ $base = base_url();
 <link rel="stylesheet" href="/assets/fonts.css?v=18">
 <script>document.documentElement.classList.add("js");</script>
 <?= $extraHead ?? '' ?>
-<link rel="stylesheet" href="/assets/style.css?v=19">
+<link rel="stylesheet" href="/assets/style.css?v=20">
 </head>
 <body>
 <a class="skip" href="#main"><?= e($i18n->t('hero.title')) ?></a>
@@ -56,7 +56,7 @@ $base = base_url();
 
     <div class="header-actions">
       <a class="btn btn-ghost btn-sm" href="<?= e($i18n->url('/app/entrar')) ?>"><?= e($i18n->t('nav.signin')) ?></a>
-      <a class="btn btn-primary btn-sm" href="<?= e($i18n->url('/app/ativar')) ?>"><?= e($i18n->t('nav.start')) ?></a>
+      <a class="btn btn-primary btn-sm" href="<?= e($i18n->url('/app/criar-conta')) ?>"><?= e($i18n->t('nav.start')) ?></a>
     </div>
 
     <div class="lang" role="group" aria-label="Idioma">

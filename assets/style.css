@@ -949,3 +949,40 @@ code { font-family: var(--font-mono); font-size: .92em; }
   .receipt-foot { break-inside: avoid; }
   .sheet-receipt { max-width: none; }
 }
+
+
+/* ================================================ criar conta e faixa do plano */
+
+.signup-grid{display:grid;grid-template-columns:minmax(0,1fr) 300px;gap:var(--space-6);align-items:start}
+.signup-side{position:sticky;top:var(--space-6)}
+.signup-points{margin:var(--space-3) 0 0;padding-left:1.1em;display:grid;gap:var(--space-3)}
+.signup-points li{font-size:var(--text-body-s);color:var(--ink-muted)}
+.auth-alt{margin-top:var(--space-4);font-size:var(--text-body-s);color:var(--ink-muted)}
+.form .field-hint{margin:6px 0 0}
+
+/* Aviso que trava alguma coisa precisa dizer o que travou e como destravar,
+   lado a lado — senão o cliente lê o aviso e não sabe o que fazer com ele. */
+.notice{
+  display:flex;align-items:center;justify-content:space-between;gap:var(--space-5);flex-wrap:wrap;
+  padding:var(--space-4) var(--space-5);border-radius:var(--radius-md);margin-bottom:var(--space-5);
+  border:1px solid var(--line);background:var(--surface-sunken);
+}
+.notice-warn{border-color:#E7CB97;background:var(--warn-tint)}
+.notice p{margin:4px 0 0;font-size:var(--text-body-s);color:var(--ink-muted);max-width:62ch}
+.notice strong{font-size:var(--text-body)}
+
+.quota{border:1px solid var(--line);border-radius:var(--radius-md);padding:var(--space-4) var(--space-5);margin-bottom:var(--space-5)}
+.quota-tight{border-color:#E7CB97;background:var(--warn-tint)}
+.quota-head{display:flex;align-items:baseline;justify-content:space-between;gap:var(--space-4)}
+.quota-label{font-size:var(--text-overline);font-weight:600;letter-spacing:var(--tracking-overline);text-transform:uppercase;color:var(--ink-subtle)}
+.quota-count{font-family:var(--font-display);font-weight:700;font-size:var(--text-heading-m);font-variant-numeric:tabular-nums}
+.quota-count span{font-size:var(--text-body-s);font-weight:500;color:var(--ink-subtle)}
+.quota-bar{height:6px;border-radius:999px;background:var(--line);margin:var(--space-3) 0;overflow:hidden}
+.quota-bar i{display:block;height:100%;background:var(--brand);border-radius:999px;transition:width var(--dur) var(--ease)}
+.quota-tight .quota-bar i{background:var(--warn)}
+.quota-note{margin:0;font-size:var(--text-caption);color:var(--ink-muted)}
+
+@media (max-width:860px){
+  .signup-grid{grid-template-columns:1fr}
+  .signup-side{position:static}
+}
