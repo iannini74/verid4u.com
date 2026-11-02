@@ -20,13 +20,16 @@ final class Store
     public static function find(string $base): ?array
     {
         $row = Db::one(
-            'SELECT id, code_base, origin, program_title, program_norm, hours, modality, assessed,
+            'SELECT id, tenant_id, code_base, origin, program_title, program_norm, hours, modality, assessed,
                     issuer_name, issuer_legal_id, issuer_level, registered_by,
                     holder_name, holder_display,
                     issued_on, valid_from, valid_until, revoked_on, revoke_reason,
                     version, superseded_by, content_hash, source_sha256, source_filename,
                     anchored_on, is_demo,
-                    (SELECT slug FROM issuers WHERE issuers.id = issuances.issuer_id) AS issuer_slug
+                    (SELECT slug FROM issuers WHERE issuers.id = issuances.issuer_id) AS issuer_slug,
+                    (SELECT logo_path FROM issuers WHERE issuers.id = issuances.issuer_id) AS issuer_logo,
+                    (SELECT brand_color FROM tenants WHERE tenants.id = issuances.tenant_id) AS brand_color,
+                    (SELECT brand_enabled_at FROM tenants WHERE tenants.id = issuances.tenant_id) AS brand_on
              FROM issuances WHERE code_base = ? LIMIT 1',
             [$base]
         );
@@ -55,6 +58,10 @@ final class Store
             // público é vivo. Os dois convivem: o retrato diz o que foi
             // atestado, o endereço leva a quem atestou.
             'issuer_slug'   => $row['issuer_slug'] ?? null,
+            'issuer_logo'   => $row['issuer_logo'] ?? null,
+            'brand_color'   => $row['brand_color'] ?? null,
+            'brand_on'      => $row['brand_on'] ?? null,
+            'tenant_id'     => isset($row['tenant_id']) ? (int) $row['tenant_id'] : null,
             'registered_by' => $row['registered_by'] ?? null,
             'holder_name'   => (string) $row['holder_name'],
             'holder_display'=> (string) $row['holder_display'],

@@ -296,4 +296,5 @@ return [
     'pricing.a3' => 'A partir de {n} emisiones en un mes, y basta uno de los últimos tres meses. Nuestra marca sigue en la página junto a la tuya.',
     'pricing.q4' => '¿Puedo cambiar de plan a mitad?',
     'pricing.a4' => 'Sí, hacia arriba o hacia abajo. El cupo nuevo vale al momento y el ajuste es proporcional a lo que queda del ciclo.',
+    'skin.registered_at' => 'Registrado en VerID4U',
 ];

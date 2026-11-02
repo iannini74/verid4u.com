@@ -45,7 +45,7 @@ final class Db
 
     /* ------------------------------------------------------------ migrações */
 
-    public const SCHEMA_VERSION = 14;
+    public const SCHEMA_VERSION = 15;
 
     private static function marker(): string
     {
@@ -275,6 +275,13 @@ final class Db
             /* Desempenho das variações da primeira dobra. Uma linha por
                variação e por dia: permite ver tanto o acumulado quanto a
                evolução, sem guardar nada sobre quem visitou. */
+            15 => [
+                // A paleta do cliente. Só o acento: as quatro cores de estado
+                // são reservadas, e fundo claro é o que faz a página de
+                // verificação parecer documento em vez de campanha.
+                "ALTER TABLE tenants ADD COLUMN brand_color CHAR(7) NULL AFTER brand_enabled_at",
+            ],
+
             14 => [
                 // Preço em centavos, inteiro. Dinheiro em ponto flutuante é
                 // como a conta fecha com um centavo de diferença e ninguém

@@ -114,6 +114,16 @@ final class Plan
      */
     public static function brandEligible(int $tenantId): bool
     {
+        // 'unlimited' passa na frente, como em limit(). É a conta da própria
+        // Inspire4U e a liberação manual — e sem isto ninguém na plataforma
+        // consegue nem ver como a marca do cliente fica na página, o que
+        // transforma o recurso em algo que só o primeiro cliente de 500
+        // emissões descobre se funciona.
+        $conta = Db::one('SELECT plan FROM tenants WHERE id = ? LIMIT 1', [$tenantId]);
+        if ((string) ($conta['plan'] ?? '') === 'unlimited') {
+            return true;
+        }
+
         $row = Db::one(
             'SELECT MAX(issuances + registrations) AS pico FROM usage_counters
               WHERE tenant_id = ? AND competencia >= ?',

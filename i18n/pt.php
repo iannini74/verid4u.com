@@ -296,4 +296,5 @@ return [
     'pricing.a3' => 'A partir de {n} emissões num mês, bastando um dos últimos três meses. A nossa marca continua na página junto da sua.',
     'pricing.q4' => 'Posso mudar de plano a meio?',
     'pricing.a4' => 'Pode, para cima ou para baixo. O novo plafond vale de imediato e o acerto é proporcional ao que falta do ciclo.',
+    'skin.registered_at' => 'Registado no VerID4U',
 ];

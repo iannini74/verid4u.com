@@ -1,4 +1,4 @@
-@import url("/assets/tokens.css?v=17");
+@import url("/assets/tokens.css?v=28");
 
 /* ==========================================================================
    VerID4U — folha de estilo
@@ -1130,3 +1130,37 @@ code { font-family: var(--font-mono); font-size: .92em; }
 @media (max-width:620px){
   .tiers{grid-template-columns:1fr}
 }
+
+
+/* ------------------------------- marca do cliente na verificação */
+
+/* A faixa fica acima do veredito e abaixo do nosso cabeçalho: o emissor
+   aparece no contexto do registro, e não no lugar dele. */
+.skinband{border-bottom:1px solid var(--line);background:var(--surface-sunken)}
+.skinband-row{display:flex;align-items:center;justify-content:space-between;gap:var(--space-4);
+  padding:var(--space-3) 0;flex-wrap:wrap}
+.skinband-issuer{display:flex;align-items:center;gap:var(--space-3);font-weight:600;min-width:0}
+.skinband-issuer img{max-height:34px;width:auto;flex:none}
+.skinband-by{display:inline-flex;align-items:center;gap:7px;text-decoration:none;
+  font-size:var(--text-caption);color:var(--ink-subtle);white-space:nowrap}
+.skinband-by:hover{color:var(--ink)}
+.skinband-mark{height:14px;width:auto;color:var(--brand);flex:none}
+
+.skin-preview{border:1px solid var(--line-strong);border-radius:var(--radius-md);overflow:hidden;
+  margin:var(--space-4) 0;background:#FFFFFF}
+.skin-preview-band{display:flex;align-items:center;justify-content:space-between;gap:var(--space-4);
+  padding:10px var(--space-4);background:#F4F7FB;border-bottom:1px solid #E2E8F0;flex-wrap:wrap}
+.skin-preview-issuer{display:flex;align-items:center;gap:8px;font-size:var(--text-body-s);
+  font-weight:600;color:#0A1020}
+.skin-preview-by{display:inline-flex;align-items:center;gap:6px;font-size:11px;color:#64748B}
+.skin-preview-mark{height:12px;width:auto;color:var(--demo);flex:none}
+.skin-preview-body{padding:var(--space-5) var(--space-4);display:flex;align-items:baseline;
+  gap:var(--space-4);flex-wrap:wrap}
+/* Verde de estado, e não a cor do cliente: é o ponto da regra. */
+.skin-preview-verdict{font-family:var(--font-display);font-weight:700;font-size:var(--text-heading-m);color:#0E7C5A}
+.skin-preview-body code{font-family:var(--font-mono);font-weight:700;letter-spacing:.05em;color:#0A1020;
+  background:#F4F7FB;padding:3px 8px;border-radius:5px}
+.skin-preview-link{font-size:var(--text-body-s);color:var(--demo);font-weight:600}
+
+.flash-warn{background:var(--warn-tint);border:1px solid #E7CB97;color:var(--ink);
+  padding:var(--space-4);border-radius:var(--radius-md);font-size:var(--text-body-s);margin:var(--space-4) 0}

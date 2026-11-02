@@ -211,6 +211,42 @@ final class Panel
                     'px' => Logo::MIN_WIDTH,
                     'max' => Logo::MAX_SIDE,
                 ]);
+            } elseif ($acao === 'marca') {
+                // O direito é por volume e é conferido aqui, não só escondido
+                // na tela: esconder botão não é controle de acesso.
+                if (!Plan::brandEligible($tenantId)) {
+                    $error = $i18n->a('skin.not_yet', ['n' => Plan::BRAND_THRESHOLD]);
+                } else {
+                    $cor = Skin::normalizeHex((string) ($_POST['cor'] ?? ''));
+                    if ($cor === null) {
+                        $error = $i18n->a('skin.bad_hex');
+                    } else {
+                        $teste = Skin::check($cor);
+                        if (!$teste['ok']) {
+                            // Recusa com a medida e com a alternativa. Recusar
+                            // sem oferecer o tom que serve faz o cliente
+                            // desistir ou insistir.
+                            $error = $i18n->a('skin.low_contrast', [
+                                'r' => number_format($teste['ratio'], 2, ',', ''),
+                                'min' => '4,5',
+                                'sugestao' => Skin::darkenToPass($cor),
+                            ]);
+                        } else {
+                            Db::run(
+                                'UPDATE tenants SET brand_color = ?, brand_enabled_at = COALESCE(brand_enabled_at, NOW()) WHERE id = ?',
+                                [$cor, $tenantId]
+                            );
+                            Auth::audit('tenant.brand', 'tenant', (string) $tenantId, ['cor' => $cor]);
+                            redirect($i18n->url('/app/selo?ok=skin.saved'));
+                            return;
+                        }
+                    }
+                }
+            } elseif ($acao === 'marca_desligar') {
+                Db::run('UPDATE tenants SET brand_enabled_at = NULL WHERE id = ?', [$tenantId]);
+                Auth::audit('tenant.brand.off', 'tenant', (string) $tenantId);
+                redirect($i18n->url('/app/selo?ok=skin.off'));
+                return;
             } elseif ($acao === 'logo_remover') {
                 Logo::remove((string) ($issuerRow['logo_path'] ?? ''));
                 Db::run(
@@ -241,6 +277,9 @@ final class Panel
             'issuer' => Issuer::publicBySlug($slug),
             'slug'   => $slug,
             'logo'   => (string) ($issuerRow['logo_path'] ?? ''),
+            'skin'   => Db::one('SELECT brand_color, brand_enabled_at FROM tenants WHERE id = ? LIMIT 1', [$tenantId]),
+            'skinOk' => Plan::brandEligible($tenantId),
+            'uso'    => Plan::summary($tenantId),
             'error'  => $error,
             'flash'  => self::flash($i18n),
         ], $user, 'selo');

@@ -168,7 +168,80 @@ $base = base_url();
       </form>
     </section>
 
-    <!-- ----------------------------------- 5. o endereço público -->
+    <!-- ------------------------ 5. a sua marca na verificação -->
+    <section class="card seal-card">
+      <h2 class="app-h2"><?= e($i18n->a('skin.title')) ?></h2>
+      <p class="field-hint"><?= e($i18n->a('skin.body', ['n' => Plan::BRAND_THRESHOLD])) ?></p>
+
+      <?php
+      $corAtual = Skin::normalizeHex((string) ($skin['brand_color'] ?? '')) ?? '#1D5BE0';
+      $ligada = !empty($skin['brand_enabled_at']);
+      $medida = Skin::check($corAtual);
+      ?>
+
+      <?php if (!$skinOk): ?>
+        <p class="flash flash-warn">
+          <?= e($i18n->a('skin.locked', [
+                'n' => Plan::BRAND_THRESHOLD,
+                'pico' => (int) $uso['used'],
+                'mes' => $uso['competencia'],
+          ])) ?>
+        </p>
+      <?php endif; ?>
+
+      <div class="skin-preview" style="--demo: <?= e($corAtual) ?>">
+        <div class="skin-preview-band">
+          <span class="skin-preview-issuer">
+            <?php if (($logo ?? '') !== ''): ?>
+              <img src="<?= e($base . '/marca/' . $slug) ?>" alt="" height="22">
+            <?php endif; ?>
+            <?= e((string) $issuer['name']) ?>
+          </span>
+          <span class="skin-preview-by">
+            <?= Brand::mark('fit', 'skin-preview-mark') ?> <?= e($i18n->t('skin.registered_at')) ?>
+          </span>
+        </div>
+        <div class="skin-preview-body">
+          <span class="skin-preview-verdict"><?= e($i18n->t('status.verified')) ?></span>
+          <code><?= e($exemplo ?? 'K7M2-93FQ-5XB0') ?></code>
+          <span class="skin-preview-link"><?= e($i18n->a('skin.preview.link')) ?></span>
+        </div>
+      </div>
+
+      <form method="post" action="<?= e($i18n->url('/app/selo')) ?>" class="form form-narrow">
+        <input type="hidden" name="csrf" value="<?= e(Auth::csrf()) ?>">
+        <input type="hidden" name="acao" value="marca">
+        <label for="cor"><?= e($i18n->a('skin.color')) ?></label>
+        <input id="cor" name="cor" type="text" maxlength="7" value="<?= e($corAtual) ?>"
+               placeholder="#1D5BE0" spellcheck="false" <?= $skinOk ? '' : 'disabled' ?>>
+        <p class="field-hint">
+          <?= e($i18n->a('skin.measured', [
+                'r' => number_format($medida['ratio'], 2, ',', ''),
+                'min' => '4,5',
+          ])) ?>
+        </p>
+        <button class="button" type="submit" <?= $skinOk ? '' : 'disabled' ?>><?= e($i18n->a('skin.save')) ?></button>
+      </form>
+
+      <?php if ($ligada): ?>
+        <form method="post" action="<?= e($i18n->url('/app/selo')) ?>">
+          <input type="hidden" name="csrf" value="<?= e(Auth::csrf()) ?>">
+          <input type="hidden" name="acao" value="marca_desligar">
+          <button class="linklike" type="submit"><?= e($i18n->a('skin.turn_off')) ?></button>
+        </form>
+      <?php endif; ?>
+
+      <div class="seal-rules">
+        <h3 class="app-h3"><?= e($i18n->a('skin.rules')) ?></h3>
+        <ul>
+          <li><?= e($i18n->a('skin.r1')) ?></li>
+          <li><?= e($i18n->a('skin.r2')) ?></li>
+          <li><?= e($i18n->a('skin.r3')) ?></li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- ----------------------------------- 6. o endereço público -->
     <section class="card seal-card">
       <h2 class="app-h2"><?= e($i18n->a('seal.page.title')) ?></h2>
       <p class="field-hint"><?= e($i18n->a('seal.page.body')) ?></p>

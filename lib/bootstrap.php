@@ -12,7 +12,7 @@ const APP_TZ = 'America/Sao_Paulo';
  * duas versões atrás enquanto o CSS andava: um sed pegou o style.css e não
  * pegou o script. Agora é um número só, num lugar só.
  */
-const ASSET_VERSION = '27';
+const ASSET_VERSION = '28';
 
 date_default_timezone_set(APP_TZ);
 mb_internal_encoding('UTF-8');
@@ -28,6 +28,7 @@ require __DIR__ . '/receipt.php';
 require __DIR__ . '/auth.php';
 require __DIR__ . '/plan.php';
 require __DIR__ . '/catalog.php';
+require __DIR__ . '/skin.php';
 require __DIR__ . '/issuer.php';
 require __DIR__ . '/onboarding.php';
 require __DIR__ . '/apikey.php';

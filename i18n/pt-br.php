@@ -376,4 +376,5 @@ return [
     'pricing.a3' => 'A partir de {n} emissões num mês, e basta um dos últimos três meses ter passado disso. A nossa marca continua na página junto da sua: uma página que parecesse só sua deixaria você atestando a si mesmo, que é o problema que viemos resolver.',
     'pricing.q4' => 'Posso trocar de plano no meio do caminho?',
     'pricing.a4' => 'Pode, para cima ou para baixo. A faixa nova vale na hora e o ajuste é proporcional ao que falta do ciclo.',
+    'skin.registered_at' => 'Registrado no VerID4U',
 ];

@@ -110,10 +110,8 @@ Duas consequências que vão no código antes de irem na tabela de preço:
 
 Lista honesta, em 2026-11-01:
 
-- Marca e paleta do cliente na página de verificação
-- Planos, preço cheio e promocional, cupons (percentual, valor, janela de
-  validade) e cobrança pela Stripe — a faixa gratuita de 50 já está medida e
-  aplicada
+- Checkout e webhook da Stripe — o catálogo, os cupons e a página de preços
+  já existem, e a faixa gratuita de 50 já está medida e aplicada
 - Área administrativa da plataforma
 - Logo do emissor no certificado — a cópia já promete «com a sua marca»
 - Cabeçalho mobile e tradução de pt/es/en

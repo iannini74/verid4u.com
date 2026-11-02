@@ -33,8 +33,13 @@ $base = base_url();
 <link rel="preload" href="/assets/fonts/inter-tight-normal-600-700-latin.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="preload" href="/assets/fonts/inter-normal-400-700-latin.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="stylesheet" href="/assets/fonts.css?v=<?= ASSET_VERSION ?>">
-<?= $extraHead ?? '' ?>
 <link rel="stylesheet" href="/assets/style.css?v=<?= ASSET_VERSION ?>">
+<?php
+/* Depois da folha de estilo, não antes. O que entra aqui sobrescreve token —
+   é para isso que serve — e antes do style.css ele seria sobrescrito de volta
+   pelo tokens.css, em silêncio. */
+?>
+<?= $extraHead ?? '' ?>
 </head>
 <body>
 <a class="skip" href="#main"><?= e($i18n->t('hero.title')) ?></a>

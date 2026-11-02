@@ -423,4 +423,24 @@ return [
     'mcp.t4' => 'emite um certificado novo contra um curso seu.',
     'mcp.t5' => 'o que vence nos próximos dias, para planejar reciclagem.',
     'mcp.idem' => 'Aqui a idempotência é automática: a chave sai do conteúdo. Mesmo titular, mesmo curso e mesma data devolvem o certificado que já existe, em vez de criar um segundo — porque um agente não administra chave de idempotência, não sabe que ela existe e não tem onde guardar.',
+
+    /* --------------------------------- marca do cliente na verificação */
+    'skin.title' => 'Sua marca na página de verificação',
+    'skin.body' => 'A partir de {n} emissões num mês, a tela que a pessoa vê ao escanear o QR dos seus certificados passa a carregar a sua logo e o seu acento. Basta um dos últimos três meses ter passado disso — quem já provou volume não perde a marca por um mês fraco, porque isso quebraria o selo já instalado no seu site.',
+    'skin.locked' => 'Ainda não liberado: são {n} emissões num mês, e o seu melhor mês recente tem {pico} (competência {mes}). O campo abre sozinho quando o volume chegar.',
+    'skin.color' => 'Cor de acento',
+    'skin.measured' => 'Contraste medido contra fundo branco: {r}:1. O piso é {min}:1 — abaixo disso o texto não se lê de pé, na portaria de uma obra, com o celular na mão.',
+    'skin.bad_hex' => 'Cor fora do formato. Use algo como #1D5BE0.',
+    'skin.low_contrast' => 'Essa cor dá {r}:1 contra o branco, e o piso é {min}:1. O tom mais próximo que serve é {sugestao} — reconhecível como a sua cor e legível.',
+    'skin.save' => 'Salvar e ligar',
+    'skin.saved' => 'Marca ligada. A verificação dos seus certificados já sai com ela.',
+    'skin.turn_off' => 'Desligar e voltar à página padrão',
+    'skin.off' => 'Marca desligada. A verificação voltou à página padrão.',
+    'skin.not_yet' => 'Sua conta ainda não chegou a {n} emissões num mês.',
+    'skin.preview.link' => 'Conferir outro certificado',
+
+    'skin.rules' => 'O que não muda, mesmo com a sua marca',
+    'skin.r1' => 'A nossa marca e «Registrado no VerID4U» continuam na página, e não são removíveis. Uma página que parecesse só sua deixaria você atestando a si mesmo — que é o problema que viemos resolver.',
+    'skin.r2' => 'As quatro cores de estado são reservadas. Seu acento troca detalhe e link, nunca o verde, o âmbar, o cinza e o vermelho do veredito: resultado cuja cor é escolhida por quem emitiu deixa de significar alguma coisa.',
+    'skin.r3' => 'O contraste é medido no momento de salvar, não confiado. Cor que reprova é recusada com a medida na tela e com o tom mais próximo que passa.',
 ];

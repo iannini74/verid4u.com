@@ -19,7 +19,38 @@ $glyphs = [
 
 $verdict = $i18n->t('status.' . (in_array($state, ['throttled', 'unavailable'], true) ? 'notfound' : $state));
 $shareUrl = base_url() . $i18n->url('/v/' . $typed);
+
+/*
+ * A pele do emissor, quando ele tem direito a ela. Só o acento muda: as
+ * quatro cores de estado são reservadas, porque resultado cuja cor é
+ * escolhida por quem emitiu deixa de significar alguma coisa.
+ *
+ * O <style> embutido é permitido pela CSP (style-src tem 'unsafe-inline'),
+ * e script embutido não é — é por isso que a pele é CSS e não JavaScript.
+ */
+$pele = $record !== null ? Skin::forRecord($record) : null;
+if ($pele !== null) {
+    $extraHead = '<style>' . Skin::css($pele['color']) . '</style>';
+}
 ?>
+
+<?php if ($pele !== null): ?>
+  <div class="skinband">
+    <div class="wrap-narrow skinband-row">
+      <div class="skinband-issuer">
+        <?php if ($pele['logo'] !== null): ?>
+          <img src="<?= e($pele['logo']) ?>" alt="<?= e($pele['name']) ?>" height="34">
+        <?php endif; ?>
+        <span><?= e($pele['name']) ?></span>
+      </div>
+      <?php /* Não removível: sem isto o emissor estaria atestando a si mesmo. */ ?>
+      <a class="skinband-by" href="<?= e($i18n->url()) ?>">
+        <?= Brand::mark('fit', 'skinband-mark') ?>
+        <span><?= e($i18n->t('skin.registered_at')) ?></span>
+      </a>
+    </div>
+  </div>
+<?php endif; ?>
 
 <section class="verdict verdict-<?= e($state) ?>">
   <div class="wrap-narrow">

@@ -296,4 +296,5 @@ return [
     'pricing.a3' => 'From {n} issuances in a month, and one of the last three months is enough. Our mark stays on the page alongside yours.',
     'pricing.q4' => 'Can I change plan mid-cycle?',
     'pricing.a4' => 'Yes, up or down. The new allowance applies immediately and the adjustment is pro rata for the rest of the cycle.',
+    'skin.registered_at' => 'Registered on VerID4U',
 ];
