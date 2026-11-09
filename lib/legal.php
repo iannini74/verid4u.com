@@ -24,6 +24,15 @@ final class Legal
                 $faltando[] = $rotulo;
             }
         }
+
+        // Cidade não é endereço. O Decreto 7.962 pede logradouro, número e CEP
+        // de quem vende pela internet, e um documento que parecesse completo
+        // com «Belo Horizonte» no lugar do endereço estaria mentindo por
+        // omissão — que é exatamente o que este aviso existe para impedir.
+        if (!in_array('endereço', $faltando, true) && empty($e['endereco_completo'])) {
+            $faltando[] = 'endereço completo (hoje consta só a cidade)';
+        }
+
         return $faltando;
     }
 
