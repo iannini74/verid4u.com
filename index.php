@@ -42,6 +42,14 @@ if (($segments[0] ?? '') === 'sitemap.xml') {
     exit;
 }
 
+// ------------------------------------------------- área da plataforma
+// Fora do sistema de idioma: é tela interna, em pt-BR, e não entra em
+// buscador nem em sitemap.
+if (($segments[0] ?? '') === 'admin') {
+    Admin::handle(array_slice($segments, 1));
+    exit;
+}
+
 // ------------------------------------------------------------- MCP
 // Um endereço, JSON-RPC 2.0. Fora do idioma: é endereço de máquina, posto
 // na configuração de um cliente e não visitado por pessoa.

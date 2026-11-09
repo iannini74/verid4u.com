@@ -1,0 +1,104 @@
+/* ==========================================================================
+   Área da plataforma.
+
+   Escura de propósito, e nada parecida com o painel do cliente. Quem
+   administra passa o dia alternando entre as duas telas, e confundir onde se
+   está é como se acaba mexendo na conta errada. A diferença visual aqui é
+   controle, não enfeite — é o mesmo motivo pelo qual um painel de produção
+   nunca tem a cara do ambiente de teste.
+   ========================================================================== */
+
+.adm {
+  background: #0B0F16;
+  color: #E6ECF5;
+  min-height: 100vh;
+}
+
+.adm-bar { background: #10161F; border-bottom: 1px solid #1E2838; position: sticky; top: 0; z-index: 10; }
+.adm-bar-in { max-width: 1180px; margin: 0 auto; padding: 0 24px; display: flex; align-items: center;
+  gap: 28px; min-height: 58px; flex-wrap: wrap; }
+.adm-brand { display: inline-flex; align-items: center; gap: 10px; text-decoration: none;
+  color: #E6ECF5; font-family: var(--font-display); font-weight: 700; font-size: 16px; }
+.adm-mark { height: 18px; width: auto; color: #5B8DEF; flex: none; }
+.adm-nav { display: flex; gap: 4px; margin-right: auto; }
+.adm-nav a { font-size: 14px; color: #93A3B8; text-decoration: none; padding: 7px 12px; border-radius: 7px; }
+.adm-nav a:hover { color: #E6ECF5; background: #18202C; }
+.adm-nav a[aria-current] { color: #E6ECF5; background: #1C2635; }
+.adm-you { display: flex; align-items: center; gap: 16px; font-size: 13px; color: #6F7F94; }
+.adm-you a { color: #93A3B8; text-decoration: none; }
+.adm-you a:hover { color: #E6ECF5; }
+
+.adm-main { padding: 32px 0 80px; }
+.adm-wrap { max-width: 1180px; margin: 0 auto; padding: 0 24px; }
+.adm-narrow { max-width: 620px; }
+.adm-back { margin: 0 0 12px; font-size: 13px; }
+.adm-back a { color: #93A3B8; text-decoration: none; }
+.adm-h1 { font-family: var(--font-display); font-size: clamp(26px, 3.4vw, 36px); font-weight: 700;
+  letter-spacing: -.025em; margin: 0 0 10px; color: #F2F6FC; }
+.adm-h2 { font-family: var(--font-display); font-size: 17px; font-weight: 700; margin: 0 0 14px; color: #F2F6FC; }
+.adm-lead { color: #93A3B8; max-width: 72ch; margin: 0 0 26px; font-size: 15px; }
+.adm-lead a, .adm-wrap a:not(.button):not(.adm-nav a) { color: #7FA8F5; }
+
+.adm-tiles { list-style: none; margin: 0 0 26px; padding: 0; display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 1px;
+  background: #1E2838; border: 1px solid #1E2838; border-radius: 12px; overflow: hidden; }
+.adm-tiles li { background: #10161F; padding: 16px 18px; }
+.adm-tiles-sm li { padding: 12px 14px; }
+.adm-n { display: block; font-family: var(--font-display); font-size: 26px; font-weight: 700;
+  line-height: 1; font-variant-numeric: tabular-nums; color: #F2F6FC; }
+.adm-tiles-sm .adm-n { font-size: 20px; }
+.adm-l { display: block; margin-top: 6px; font-size: 11px; letter-spacing: .08em;
+  text-transform: uppercase; color: #6F7F94; }
+.adm-warn { background: #1D1708 !important; }
+.adm-warn .adm-n { color: #F0B429; }
+
+.adm .card, .adm-card { background: #10161F; border: 1px solid #1E2838; border-radius: 12px;
+  padding: 22px 24px; margin-bottom: 20px; color: #E6ECF5; }
+.adm .card h3, .adm .muted { color: #6F7F94; }
+.adm .field-hint { color: #8192A8; }
+
+.adm .grid { width: 100%; border-collapse: collapse; }
+.adm .grid th { text-align: left; font-size: 11px; letter-spacing: .08em; text-transform: uppercase;
+  color: #6F7F94; font-weight: 600; padding: 0 14px 10px 0; border-bottom: 1px solid #1E2838; }
+.adm .grid td { padding: 11px 14px 11px 0; border-bottom: 1px solid #161E2A; font-size: 14px; vertical-align: top; }
+.adm .grid td.num { font-variant-numeric: tabular-nums; }
+.adm-grid td:first-child { font-weight: 600; }
+.adm-basis { color: #93A3B8; max-width: 38ch; }
+.adm .chip { display: inline-block; font-size: 10px; letter-spacing: .06em; text-transform: uppercase;
+  color: #9CB4DC; background: #16203044; border: 1px solid #243043;
+  border-radius: 4px; padding: 2px 6px; margin-left: 6px; }
+
+.adm .facts { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 14px 20px; margin: 0 0 20px; }
+.adm .facts .wide { grid-column: 1 / -1; }
+.adm .facts dt { font-size: 11px; letter-spacing: .08em; text-transform: uppercase; color: #6F7F94; margin-bottom: 4px; }
+.adm .facts dd { margin: 0; font-size: 14px; }
+
+.adm .form label { color: #93A3B8; }
+.adm .form input, .adm .form select { background: #0B111A; border-color: #28344A; color: #E6ECF5; }
+.adm .form input:focus, .adm .form select:focus { border-color: #5B8DEF; outline: 0; }
+.adm .snippet { background: #070B11; color: #C7D6EC; }
+.adm .button { background: #2E6BE6; color: #FFFFFF; }
+.adm .button:hover { background: #4780F0; }
+.adm .button.ghost { background: transparent; color: #C7D6EC; border-color: #2B3850; }
+.adm .button.ghost:hover { background: #18202C; border-color: #3C4C68; }
+.adm .button.danger { background: #A8231E; }
+.adm .button.danger:hover { background: #C32C26; }
+.adm-actions { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 18px; }
+.adm-danger { border-color: #3A1F1E; }
+
+.adm .flash-ok { background: #0E2A20; border: 1px solid #1C4A38; color: #8FE3BE; }
+.adm .flash-bad { background: #2A1414; border: 1px solid #4A2220; color: #F0A9A4; }
+.adm .pill-verified { background: #0E2A20; color: #6FD3A6; }
+.adm .pill-expired { background: #2A2410; color: #E0B85C; }
+.adm .row-off { opacity: .5; }
+
+.adm-totp { display: grid; grid-template-columns: auto 1fr; gap: 24px; align-items: start; }
+.adm-qr { width: 168px; height: 168px; background: #FFFFFF; border-radius: 8px; padding: 8px; flex: none; }
+.adm-qr img, .adm-qr canvas { width: 100%; height: 100%; display: block; }
+
+@media (max-width: 760px) {
+  .adm-totp { grid-template-columns: 1fr; }
+  .adm-qr { width: 100%; max-width: 220px; height: auto; aspect-ratio: 1; }
+  .adm .grid, .adm-grid { display: block; overflow-x: auto; white-space: nowrap; }
+}

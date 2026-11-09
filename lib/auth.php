@@ -26,7 +26,8 @@ final class Auth
         }
         try {
             $row = Db::one(
-                'SELECT u.id, u.tenant_id, u.name, u.email_enc, u.role, u.status, s.id AS session_id
+                'SELECT u.id, u.tenant_id, u.name, u.email_enc, u.role, u.status,
+                        u.totp_secret, u.totp_confirmed_at, s.id AS session_id
                  FROM sessions s
                  JOIN users u ON u.id = s.user_id
                  WHERE s.token_hash = ? AND s.expires_at > NOW()

@@ -263,6 +263,28 @@ $base = base_url();
       <?php if (!$conferido): ?>
         <p class="field-hint"><?= e($i18n->a('seal.level0')) ?></p>
       <?php endif; ?>
+
+      <?php /* O pedido de verificação. O nível nunca é decidido aqui. */ ?>
+      <?php if (($nivel ?? 0) === 0): ?>
+        <div class="seal-rules">
+          <h3 class="app-h3"><?= e($i18n->a('review.title')) ?></h3>
+          <?php if (($review ?? 'none') === 'pending'): ?>
+            <p class="field-hint"><?= e($i18n->a('review.pending')) ?></p>
+          <?php else: ?>
+            <p class="field-hint"><?= e($i18n->a('review.body')) ?></p>
+            <form method="post" action="<?= e($i18n->url('/app/selo')) ?>" class="form form-narrow">
+              <input type="hidden" name="csrf" value="<?= e(Auth::csrf()) ?>">
+              <input type="hidden" name="acao" value="pedir_verificacao">
+              <label for="nota"><?= e($i18n->a('review.note')) ?></label>
+              <input id="nota" name="nota" type="text" maxlength="255"
+                     placeholder="<?= e($i18n->a('review.note.example')) ?>">
+              <button class="button" type="submit"><?= e($i18n->a('review.send')) ?></button>
+            </form>
+          <?php endif; ?>
+        </div>
+      <?php endif; ?>
+
+
     </section>
 
   <?php endif; ?>

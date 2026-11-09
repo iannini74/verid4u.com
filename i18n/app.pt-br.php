@@ -443,4 +443,13 @@ return [
     'skin.r1' => 'A nossa marca e «Registrado no VerID4U» continuam na página, e não são removíveis. Uma página que parecesse só sua deixaria você atestando a si mesmo — que é o problema que viemos resolver.',
     'skin.r2' => 'As quatro cores de estado são reservadas. Seu acento troca detalhe e link, nunca o verde, o âmbar, o cinza e o vermelho do veredito: resultado cuja cor é escolhida por quem emitiu deixa de significar alguma coisa.',
     'skin.r3' => 'O contraste é medido no momento de salvar, não confiado. Cor que reprova é recusada com a medida na tela e com o tom mais próximo que passa.',
+
+    /* ------------------------------------------- pedido de verificação */
+    'review.title' => 'Pedir a verificação do emissor',
+    'review.body' => 'Enquanto o nível for 0, o seu selo diz «Registra no VerID4U» e não «Emissor verificado». Subir de nível é conferência documental feita por gente daqui, com a base registrada — não é botão que se aperta. Peça e entramos em contato pelo e-mail da conta.',
+    'review.note' => 'O que ajuda a conferir (opcional)',
+    'review.note.example' => 'CNPJ, site, credenciamento, o que der para checar',
+    'review.send' => 'Entrar na fila',
+    'review.pending' => 'Seu pedido está na fila. A decisão vem por e-mail, com o nível e a base em que nos apoiamos.',
+    'review.sent' => 'Pedido registrado. Entraremos em contato pelo e-mail da conta.',
 ];

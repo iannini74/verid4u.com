@@ -45,7 +45,7 @@ final class Db
 
     /* ------------------------------------------------------------ migrações */
 
-    public const SCHEMA_VERSION = 15;
+    public const SCHEMA_VERSION = 16;
 
     private static function marker(): string
     {
@@ -275,6 +275,30 @@ final class Db
             /* Desempenho das variações da primeira dobra. Uma linha por
                variação e por dia: permite ver tanto o acumulado quanto a
                evolução, sem guardar nada sobre quem visitou. */
+            16 => [
+                // Segundo fator para quem administra a plataforma. Só para
+                // esse papel: exigir TOTP de todo cliente afastaria cliente,
+                // e quem pode ver a conta de todo mundo não é todo mundo.
+                "ALTER TABLE users ADD COLUMN totp_secret VARCHAR(64) NULL AFTER password_hash",
+                "ALTER TABLE users ADD COLUMN totp_confirmed_at DATETIME NULL AFTER totp_secret",
+
+                // O segundo fator vale para a sessão, por um tempo. Guardado
+                // na sessão e não num cookie à parte: sessão encerrada derruba
+                // o passo-adiante junto, que é o comportamento esperado.
+                "ALTER TABLE sessions ADD COLUMN stepped_up_at DATETIME NULL",
+
+                // A fila de verificação do emissor. O nível não é campo que
+                // alguém edita: é decisão registrada, com quem decidiu e com
+                // base em quê. Sem isso o nível vira opinião.
+                "ALTER TABLE issuers ADD COLUMN review_status VARCHAR(16) NOT NULL DEFAULT 'none' AFTER level",
+                "ALTER TABLE issuers ADD COLUMN review_requested_at DATETIME NULL AFTER review_status",
+                "ALTER TABLE issuers ADD COLUMN review_note VARCHAR(255) NULL AFTER review_requested_at",
+                "ALTER TABLE issuers ADD COLUMN level_basis VARCHAR(190) NULL AFTER review_note",
+                "ALTER TABLE issuers ADD COLUMN level_set_by INT UNSIGNED NULL AFTER level_basis",
+                "ALTER TABLE issuers ADD COLUMN level_set_at DATETIME NULL AFTER level_set_by",
+                "ALTER TABLE issuers ADD INDEX idx_issuers_review (review_status, review_requested_at)",
+            ],
+
             15 => [
                 // A paleta do cliente. Só o acento: as quatro cores de estado
                 // são reservadas, e fundo claro é o que faz a página de

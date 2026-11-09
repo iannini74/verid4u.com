@@ -242,6 +242,18 @@ final class Panel
                         }
                     }
                 }
+            } elseif ($acao === 'pedir_verificacao') {
+                // Entra na fila. O nível em si nunca é decidido aqui — quem
+                // decide é a plataforma, e com base registrada.
+                Db::run(
+                    "UPDATE issuers SET review_status = 'pending', review_requested_at = NOW(),
+                            review_note = ?
+                      WHERE id = ? AND tenant_id = ? AND review_status <> 'pending'",
+                    [mb_substr(trim((string) ($_POST['nota'] ?? '')), 0, 255), $issuerId, $tenantId]
+                );
+                Auth::audit('issuer.review_requested', 'issuer', (string) $issuerId);
+                redirect($i18n->url('/app/selo?ok=review.sent'));
+                return;
             } elseif ($acao === 'marca_desligar') {
                 Db::run('UPDATE tenants SET brand_enabled_at = NULL WHERE id = ?', [$tenantId]);
                 Auth::audit('tenant.brand.off', 'tenant', (string) $tenantId);
@@ -279,6 +291,8 @@ final class Panel
             'logo'   => (string) ($issuerRow['logo_path'] ?? ''),
             'skin'   => Db::one('SELECT brand_color, brand_enabled_at FROM tenants WHERE id = ? LIMIT 1', [$tenantId]),
             'skinOk' => Plan::brandEligible($tenantId),
+            'review' => (string) ($issuerRow['review_status'] ?? 'none'),
+            'nivel'  => (int) ($issuerRow['level'] ?? 0),
             'uso'    => Plan::summary($tenantId),
             'error'  => $error,
             'flash'  => self::flash($i18n),

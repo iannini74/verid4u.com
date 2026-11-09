@@ -112,9 +112,27 @@ Lista honesta, em 2026-11-01:
 
 - Checkout e webhook da Stripe — o catálogo, os cupons e a página de preços
   já existem, e a faixa gratuita de 50 já está medida e aplicada
-- Área administrativa da plataforma
 - Logo do emissor no certificado — a cópia já promete «com a sua marca»
 - Cabeçalho mobile e tradução de pt/es/en
+
+## A área da plataforma
+
+Em `/admin`, separada do painel do cliente e com cara propositalmente
+diferente: quem administra alterna entre as duas o dia inteiro, e confundir a
+tela é como se mexe na conta errada.
+
+Duas exigências que o painel do cliente não tem:
+
+- **Segundo fator obrigatório.** Quem entra ali vê a conta de todo mundo.
+  Vale por 8 horas na sessão; depois pede de novo. É a única parte do produto
+  que exige TOTP — exigir de todo cliente afastaria cliente.
+- **O nível do emissor é decisão registrada, não campo editável.** Ele é o
+  que separa «Registra no VerID4U» de «Emissor verificado» no selo que vai no
+  site do cliente, ou seja, é a nossa palavra. Conceder exige escrever com
+  base em quê, e fica guardado com quem decidiu e quando.
+
+Uma conta com certificado no registro **não pode ser apagada** por ali. Quem
+recebeu o certificado não tem nada a ver com a conta de quem emitiu.
 
 ## Quem faz
 
